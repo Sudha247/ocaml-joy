@@ -1,0 +1,4 @@
+(executable
+ (name circle)
+ (modules circle)
+ (libraries graphics))
