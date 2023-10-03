@@ -27,12 +27,12 @@ let triangle p1 p2 p3 =
 let show shapes = List.iter render_shape shapes
 
 let () =
-  Graphics.open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color Graphics.black;
+  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  set_color black;
 
   let triangle_shape = triangle { x = 250; y = 400 } { x = 150; y = 200 } { x = 350; y = 200 } in
 
   show [triangle_shape];
 
   ignore (read_line ());
-  Graphics.close_graph ()
+  close_graph ()

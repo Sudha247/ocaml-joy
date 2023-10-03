@@ -10,7 +10,7 @@ let canvas_mid = { x = fst canvas_size / 2; y = snd canvas_size / 2 }
 
 let render_shape s =
   match s with
-  | Circle circle -> Graphics.draw_circle circle.c.x circle.c.y circle.radius
+  | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
 
 let row_of_circles ?x ?y spacing =
   let center = match (x, y) with
@@ -31,12 +31,12 @@ let row_of_circles ?x ?y spacing =
 let show shapes = List.iter render_shape shapes
 
 let () =
-  Graphics.open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color Graphics.black;
+  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  set_color black;
 
   let spacing = 150 in 
   let circles = row_of_circles spacing in
   show circles;
 
   ignore (read_line ());
-  Graphics.close_graph ()
+  close_graph ()

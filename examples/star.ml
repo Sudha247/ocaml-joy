@@ -33,14 +33,14 @@ let star center outer_radius inner_radius num_points =
 let show shapes = List.iter render_shape shapes
 
 let () =
-  Graphics.open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color Graphics.black;
+  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  set_color black;
 
   let star_shape = star { x = 250; y = 250 } 50 20 5 in
 
   show [star_shape];
 
   ignore (read_line ());
-  Graphics.close_graph ()
+  close_graph ()
 
   

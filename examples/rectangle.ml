@@ -15,7 +15,7 @@ let render_shape s =
       let x2 = rect.c.x + (rect.length / 2) in
       let y1 = rect.c.y - (rect.width / 2) in
       let y2 = rect.c.y + (rect.width / 2) in
-      Graphics.draw_rect x1 y1 (x2 - x1) (y2 - y1)
+      draw_rect x1 y1 (x2 - x1) (y2 - y1)
 
 let rectangle ?x ?y length width =
   let center = match (x, y) with
@@ -26,11 +26,11 @@ let rectangle ?x ?y length width =
 let show shapes = List.iter render_shape shapes
 
 let () =
-  Graphics.open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color Graphics.black;
+  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  set_color black;
 
   let rect = rectangle 200 100 in
   show [rect];
 
   ignore (read_line ());
-  Graphics.close_graph ()
+  close_graph ()

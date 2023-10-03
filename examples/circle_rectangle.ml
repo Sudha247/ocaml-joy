@@ -11,13 +11,13 @@ let canvas_mid = { x = fst canvas_size / 2; y = snd canvas_size / 2 }
 
 let render_shape s =
   match s with
-  | Circle circle -> Graphics.draw_circle circle.c.x circle.c.y circle.radius
+  | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
   | Rectangle rect ->
       let x1 = rect.c.x - (rect.length / 2) in
       let x2 = rect.c.x + (rect.length / 2) in
       let y1 = rect.c.y - (rect.width / 2) in
       let y2 = rect.c.y + (rect.width / 2) in
-      Graphics.draw_rect x1 y1 (x2 - x1) (y2 - y1)
+      draw_rect x1 y1 (x2 - x1) (y2 - y1)
 
 let circle radius =
   let center = canvas_mid in
@@ -36,8 +36,8 @@ let rectangle_outside_circle rectangle_length rectangle_width circle_radius =
 let show shapes = List.iter render_shape shapes
 
 let () =
-  Graphics.open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color Graphics.black;
+  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  set_color black;
 
   let circle_shape = circle 40 in 
   let rectangle_shape = rectangle_outside_circle 120 80 60 in 
@@ -45,4 +45,4 @@ let () =
   show [circle_shape; rectangle_shape];
 
   ignore (read_line ());
-  Graphics.close_graph ()
+  close_graph ()
