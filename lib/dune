@@ -1,3 +1,4 @@
 (library
+ (name joy)
  (public_name joy)
- (name joy))
+ (libraries graphics))
