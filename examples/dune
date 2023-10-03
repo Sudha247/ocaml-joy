@@ -7,3 +7,8 @@
  (name circle_graph)
  (modules circle_graph)
  (libraries graphics))
+
+ (executable
+ (name rectangle)
+ (modules rectangle)
+ (libraries graphics))
