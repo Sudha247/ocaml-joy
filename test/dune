@@ -1,2 +1,4 @@
 (test
- (name ocaml_joy))
+ (name test_circle)
+ (modules test_circle)
+ (libraries joy graphics))

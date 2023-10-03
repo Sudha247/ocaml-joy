@@ -2,3 +2,8 @@
  (name circle)
  (modules circle)
  (libraries graphics))
+
+(executable
+ (name circle_graph)
+ (modules circle_graph)
+ (libraries graphics))
