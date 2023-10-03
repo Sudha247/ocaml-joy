@@ -12,3 +12,8 @@
  (name rectangle)
  (modules rectangle)
  (libraries graphics))
+
+ (executable
+ (name eye)
+ (modules eye)
+ (libraries graphics))
