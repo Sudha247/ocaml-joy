@@ -7,3 +7,10 @@
  (name circle_graph)
  (modules circle_graph)
  (libraries graphics))
+
+(executable
+ (name ellipse)
+ (modules ellipse)
+ (libraries graphics))
+
+
