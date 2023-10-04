@@ -2,8 +2,3 @@
  (name test_circle)
  (modules test_circle)
  (libraries joy graphics))
-
-(test
- (name test_circle)
- (modules test_circle)
- (libraries joy graphics))
