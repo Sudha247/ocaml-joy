@@ -8,37 +8,37 @@
  (modules circle_graph)
  (libraries graphics))
 
- (executable
+(executable
  (name concentric_circles)
  (modules concentric_circles)
  (libraries graphics))
 
- (executable
+(executable
  (name rectangle)
  (modules rectangle)
  (libraries graphics))
 
- (executable
+(executable
  (name circle_grid)
  (modules circle_grid)
  (libraries graphics))
 
- (executable
+(executable
  (name circle_row)
  (modules circle_row)
  (libraries graphics))
 
- (executable
+(executable
  (name circle_rectangle)
  (modules circle_rectangle)
  (libraries graphics))
 
- (executable
+(executable
  (name triangle)
  (modules triangle)
  (libraries graphics))
 
- (executable
+(executable
  (name star)
  (modules star)
  (libraries graphics))
