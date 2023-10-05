@@ -1,6 +1,6 @@
 open Joy.Shape 
 
-let () = 
+let _ = 
   draw_axes true;
   init ();
   let c = circle 50 in 
