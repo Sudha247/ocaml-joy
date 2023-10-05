@@ -5,7 +5,8 @@ type rectangle = { c : point; length : int; width : int }
 type circle = { c : point; radius : int }
 type ellipse = { c : point; rx : int; ry : int }
 type triangle = { p1 : point; p2 : point; p3 : point }
-type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse | Triangle of triangle
+type star = { center : point; inner_radius : int; outer_radius : int; spikes : int }
+type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse | Triangle of triangle | Star of star
 type shapes = shape list
 
 let canvas_mid = { x = 250; y = 250 }
@@ -19,6 +20,25 @@ let render_shape s =
       draw_ellipse ellipse.c.x ellipse.c.y ellipse.rx ellipse.ry
   | Triangle triangle ->
       draw_poly [|triangle.p1.x, triangle.p1.y; triangle.p2.x, triangle.p2.y; triangle.p3.x, triangle.p3.y|]
+  | Star star ->
+      let draw_star x y inner outer spikes =
+        let angle_step = 2.0 *. Float.pi /. float_of_int (spikes * 2) in
+        let rec draw_lines x1 y1 angle = function
+          | 0 -> ()
+          | n ->
+              let x2 = x1 + int_of_float (cos angle *. float_of_int outer) in
+              let y2 = y1 + int_of_float (sin angle *. float_of_int outer) in
+              moveto x1 y1;
+              lineto x2 y2;
+              let x3 = x1 + int_of_float (cos (angle +. angle_step) *. float_of_int inner) in
+              let y3 = y1 + int_of_float (sin (angle +. angle_step) *. float_of_int inner) in
+              moveto x1 y1;
+              lineto x3 y3;
+              draw_lines x1 y1 (angle +. 2.0 *. angle_step) (n - 1)
+        in
+        draw_lines x y 0.0 spikes
+      in
+      draw_star star.center.x star.center.y star.inner_radius star.outer_radius star.spikes
 
 let circle ?x ?y r =
   match (x, y) with
@@ -35,24 +55,31 @@ let ellipse ?x ?y rx ry =
   | Some x, Some y -> Ellipse { c = { x; y }; rx; ry }
   | _ -> Ellipse { c = { x = canvas_mid.x; y = canvas_mid.y }; rx; ry }
 
-  let triangle ?x1 ?y1 ?x2 ?y2 ?x3 ?y3 () =
-    let p1 =
-      match (x1, y1) with
-      | Some x, Some y -> { x; y }
-      | _ -> canvas_mid
-    in
-    let p2 =
-      match (x2, y2) with
-      | Some x, Some y -> { x; y }
-      | _ -> canvas_mid
-    in
-    let p3 =
-      match (x3, y3) with
-      | Some x, Some y -> { x; y }
-      | _ -> canvas_mid
-    in
-    Triangle { p1; p2; p3 }
-     
+let triangle ?x1 ?y1 ?x2 ?y2 ?x3 ?y3 () =
+  let p1 =
+    match (x1, y1) with
+    | Some x, Some y -> { x; y }
+    | _ -> canvas_mid
+  in
+  let p2 =
+    match (x2, y2) with
+    | Some x, Some y -> { x; y }
+    | _ -> canvas_mid
+  in
+  let p3 =
+    match (x3, y3) with
+    | Some x, Some y -> { x; y }
+    | _ -> canvas_mid
+  in
+  Triangle { p1; p2; p3 }
+
+let star ?x ?y inner outer spikes =
+  let center =
+    match (x, y) with
+    | Some x, Some y -> { x; y }
+    | _ -> canvas_mid
+  in
+  Star { center; inner_radius = inner; outer_radius = outer; spikes }
 
 let translate dx dy shape =
   match shape with
@@ -63,27 +90,11 @@ let translate dx dy shape =
       Triangle { p1 = { x = triangle.p1.x + dx; y = triangle.p1.y + dy };
                  p2 = { x = triangle.p2.x + dx; y = triangle.p2.y + dy };
                  p3 = { x = triangle.p3.x + dx; y = triangle.p3.y + dy } }
+  | Star star -> Star { star with center = { x = star.center.x + dx; y = star.center.y + dy } }
 
-let show shapes = List.iter render_shape shapes
-
-let init () =
+let show shapes =
   open_graph " 500x500";
-  set_color black
-
-let close () =
+  set_color black;
+  List.iter render_shape shapes;
   ignore (read_line ());
   close_graph ()
-
-let () =
-  init ();
-  set_color black;
-
-  (* Create shapes *)
-  let r1 = rectangle 200 100 in
-  let r2 = translate 100 0 r1 in
-  let t = triangle ~x1:50 ~y1:50 ~x2:100 ~y2:150 ~x3:150 ~y3:50 () in
-
-  (* Display shapes *)
-  show [r1; r2; t];
-
-  close ()
