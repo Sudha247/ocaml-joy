@@ -7,7 +7,11 @@ type ellipse = {c : point; rx : int; ry: int}
 type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse
 type shapes = shape list
 
-let canvas_mid = { x = 250; y = 250}
+let dimensions = ref {x = 500; y = 500}
+let set_dimensions x y = 
+  dimensions := {x;y} 
+
+let canvas_mid = { x = (!dimensions.x / 2); y = (!dimensions.y / 2)}
 
 let render_shape s =
   match s with
@@ -35,7 +39,10 @@ let ellipse ?x ?y rx ry =
 let show shapes = List.iter render_shape shapes
 
 let init () =
-  open_graph " 500x500";
+  open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);
+  if !axes_flag then
+    render_axes ();
+    
   set_color black
 
 let close () =
