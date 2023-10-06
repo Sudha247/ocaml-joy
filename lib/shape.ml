@@ -10,6 +10,17 @@ type shapes = shape list
 
 let canvas_mid = { x = 250; y = 250 }
 
+let axes_flag = ref false
+let draw_axes flag = 
+  axes_flag := flag
+
+let render_axes () = 
+  set_color (rgb 192 192 192);
+  moveto (size_x () / 2) 0;
+  lineto (size_x () / 2) (size_y ());
+  moveto 0 (size_y () / 2);
+  lineto (size_x ()) (size_y () / 2)
+
 let render_shape s =
   match s with
   | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
@@ -67,6 +78,9 @@ let show shapes = List.iter render_shape shapes
 
 let init () =
   open_graph " 500x500";
+  if !axes_flag then
+    render_axes ();
+    
   set_color black
 
 let close () =
