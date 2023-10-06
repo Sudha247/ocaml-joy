@@ -9,8 +9,41 @@
  (libraries graphics))
 
 (executable
- (name ellipse)
- (modules ellipse)
+ (name concentric_circles)
+ (modules concentric_circles)
  (libraries graphics))
 
+(executable
+ (name rectangle)
+ (modules rectangle)
+ (libraries graphics))
 
+(executable
+ (name circle_grid)
+ (modules circle_grid)
+ (libraries graphics))
+
+(executable
+ (name circle_row)
+ (modules circle_row)
+ (libraries graphics))
+
+(executable
+ (name circle_rectangle)
+ (modules circle_rectangle)
+ (libraries graphics))
+
+(executable
+ (name triangle)
+ (modules triangle)
+ (libraries graphics))
+
+(executable
+ (name star)
+ (modules star)
+ (libraries graphics))
+
+ (executable 
+  (name axes)
+  (modules axes)
+  (libraries joy))
