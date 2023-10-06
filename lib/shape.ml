@@ -40,6 +40,7 @@ let circle ?x ?y r =
   | _ -> Circle { c = { x = canvas_mid.x; y = canvas_mid.y }; radius = r }
 
 let rectangle ?x ?y length width =
+  
   match (x, y) with
   | Some x, Some y -> Rectangle { c = { x; y }; length; width }
   | _ -> Rectangle { c = { x = canvas_mid.x; y = canvas_mid.y }; length; width }
