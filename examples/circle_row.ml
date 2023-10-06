@@ -12,23 +12,19 @@ let render_shape s =
   match s with
   | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
 
-let grid_of_circles ?x ?y spacing =
+let row_of_circles ?x ?y spacing =
   let center = match (x, y) with
     | Some x, Some y -> { x; y }
     | _ -> canvas_mid in
-  let create_circle x y =
-    Circle { c = { x; y }; radius = 50 } 
+  let create_circle x =
+    Circle { c = { x; y = center.y }; radius = 50 } 
   in
   let circles = ref [] in
-  let half_spacing = spacing / 2 in
-  let x_positions = [center.x - half_spacing; center.x + half_spacing] in
-  let y_positions = [center.y - half_spacing; center.y + half_spacing] in
-  for x = 0 to 1 do
-    for y = 0 to 1 do
-      let circle_x = List.nth x_positions x in
-      let circle_y = List.nth y_positions y in
-      circles := create_circle circle_x circle_y :: !circles
-    done
+  let total_width = 3 * spacing in 
+  let start_x = center.x - total_width / 2 in 
+  for i = 0 to 2 do
+    let x = start_x + i * spacing in
+    circles := create_circle x :: !circles
   done;
   !circles
 
@@ -38,8 +34,8 @@ let () =
   open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
   set_color black;
 
-  let spacing = 100 in 
-  let circles = grid_of_circles spacing in
+  let spacing = 150 in 
+  let circles = row_of_circles spacing in
   show circles;
 
   ignore (read_line ());
