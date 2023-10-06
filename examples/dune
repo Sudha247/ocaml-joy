@@ -43,7 +43,12 @@
  (modules star)
  (libraries graphics))
 
- (executable 
-  (name axes)
-  (modules axes)
-  (libraries joy))
+(executable
+ (name axes)
+ (modules axes)
+ (libraries joy))
+
+(executable
+ (name line)
+ (modules line)
+ (libraries joy))

@@ -1,10 +1,11 @@
 open Graphics
 
 type point = { x : int; y : int }
+type line = { a : point; b : point }
 type rectangle = { c : point; length : int; width : int }
 type circle = { c : point; radius : int }
 type ellipse = {c : point; rx : int; ry: int}
-type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse
+type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse | Line of line
 type shapes = shape list
 
 let canvas_mid = { x = 250; y = 250}
@@ -12,6 +13,10 @@ let canvas_mid = { x = 250; y = 250}
 let axes_flag = ref false
 let draw_axes flag = 
   axes_flag := flag
+
+let draw_line line = 
+  moveto line.a.x line.a.y;
+  lineto line.b.x line.b.y
 
 let render_axes () = 
   set_color (rgb 192 192 192);
@@ -27,6 +32,7 @@ let render_shape s =
       draw_rect rectangle.c.x rectangle.c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
     draw_ellipse ellipse.c.x ellipse.c.y ellipse.rx ellipse.ry
+  | Line line -> draw_line line
 
 let circle ?x ?y r =
   match (x, y) with
@@ -42,6 +48,11 @@ let ellipse ?x ?y rx ry =
   match (x, y) with
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
   | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
+
+let line ?x1 ?y1 x2 y2 =
+  match (x1, y1) with 
+  | Some x, Some y -> Line {a = {x;y}; b = {x = x2; y = y2}}
+  | _ -> Line {a = canvas_mid; b = {x = x2; y = y2}}
 
 let show shapes = List.iter render_shape shapes
 
