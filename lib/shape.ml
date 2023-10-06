@@ -4,7 +4,8 @@ type point = { x : int; y : int }
 type rectangle = { c : point; length : int; width : int }
 type circle = { c : point; radius : int }
 type ellipse = {c : point; rx : int; ry: int}
-type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse
+type triangle = {c1: point; c2 : point; c3 : point}
+type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse | Triangle of triangle
 type shapes = shape list
 
 let canvas_mid = { x = 250; y = 250}
@@ -27,6 +28,8 @@ let render_shape s =
       draw_rect rectangle.c.x rectangle.c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
     draw_ellipse ellipse.c.x ellipse.c.y ellipse.rx ellipse.ry
+  |  Triangle triangle ->
+    draw_poly [|triangle.c1.x,triangle.c1.y ;triangle.c2.x,triangle.c2.y ;triangle.c3.x,triangle.c3.y|]
 
 let circle ?x ?y r =
   match (x, y) with
@@ -42,6 +45,9 @@ let ellipse ?x ?y rx ry =
   match (x, y) with
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
   | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
+
+let triangle x1 y1 x2 y2 x3 y3 =
+  Triangle {c1 = {x = x1; y = y1}; c2 = {x = x2; y = y2}; c3 = {x = x3; y = y3}}
 
 let show shapes = List.iter render_shape shapes
 
