@@ -13,6 +13,17 @@ let set_dimensions x y =
 
 let canvas_mid = { x = (!dimensions.x / 2); y = (!dimensions.y / 2)}
 
+let axes_flag = ref false
+let draw_axes flag = 
+  axes_flag := flag
+
+let render_axes () = 
+  set_color (rgb 192 192 192);
+  moveto (size_x () / 2) 0;
+  lineto (size_x () / 2) (size_y ());
+  moveto 0 (size_y () / 2);
+  lineto (size_x ()) (size_y () / 2)
+
 let render_shape s =
   match s with
   | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
