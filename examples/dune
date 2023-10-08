@@ -43,6 +43,11 @@
  (modules star)
  (libraries graphics))
 
+(executable
+ (name traffic_signal)
+ (modules traffic_signal)
+ (libraries graphics))
+
  (executable 
   (name axes)
   (modules axes)
