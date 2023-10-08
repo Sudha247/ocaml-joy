@@ -52,7 +52,7 @@ let translate dx dy shape =
 let show shapes = List.iter render_shape shapes
 
 let init () =
-  open_graph " 500x500";
+  open_graph " 1000x500";
   if !axes_flag then
     render_axes ();
     
