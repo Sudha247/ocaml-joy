@@ -15,12 +15,14 @@ let render_shape s =
       let x = hex.c.x in
       let y = hex.c.y in
       let points =
-        [|(x + (side/2), y + side);
+        [|
+          (x + (side/2), y + side);
           (x - (side/2), y + side);
           (x - (side), y);
           (x - (side/2), y - side);
           (x + (side/2), y - side);
-          (x + side, y);|]
+          (x + side, y);
+        |]
       in
       draw_poly points
 
