@@ -2,3 +2,8 @@
  (name test_circle)
  (modules test_circle)
  (libraries joy graphics))
+
+(test
+ (name test_circle_row)
+ (modules test_circle_row)
+ (libraries joy graphics))
