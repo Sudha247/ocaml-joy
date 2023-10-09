@@ -15,11 +15,13 @@ let render_shape s =
       let x = pent.c.x in
       let y = pent.c.y in
       let points =
-        [|(x, y + side);
+        [|
+          (x, y + side);
           (x - side, y);
           (x - (side/2), y - side);
           (x + (side/2), y - side);
-          (x + side, y);|]
+          (x + side, y);
+        |]
       in
       draw_poly points
 
