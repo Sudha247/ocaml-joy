@@ -47,6 +47,12 @@ let ellipse ?x ?y rx ry =
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
   | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
 
+let scale factor s =
+  match s with
+  | Circle circle' -> circle ~x:circle'.c.x ~y:circle'.c.y (circle'.radius*factor)
+  | Rectangle rectangle' -> rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y (rectangle'.length*factor) (rectangle'.width*factor)
+  | Ellipse ellipse' -> ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y (ellipse'.rx*factor) (ellipse'.ry*factor)
+
 let show shapes = List.iter render_shape shapes
 
 let init () =
