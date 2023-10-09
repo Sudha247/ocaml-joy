@@ -44,36 +44,21 @@
  (libraries graphics))
 
 (executable
- (name axes)
- (modules axes)
- (libraries joy))
+ (name square)
+ (modules square)
+ (libraries graphics))
 
-(executable
- (name translate_circle)
- (modules translate_circle)
- (libraries joy))
+ (executable
+ (name pentagon)
+ (modules pentagon)
+ (libraries graphics))
 
-(executable
- (name translate_rectangle)
- (modules translate_rectangle)
- (libraries joy))
+  (executable
+ (name hexagon)
+ (modules hexagon)
+ (libraries graphics))
 
-(executable
- (name translate_ellipse)
- (modules translate_ellipse)
- (libraries joy))
-
-(executable
- (name circle_row_joy)
- (modules circle_row_joy)
- (libraries joy))
-
-(executable
- (name rotate)
- (modules rotate)
- (libraries joy)))
- 
-(executable 
- (name line)
- (modules line)
- (libraries joy)
+ (executable 
+  (name axes)
+  (modules axes)
+  (libraries joy))
