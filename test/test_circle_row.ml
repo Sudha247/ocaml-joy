@@ -11,8 +11,6 @@ let row_of_circles dim_x dim_y spacing =
   done;
   !circles
 
-let show shapes = List.iter render_shape shapes
-
 let () =
   init ();
   let (dim_x, dim_y) = (1000,1000) in
