@@ -12,9 +12,9 @@ let row_of_circles dim_x dim_y spacing =
   !circles
 
 let () =
-  init ();
   let (dim_x, dim_y) = (1000,1000) in
   set_dimensions dim_x dim_y;
+  init ();
   let spacing = 120 in 
   let circles = row_of_circles dim_x dim_y spacing in
   show circles;
