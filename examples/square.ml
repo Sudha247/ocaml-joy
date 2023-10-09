@@ -15,10 +15,12 @@ let render_shape s =
       let x = sqr.c.x in
       let y = sqr.c.y in
       let points =
-        [| (x - side, y - side);
-           (x + side, y - side);
-           (x + side, y + side);
-           (x - side, y + side) |]
+        [| 
+          (x - side, y - side);
+          (x + side, y - side);
+          (x + side, y + side);
+          (x - side, y + side) 
+        |]
       in
       draw_poly points
 

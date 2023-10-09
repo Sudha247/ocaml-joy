@@ -18,7 +18,7 @@ let render_shape s =
         [|(x, y + side);
           (x - side, y);
           (x - (side/2), y - side);
-          (x +(side/2), y - side);
+          (x + (side/2), y - side);
           (x + side, y);|]
       in
       draw_poly points
