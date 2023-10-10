@@ -58,11 +58,6 @@ let translate dx dy shape =
   | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
   | Line line -> Line {a = {x = line.a.x + dx; y = line.a.y + dy}; b = {x = line.b.x + dx; y = line.b.y + dy}}
 
-let line ?x1 ?y1 x2 y2 =
-  match (x1, y1) with 
-  | Some x, Some y -> Line {a = {x;y}; b = {x = x2; y = y2}}
-  | _ -> Line {a = canvas_mid; b = {x = x2; y = y2}}
-
 let show shapes = List.iter render_shape shapes
 
 let render_axes () = 
