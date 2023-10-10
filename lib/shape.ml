@@ -18,16 +18,8 @@ let axes_flag = ref false
 let draw_axes flag = 
   axes_flag := flag
 
-let draw_line line = 
-  moveto line.a.x line.a.y;
-  lineto line.b.x line.b.y
-
-let render_axes () = 
-  set_color (rgb 192 192 192);
-  moveto (size_x () / 2) 0;
-  lineto (size_x () / 2) (size_y ());
-  moveto 0 (size_y () / 2);
-  lineto (size_x ()) (size_y () / 2)
+let draw_line x1 y1 x2 y2 = 
+  draw_poly_line [|(x1, y1); (x2, y2)|]
 
 let render_shape s =
   match s with
@@ -36,7 +28,7 @@ let render_shape s =
       draw_rect rectangle.c.x rectangle.c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
     draw_ellipse ellipse.c.x ellipse.c.y ellipse.rx ellipse.ry
-  | Line line -> draw_line line
+  | Line line -> draw_line line.a.x line.a.y line.b.x line.b.y
 
 let circle ?x ?y r =
   match (x, y) with
@@ -64,8 +56,21 @@ let translate dx dy shape =
   | Circle circle -> Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
   | Rectangle rectangle -> Rectangle { rectangle with c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy } }
   | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
+  | Line line -> Line {a = {x = line.a.x + dx; y = line.a.y + dy}; b = {x = line.b.x + dx; y = line.b.y + dy}}
+
+let line ?x1 ?y1 x2 y2 =
+  match (x1, y1) with 
+  | Some x, Some y -> Line {a = {x;y}; b = {x = x2; y = y2}}
+  | _ -> Line {a = canvas_mid; b = {x = x2; y = y2}}
 
 let show shapes = List.iter render_shape shapes
+
+let render_axes () = 
+  set_color (rgb 192 192 192);
+  let half_x = (size_x ()) / 2 in 
+  draw_line half_x 0 half_x (size_y ());
+  let half_y = (size_y ()) / 2 in 
+  draw_line 0 half_y (size_x ()) half_y
 
 let init () =
   open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);
