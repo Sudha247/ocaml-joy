@@ -47,6 +47,12 @@ let ellipse ?x ?y rx ry =
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
   | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
 
+  let translate dx dy shape =
+    match shape with
+    | Circle circle -> Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
+    | Rectangle rectangle -> Rectangle { rectangle with c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy } }
+    | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
+
 let show shapes = List.iter render_shape shapes
 
 let rotate_pos { x : int; y : int} theta = 
