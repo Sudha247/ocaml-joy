@@ -1,8 +1,3 @@
 (executable
  (name test_all)
  (libraries joy graphics))
-
-(test
- (name test_circle_row)
- (modules test_circle_row)
- (libraries joy graphics))
