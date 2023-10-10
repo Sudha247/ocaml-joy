@@ -49,6 +49,17 @@ let ellipse ?x ?y rx ry =
 
 let show shapes = List.iter render_shape shapes
 
+let rotate_pos { x : int; y : int} theta = 
+  let dx = ((float_of_int x) *. (cos theta)) -. ((float_of_int y) *. (sin theta)) in 
+  let dy = ((float_of_int y) *. (cos theta)) +. ((float_of_int x) *. (sin theta)) in 
+  {x = (int_of_float dx); y = (int_of_float dy)}
+
+let rotate shape theta = 
+  match shape with 
+  | Circle circle -> Circle { c = (rotate_pos circle.c theta); radius = circle.radius }
+  | Rectangle rect -> Rectangle { c = (rotate_pos rect.c theta); length = rect.length; width = rect.width }
+  | Ellipse ell -> Ellipse { c = (rotate_pos ell.c theta); rx = ell.rx; ry = ell.ry }
+
 let init () =
   open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);
   if !axes_flag then
