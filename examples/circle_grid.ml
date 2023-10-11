@@ -1,46 +1,18 @@
-open Graphics
+open Joy.Shape
 
-type point = { x : int; y : int }
-type circle = { c : point; radius : int }
+let spacing = 50
+let center = 250
 
-type shape = Circle of circle
-
-let canvas_size = (1000, 1000)
-let canvas_mid = { x = fst canvas_size / 2; y = snd canvas_size / 2 }
-
-let render_shape s =
-  match s with
-  | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
-
-let grid_of_circles ?x ?y spacing =
-  let center = match (x, y) with
-    | Some x, Some y -> { x; y }
-    | _ -> canvas_mid in
-  let create_circle x y =
-    Circle { c = { x; y }; radius = 50 } 
-  in
-  let circles = ref [] in
-  let half_spacing = spacing / 2 in
-  let x_positions = [center.x - half_spacing; center.x + half_spacing] in
-  let y_positions = [center.y - half_spacing; center.y + half_spacing] in
-  for x = 0 to 1 do
-    for y = 0 to 1 do
-      let circle_x = List.nth x_positions x in
-      let circle_y = List.nth y_positions y in
-      circles := create_circle circle_x circle_y :: !circles
-    done
-  done;
-  !circles
-
-let show shapes = List.iter render_shape shapes
+let grid_of_circles () = 
+  (* cartesian product - creates list of all combinations of the elements in two lists *)
+  let cartesian_product l l' = 
+    List.concat (List.map (fun e -> List.map (fun e' -> (e, e')) l') l) in
+  let coords = cartesian_product [-1; 1] [1; -1] in 
+  List.map (fun (x, y) -> circle ~x: (center + x * spacing) ~y: (center + y * spacing) 50) coords
 
 let () =
-  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color black;
-
-  let spacing = 100 in 
-  let circles = grid_of_circles spacing in
+  init ();
+  let circles = grid_of_circles () in
   show circles;
-
-  ignore (read_line ());
-  close_graph ()
+  close ();
+  exit 0

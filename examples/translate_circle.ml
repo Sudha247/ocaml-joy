@@ -10,4 +10,5 @@ let () =
   (* Display both circles *)
   show [c1; c2];
 
-  close ()
+  close ();
+  exit 0

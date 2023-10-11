@@ -1,47 +1,47 @@
 (executable
  (name circle)
  (modules circle)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name circle_graph)
  (modules circle_graph)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name concentric_circles)
  (modules concentric_circles)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name rectangle)
  (modules rectangle)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name circle_grid)
  (modules circle_grid)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name circle_row)
  (modules circle_row)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name circle_rectangle)
  (modules circle_rectangle)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name triangle)
  (modules triangle)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name star)
  (modules star)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name axes)
@@ -67,4 +67,3 @@
  (name line)
  (modules line)
  (libraries joy))
-

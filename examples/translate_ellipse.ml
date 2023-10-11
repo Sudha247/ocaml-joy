@@ -10,4 +10,5 @@ let () =
   (* Display both ellipses *)
   show [e1; e2];
 
-  close ()
+  close ();
+  exit 0
