@@ -7,4 +7,5 @@ let _ =
   let radius = 50 in
   let circles = List.map  (fun i -> circle (i * radius)) (range 1 4) in 
   show circles;
-  close ()
+  close ();
+  exit 0

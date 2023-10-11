@@ -10,4 +10,5 @@ let _ =
     (circle ~x: (radius + center + (i - 2) * radius * 2) ~y: center radius) in
   let circles = List.map idx_to_circle (range 0 3) in
   show circles;
-  close ()
+  close ();
+  exit 0

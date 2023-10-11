@@ -4,4 +4,5 @@ let _ =
   init ();
   let c = circle 75 in 
   render_shape c;
-  close ()
+  close ();
+  exit 0
