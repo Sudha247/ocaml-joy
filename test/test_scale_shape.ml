@@ -1,6 +1,6 @@
 open Joy.Shape
 
-let () =
+let run () =
   (* set_dimensions 100 100; *)
   init ();
   let c1 = circle 50 in
@@ -13,5 +13,9 @@ let () =
   let e2 = scale 2. e1 in
   let e3 = scale 3. e1 in
   show [ c1; c2; c3; r1; r2; r3; e1; e2; e3 ];
+  let l1 = line  30 50 in
+  let l2 = scale 2. e1 in
+  (* let l3 = scale 3. e1 in *)
+  show [ c1; c2; c3; r1; r2; r3; e1; e2; e3; l1; l2];
   close ();
   
