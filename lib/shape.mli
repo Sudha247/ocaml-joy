@@ -10,8 +10,8 @@ val ellipse : ?x:int -> ?y:int -> int -> int -> shape
 val translate: int -> int -> shape -> shape
 val show : shape list -> unit
 
-val rotate_pos : point -> float -> point 
-val rotate : shape -> float -> shape
+val rot : point -> int -> point 
+val rotate : int -> shape -> shape
 
 val draw_axes : bool -> unit
 val set_dimensions : int -> int -> unit

@@ -55,16 +55,27 @@ let ellipse ?x ?y rx ry =
 
 let show shapes = List.iter render_shape shapes
 
-let rotate_pos { x : int; y : int} theta = 
-  let dx = ((float_of_int x) *. (cos theta)) -. ((float_of_int y) *. (sin theta)) in 
-  let dy = ((float_of_int y) *. (cos theta)) +. ((float_of_int x) *. (sin theta)) in 
-  {x = (int_of_float dx); y = (int_of_float dy)}
+let bi_to_uni x y = 
+  let (x, y) = (float_of_int x, float_of_int y) in 
+  let nx = x *. 0.5 +. (float_of_int !dimensions.x *. 0.5) in 
+  let ny = y *. 0.5 +. (float_of_int !dimensions.y *. 0.5) in 
+  (int_of_float nx, int_of_float ny)
 
-let rotate shape theta = 
+let deg_to_rad degrees = 
+  degrees *. (Stdlib.Float.pi /. 180.)
+
+let rot { x : int; y : int} degrees = 
+  let radians = degrees |> float_of_int |> deg_to_rad in
+  let dx = ((float_of_int x) *. (cos radians)) -. ((float_of_int y) *. (sin radians)) in 
+  let dy = ((float_of_int x) *. (sin radians)) +. ((float_of_int y) *. (cos radians)) in 
+  let (dx, dy) = bi_to_uni (int_of_float dx) (int_of_float dy) in
+  {x = dx; y = dy}
+
+let rotate degrees shape = 
   match shape with 
-  | Circle circle -> Circle { c = (rotate_pos circle.c theta); radius = circle.radius }
-  | Rectangle rect -> Rectangle { c = (rotate_pos rect.c theta); length = rect.length; width = rect.width }
-  | Ellipse ell -> Ellipse { c = (rotate_pos ell.c theta); rx = ell.rx; ry = ell.ry }
+  | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius }
+  | Rectangle rect -> Rectangle { c = (rot rect.c degrees); length = rect.length; width = rect.width }
+  | Ellipse ell -> Ellipse { c = (rot ell.c degrees); rx = ell.rx; ry = ell.ry }
 
 let init () =
   open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);

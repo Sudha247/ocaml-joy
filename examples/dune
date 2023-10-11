@@ -62,3 +62,8 @@
  (name translate_ellipse)
  (modules translate_ellipse)
  (libraries joy))
+
+(executable
+ (name rotate)
+ (modules rotate)
+ (libraries joy))
