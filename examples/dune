@@ -43,6 +43,22 @@
  (modules star)
  (libraries graphics))
 
+
+(executable
+ (name polygon)
+ (modules polygon)
+ (libraries graphics))
+
+(executable
+ (name parallelogram)
+ (modules parallelogram)
+ (libraries graphics))
+
+(executable
+ (name semi_circle)
+ (modules semi_circle)
+ (libraries graphics))
+
 (executable
  (name axes)
  (modules axes)
@@ -63,18 +79,7 @@
  (modules translate_ellipse)
  (libraries joy))
 
-
 (executable
- (name polygon)
- (modules polygon)
- (libraries graphics))
-
-(executable
- (name parallelogram)
- (modules parallelogram)
- (libraries graphics))
-
-(executable
- (name semi_circle)
- (modules semi_circle)
- (libraries graphics))
+ (name line)
+ (modules line)
+ (libraries joy))
