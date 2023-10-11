@@ -7,7 +7,11 @@ type ellipse = {c : point; rx : int; ry: int}
 type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse
 type shapes = shape list
 
-let canvas_mid = { x = 250; y = 250}
+let dimensions = ref {x = 500; y = 500}
+let set_dimensions x y = 
+  dimensions := {x;y} 
+
+let canvas_mid = { x = (!dimensions.x / 2); y = (!dimensions.y / 2)}
 
 let axes_flag = ref false
 let draw_axes flag = 
@@ -43,10 +47,16 @@ let ellipse ?x ?y rx ry =
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
   | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
 
+  let translate dx dy shape =
+    match shape with
+    | Circle circle -> Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
+    | Rectangle rectangle -> Rectangle { rectangle with c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy } }
+    | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
+
 let show shapes = List.iter render_shape shapes
 
 let init () =
-  open_graph " 500x500";
+  open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);
   if !axes_flag then
     render_axes ();
     

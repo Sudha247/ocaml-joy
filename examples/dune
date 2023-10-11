@@ -3,9 +3,6 @@
  (modules circle)
  (libraries graphics))
 
-<<<<<<< HEAD
- (executable
-=======
 (executable
  (name circle_graph)
  (modules circle_graph)
@@ -17,17 +14,10 @@
  (libraries graphics))
 
 (executable
->>>>>>> main
  (name rectangle)
  (modules rectangle)
  (libraries graphics))
 
-<<<<<<< HEAD
- (executable
- (name circle_grid)
- (modules circle_grid)
- (libraries graphics))
-=======
 (executable
  (name circle_grid)
  (modules circle_grid)
@@ -57,4 +47,8 @@
   (name axes)
   (modules axes)
   (libraries joy))
->>>>>>> main
+
+(executable 
+  (name four_circle_row)
+  (modules four_circle_row)
+  (libraries joy))
