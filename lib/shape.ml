@@ -1,31 +1,28 @@
 open Graphics
 
 type point = { x : int; y : int }
+type line = { a : point; b : point }
 type rectangle = { c : point; length : int; width : int }
 type circle = { c : point; radius : int }
 type ellipse = { c : point; rx : int; ry : int }
-type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse
+type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse | Line of line
 type shapes = shape list
 
 let dimensions = ref { x = 500; y = 500 }
 let set_dimensions x y =
   dimensions := { x; y }
 
-let canvas_center = ref { x = 0; y = 0 }
+let canvas_center = { x = 0; y = 0 }
 
 let axes_flag = ref false
 let draw_axes flag =
   axes_flag := flag
 
-let render_axes () =
-  set_color (rgb 192 192 192);
-  moveto (!dimensions.x / 2) 0;
-  lineto (!dimensions.x / 2) (!dimensions.y);
-  moveto 0 (!dimensions.y / 2);
-  lineto (!dimensions.x) (!dimensions.y / 2)
+let draw_line x1 y1 x2 y2 =
+  draw_poly_line [|(x1, y1); (x2, y2)|]
 
 let denormalize x y =
-  { x = x + !canvas_center.x; y = -y + !canvas_center.y }
+  { x = x + canvas_center.x; y = -y + canvas_center.y }
 
 let render_shape s =
   match s with
@@ -38,6 +35,10 @@ let render_shape s =
   | Ellipse ellipse ->
       let c = denormalize ellipse.c.x ellipse.c.y in
       draw_ellipse c.x c.y ellipse.rx ellipse.ry
+  | Line line ->
+      let a = denormalize line.a.x line.a.y in
+      let b = denormalize line.b.x line.b.y in
+      draw_line a.x a.y b.x b.y
 
 let circle ?x ?y r =
   let default_center = { x = 0; y = 0 } in
@@ -45,34 +46,40 @@ let circle ?x ?y r =
   Circle { c = center; radius = r }
 
 let rectangle ?x ?y length width =
-  let default_center = { x = 0; y = 0 } in
-  let center = match (x, y) with Some x, Some y -> { x; y } | _ -> default_center in
-  Rectangle { c = center; length; width }
+  match (x, y) with
+  | Some x, Some y -> Rectangle { c = { x; y }; length; width }
+  | _ -> Rectangle { c = { x = 0; y = 0 }; length; width }
 
 let ellipse ?x ?y rx ry =
   let default_center = { x = 0; y = 0 } in
   let center = match (x, y) with Some x, Some y -> { x; y } | _ -> default_center in
   Ellipse { c = center; rx; ry }
 
+let line ?x1 ?y1 x2 y2 =
+  match (x1, y1) with
+  | Some x, Some y -> Line { a = { x; y }; b = { x = x2; y = y2 } }
+  | _ -> Line { a = { x = 0; y = 0 }; b = { x = x2; y = y2 } }
+
 let translate dx dy shape =
   match shape with
-  | Circle circle ->
-      let c = denormalize circle.c.x circle.c.y in
-      Circle { circle with c = { x = c.x + dx; y = c.y + dy } }
-  | Rectangle rectangle ->
-      let c = denormalize rectangle.c.x rectangle.c.y in
-      Rectangle { rectangle with c = { x = c.x + dx; y = c.y + dy } }
-  | Ellipse ellipse ->
-      let c = denormalize ellipse.c.x ellipse.c.y in
-      Ellipse { ellipse with c = { x = c.x + dx; y = c.y + dy } }
+  | Circle circle -> Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
+  | Rectangle rectangle -> Rectangle { rectangle with c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy } }
+  | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
+  | Line line -> Line { a = { x = line.a.x + dx; y = line.a.y + dy }; b = { x = line.b.x + dx; y = line.b.y + dy }}
 
 let show shapes = List.iter (fun shape -> render_shape shape) shapes
+
+let render_axes () =
+  set_color (rgb 192 192 192);
+  let half_x = (size_x ()) / 2 in
+  draw_line half_x 0 half_x (size_y ());
+  let half_y = (size_y ()) / 2 in
+  draw_line 0 half_y (size_x ()) half_y
 
 let init () =
   open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);
   if !axes_flag then
     render_axes ();
-
   set_color black
 
 let close () =
