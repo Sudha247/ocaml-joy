@@ -47,11 +47,12 @@ let ellipse ?x ?y rx ry =
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
   | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
 
-let scale factor s =
+let scale (factor:float) s =
+  let scaled_length len fact = int_of_float ((float_of_int len) *. sqrt(fact) +. 0.5) in
   match s with
-  | Circle circle' -> circle ~x:circle'.c.x ~y:circle'.c.y (circle'.radius*factor)
-  | Rectangle rectangle' -> rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y (rectangle'.length*factor) (rectangle'.width*factor)
-  | Ellipse ellipse' -> ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y (ellipse'.rx*factor) (ellipse'.ry*factor)
+  | Circle circle' -> circle ~x:circle'.c.x ~y:circle'.c.y (scaled_length circle'.radius factor)
+  | Rectangle rectangle' -> rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y (scaled_length rectangle'.length factor) (scaled_length rectangle'.width factor)
+  | Ellipse ellipse' -> ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y (scaled_length ellipse'.rx factor) (scaled_length ellipse'.ry factor)
 
 let show shapes = List.iter render_shape shapes
 
