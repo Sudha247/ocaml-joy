@@ -66,4 +66,9 @@
 (executable
  (name rotate)
  (modules rotate)
- (libraries joy))
+ (libraries joy)))
+ 
+(executable 
+ (name line)
+ (modules line)
+ (libraries joy)
