@@ -10,4 +10,5 @@ let () =
   (* Display rectangle transform *)
   show [r1; r2];
 
-  close ()
+  close ();
+  exit 0

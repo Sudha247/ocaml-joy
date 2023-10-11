@@ -8,6 +8,6 @@ let lines = List.map (fun i -> let newx = (i |> inc |> ( * ) line_interval) in (
 
 let _ = 
   init ();
-  List.iter render_shape lines;
+  show lines;
   close ();
   exit 0

@@ -1,38 +1,15 @@
-open Graphics
+open Joy.Shape
 
-type point = { x : int; y : int }
-type triangle = { p1 : point; p2 : point; p3 : point }
+let draw_triangle () = 
+  let p1 = (250, 400) in 
+  let p2 = (150, 200) in 
+  let p3 = (350, 200) in 
+  let points = [(p1, p2); (p2, p3); (p3, p1)] in 
+  let lines = List.map (fun ((a, b), (c, d)) -> line ~x1: a ~y1: b c d) points in
+  show lines
 
-type shape = Triangle of triangle
-
-let canvas_size = (500, 500)
-
-let render_shape s =
-  match s with
-  | Triangle tri ->
-      let x1 = tri.p1.x in
-      let y1 = tri.p1.y in
-      let x2 = tri.p2.x in
-      let y2 = tri.p2.y in
-      let x3 = tri.p3.x in
-      let y3 = tri.p3.y in
-      moveto x1 y1;
-      lineto x2 y2;
-      lineto x3 y3;
-      lineto x1 y1
-
-let triangle p1 p2 p3 =
-  Triangle { p1; p2; p3 }
-
-let show shapes = List.iter render_shape shapes
-
-let () =
-  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
-  set_color black;
-
-  let triangle_shape = triangle { x = 250; y = 400 } { x = 150; y = 200 } { x = 350; y = 200 } in
-
-  show [triangle_shape];
-
-  ignore (read_line ());
-  close_graph ()
+let _ = 
+  init ();
+  draw_triangle ();
+  close ();
+  exit 0
