@@ -1,6 +1,6 @@
 open Joy.Shape
 
-let () =
+let run () =
   init ();
   
   let e1 = ellipse 50 30 in
