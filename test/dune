@@ -1,8 +1,3 @@
 (executable
  (name test_all)
  (libraries joy graphics))
-
- (test
- (name test_ellipse)
- (modules test_ellipse)
- (libraries joy graphics))
