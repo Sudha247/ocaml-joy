@@ -62,3 +62,9 @@
  (name translate_ellipse)
  (modules translate_ellipse)
  (libraries joy))
+
+(executable
+ (name line)
+ (modules line)
+ (libraries joy))
+
