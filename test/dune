@@ -1,6 +1,5 @@
-(test
- (name test_circle)
- (modules test_circle)
+(executable
+ (name test_all)
  (libraries joy graphics))
 
  (test
