@@ -1,2 +1,1 @@
-let () =
-  Test_circle.run ()
+let () = Test_circle.run ()
