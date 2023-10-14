@@ -43,12 +43,42 @@
  (modules star)
  (libraries graphics))
 
-(executable
+ (executable
  (name polygons)
  (modules polygons)
  (libraries graphics))
 
- (executable 
-  (name axes)
-  (modules axes)
-  (libraries joy))
+(executable
+ (name axes)
+ (modules axes)
+ (libraries joy))
+
+(executable
+ (name translate_circle)
+ (modules translate_circle)
+ (libraries joy))
+
+(executable
+ (name translate_rectangle)
+ (modules translate_rectangle)
+ (libraries joy))
+
+(executable
+ (name translate_ellipse)
+ (modules translate_ellipse)
+ (libraries joy))
+
+(executable
+ (name circle_row_joy)
+ (modules circle_row_joy)
+ (libraries joy))
+
+(executable
+ (name rotate)
+ (modules rotate)
+ (libraries joy))
+ 
+(executable 
+ (name line)
+ (modules line)
+ (libraries joy) )
