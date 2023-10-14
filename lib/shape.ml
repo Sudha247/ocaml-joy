@@ -67,6 +67,27 @@ let translate dx dy shape =
 
 let show shapes = List.iter render_shape shapes
 
+let bi_to_uni x y = 
+  let nx = x *. 0.5 +. (float_of_int !dimensions.x *. 0.5) in 
+  let ny = y *. 0.5 +. (float_of_int !dimensions.y *. 0.5) in 
+  (int_of_float nx, int_of_float ny)
+
+let deg_to_rad degrees = 
+  degrees *. (Stdlib.Float.pi /. 180.)
+
+let rot { x : int; y : int} degrees = 
+  let radians = deg_to_rad (float_of_int degrees) in
+  let dx = ((float_of_int x) *. (cos radians)) -. ((float_of_int y) *. (sin radians)) in 
+  let dy = ((float_of_int x) *. (sin radians)) +. ((float_of_int y) *. (cos radians)) in 
+  let (dx, dy) = bi_to_uni dx dy in
+  {x = dx; y = dy}
+
+let rotate degrees shape = 
+  match shape with 
+  | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius }
+  | Rectangle rectangle -> Rectangle { c = (rot rectangle.c degrees); length = rectangle.length; width = rectangle.width }
+  | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry }
+
 let render_axes () = 
   set_color (rgb 192 192 192);
   let half_x = (size_x ()) / 2 in 
