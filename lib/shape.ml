@@ -21,36 +21,43 @@ let draw_axes flag =
 let draw_line x1 y1 x2 y2 = 
   draw_poly_line [|(x1, y1); (x2, y2)|]
 
+let denormalize point =
+  { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
+
 let render_shape s =
   match s with
-  | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
+  | Circle circle -> draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius
   | Rectangle rectangle ->
-      draw_rect rectangle.c.x rectangle.c.y rectangle.length rectangle.width
+      let c = denormalize rectangle.c in
+      draw_rect c.x c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
-    draw_ellipse ellipse.c.x ellipse.c.y ellipse.rx ellipse.ry
-  | Line line -> draw_line line.a.x line.a.y line.b.x line.b.y
+    let c = denormalize ellipse.c in
+    draw_ellipse c.x c.y ellipse.rx ellipse.ry
+  | Line line ->
+    let a = denormalize line.a in
+    let b = denormalize line.b in
+    draw_line a.x a.y b.x b.y
 
 let circle ?x ?y r =
   match (x, y) with
   | Some x, Some y -> Circle { c = { x; y }; radius = r }
-  | _ -> Circle { c = { x = canvas_mid.x; y = canvas_mid.y }; radius = r }
+  | _ -> Circle { c = { x = 0; y = 0 }; radius = r }
 
 let rectangle ?x ?y length width =
-  
   match (x, y) with
   | Some x, Some y -> Rectangle { c = { x; y }; length; width }
-  | _ -> Rectangle { c = { x = canvas_mid.x; y = canvas_mid.y }; length; width }
+  | _ -> Rectangle { c = { x = 0; y = 0 }; length; width }
 
 let ellipse ?x ?y rx ry =
   match (x, y) with
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
-  | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
+  | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry}
 
 let line ?x1 ?y1 x2 y2 =
   match (x1, y1) with 
   | Some x, Some y -> Line {a = {x;y}; b = {x = x2; y = y2}}
-  | _ -> Line {a = canvas_mid; b = {x = x2; y = y2}}
-  
+  | _ -> Line {a = {x = 0; y = 0}; b = {x = x2; y = y2}}
+
 let translate dx dy shape =
   match shape with
   | Circle circle -> Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
