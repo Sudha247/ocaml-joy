@@ -17,7 +17,8 @@ let draw_square () =
         (350, 400);
       |] in
     draw_poly points
-let draw_hexagon () =
+
+    let draw_hexagon () =
   let points = 
     [|
       (266, 215);
@@ -42,17 +43,13 @@ let draw_hexagon () =
     in
     draw_poly points
 
-
 let () =
   open_graph " 500x500";
-  
   set_color black;
   draw_square();
   draw_hexagon();
   draw_pentagon();
   draw_triangle ();
- 
-
   ignore (read_line ());
   close_graph ();
   exit 0
