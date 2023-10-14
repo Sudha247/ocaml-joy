@@ -3,6 +3,7 @@ open Graphics
 type point = { x : int; y : int }
 type circle = { c : point; radius : int }
 type rectangle = { c : point; length : int; width : int }
+
 type shape = Circle of circle | Rectangle of rectangle
 
 let canvas_size = (500, 500)
@@ -30,27 +31,18 @@ let rectangle_outside_circle rectangle_length rectangle_width circle_radius =
   let rectangle_cy = circle_cy in
   let distance_x = circle_radius + (rectangle_length / 2) + 20 in
   let distance_y = circle_radius + (rectangle_width / 2) + 20 in
-  Rectangle
-    {
-      c = { x = rectangle_cx; y = rectangle_cy };
-      length = distance_x;
-      width = distance_y;
-    }
+  Rectangle { c = { x = rectangle_cx; y = rectangle_cy }; length = distance_x; width = distance_y }
 
 let show shapes = List.iter render_shape shapes
 
 let () =
-  open_graph
-    (" "
-    ^ string_of_int (fst canvas_size)
-    ^ "x"
-    ^ string_of_int (snd canvas_size));
+  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
   set_color black;
 
-  let circle_shape = circle 40 in
-  let rectangle_shape = rectangle_outside_circle 120 80 60 in
+  let circle_shape = circle 40 in 
+  let rectangle_shape = rectangle_outside_circle 120 80 60 in 
 
-  show [ circle_shape; rectangle_shape ];
+  show [circle_shape; rectangle_shape];
 
   ignore (read_line ());
   close_graph ()

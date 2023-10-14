@@ -8,6 +8,6 @@ let () =
   (* Translate it to the right by 100 *)
   let c2 = translate 100 0 c1 in
   (* Display both circles *)
-  show [ c1; c2 ];
+  show [c1; c2];
 
   close ()
