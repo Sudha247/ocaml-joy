@@ -21,36 +21,43 @@ let draw_axes flag =
 let draw_line x1 y1 x2 y2 = 
   draw_poly_line [|(x1, y1); (x2, y2)|]
 
+let denormalize point =
+  { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
+
 let render_shape s =
   match s with
-  | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
+  | Circle circle -> draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius
   | Rectangle rectangle ->
-      draw_rect rectangle.c.x rectangle.c.y rectangle.length rectangle.width
+      let c = denormalize rectangle.c in
+      draw_rect c.x c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
-    draw_ellipse ellipse.c.x ellipse.c.y ellipse.rx ellipse.ry
-  | Line line -> draw_line line.a.x line.a.y line.b.x line.b.y
+    let c = denormalize ellipse.c in
+    draw_ellipse c.x c.y ellipse.rx ellipse.ry
+  | Line line ->
+    let a = denormalize line.a in
+    let b = denormalize line.b in
+    draw_line a.x a.y b.x b.y
 
 let circle ?x ?y r =
   match (x, y) with
   | Some x, Some y -> Circle { c = { x; y }; radius = r }
-  | _ -> Circle { c = { x = canvas_mid.x; y = canvas_mid.y }; radius = r }
+  | _ -> Circle { c = { x = 0; y = 0 }; radius = r }
 
 let rectangle ?x ?y length width =
-  
   match (x, y) with
   | Some x, Some y -> Rectangle { c = { x; y }; length; width }
-  | _ -> Rectangle { c = { x = canvas_mid.x; y = canvas_mid.y }; length; width }
+  | _ -> Rectangle { c = { x = 0; y = 0 }; length; width }
 
 let ellipse ?x ?y rx ry =
   match (x, y) with
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
-  | _ -> Ellipse {c = { x = canvas_mid.x; y = canvas_mid.y}; rx; ry}
+  | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry}
 
 let line ?x1 ?y1 x2 y2 =
   match (x1, y1) with 
   | Some x, Some y -> Line {a = {x;y}; b = {x = x2; y = y2}}
-  | _ -> Line {a = canvas_mid; b = {x = x2; y = y2}}
-  
+  | _ -> Line {a = {x = 0; y = 0}; b = {x = x2; y = y2}}
+
 let translate dx dy shape =
   match shape with
   | Circle circle -> Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
@@ -59,6 +66,27 @@ let translate dx dy shape =
   | Line line -> Line {a = {x = line.a.x + dx; y = line.a.y + dy}; b = {x = line.b.x + dx; y = line.b.y + dy}}
 
 let show shapes = List.iter render_shape shapes
+
+let bi_to_uni x y = 
+  let nx = x *. 0.5 +. (float_of_int !dimensions.x *. 0.5) in 
+  let ny = y *. 0.5 +. (float_of_int !dimensions.y *. 0.5) in 
+  (int_of_float nx, int_of_float ny)
+
+let deg_to_rad degrees = 
+  degrees *. (Stdlib.Float.pi /. 180.)
+
+let rot { x : int; y : int} degrees = 
+  let radians = deg_to_rad (float_of_int degrees) in
+  let dx = ((float_of_int x) *. (cos radians)) -. ((float_of_int y) *. (sin radians)) in 
+  let dy = ((float_of_int x) *. (sin radians)) +. ((float_of_int y) *. (cos radians)) in 
+  let (dx, dy) = bi_to_uni dx dy in
+  {x = dx; y = dy}
+
+let rotate degrees shape = 
+  match shape with 
+  | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius }
+  | Rectangle rectangle -> Rectangle { c = (rot rectangle.c degrees); length = rectangle.length; width = rectangle.width }
+  | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry }
 
 let render_axes () = 
   set_color (rgb 192 192 192);
