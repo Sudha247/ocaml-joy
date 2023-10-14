@@ -1,46 +1,25 @@
 open Graphics
 
-type point = { x : int; y : int }
-type hexagon = { c : point; side_length : int}
-
-type shape = Hexagon of hexagon
-
-let canvas_size = (500, 500)
-let canvas_mid = { x = fst canvas_size / 2; y = snd canvas_size / 2 }
-
-let render_shape s =
-  match s with
-  | Hexagon hex ->
-      let side = hex.side_length in
-      let x = hex.c.x in
-      let y = hex.c.y in
-      let points =
-        [|
-          (x + (side/2), y + side);
-          (x - (side/2), y + side);
-          (x - (side), y);
-          (x - (side/2), y - side);
-          (x + (side/2), y - side);
-          (x + side, y);
-        |]
-      in
-      draw_poly points
-
-
-let hexagon ?x ?y side_length =
-  let center = match (x, y) with
-    | Some x, Some y -> { x; y }
-    | _ -> canvas_mid in
-  Hexagon { c = center; side_length }
-
-let show shapes = List.iter render_shape shapes
-
 let () =
-  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  open_graph " 500x500";
+  
   set_color black;
 
-  let hex = hexagon 100 in
-  show [hex];
+  let draw_hexagon () =
+    let points = 
+      [|
+        (132, 450);
+        (60, 312);
+        (132, 174);
+        (368, 174);
+        (440, 312);
+        (368, 450);
+      |] in
+    draw_poly points
+  in
+
+  draw_hexagon();
 
   ignore (read_line ());
-  close_graph ()
+  close_graph ();
+  exit 0

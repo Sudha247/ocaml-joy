@@ -12,9 +12,9 @@ let () =
         (60, 312);
         (132, 88);
         (368, 88);
-        (440, 312);
+        (440, 312)
       |] in
-    Graphics.draw_poly points
+    draw_poly points
   in
 
   draw_pentagon();
