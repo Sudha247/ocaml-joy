@@ -44,18 +44,8 @@
  (libraries graphics))
 
 (executable
- (name square)
- (modules square)
- (libraries graphics))
-
- (executable
- (name pentagon)
- (modules pentagon)
- (libraries graphics))
-
-  (executable
- (name hexagon)
- (modules hexagon)
+ (name polygons)
+ (modules polygons)
  (libraries graphics))
 
  (executable 
