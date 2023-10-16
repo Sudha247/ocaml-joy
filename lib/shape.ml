@@ -59,12 +59,13 @@ let translate dx dy shape =
   | Line line -> Line {a = {x = line.a.x + dx; y = line.a.y + dy}; b = {x = line.b.x + dx; y = line.b.y + dy}}
 
 let scale (factor:float) s =
-  let scaled_length len fact = int_of_float ((float_of_int len) *. sqrt(fact) +. 0.5) in
+  let round x = int_of_float(x +. 0.5) in
+  let scale_length len fact =  round ((float_of_int len) *. sqrt(fact)) in
   match s with
-  | Circle circle' -> circle ~x:circle'.c.x ~y:circle'.c.y (scaled_length circle'.radius factor)
-  | Rectangle rectangle' -> rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y (scaled_length rectangle'.length factor) (scaled_length rectangle'.width factor)
-  | Ellipse ellipse' -> ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y (scaled_length ellipse'.rx factor) (scaled_length ellipse'.ry factor)
-  | Line line' -> line ~x1:line'.a.x ~y1:line'.a.y (scaled_length line'.b.x factor) (scaled_length line'.b.y factor)
+  | Circle circle' -> circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
+  | Rectangle rectangle' -> rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y (scale_length rectangle'.length factor) (scale_length rectangle'.width factor)
+  | Ellipse ellipse' -> ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y (scale_length ellipse'.rx factor) (scale_length ellipse'.ry factor)
+  | Line _line' -> failwith "Not Implemented"
 
 let show shapes = List.iter render_shape shapes
 
