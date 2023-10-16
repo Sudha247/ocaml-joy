@@ -64,7 +64,21 @@
  (libraries joy))
 
 (executable
+ (name circle_row_joy)
+ (modules circle_row_joy)
+ (libraries joy))
+
+(executable
+ (name rotate)
+ (modules rotate)
+ (libraries joy))
+ 
+(executable 
  (name line)
  (modules line)
  (libraries joy))
 
+(executable 
+ (name ellipse)
+ (modules ellipse)
+ (libraries joy))
