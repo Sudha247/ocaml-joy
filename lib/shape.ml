@@ -65,7 +65,7 @@ let translate dx dy shape =
   | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
   | Line line -> Line {a = {x = line.a.x + dx; y = line.a.y + dy}; b = {x = line.b.x + dx; y = line.b.y + dy}}
 
-let scale (factor:float) s =
+let scale factor s =
   let round x = int_of_float(x +. 0.5) in
   let scale_length len fact =  round ((float_of_int len) *. sqrt(fact)) in
   match s with
