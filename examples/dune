@@ -43,7 +43,7 @@
  (modules star)
  (libraries graphics))
 
- (executable
+(executable
  (name polygons)
  (modules polygons)
  (libraries graphics))
@@ -77,8 +77,8 @@
  (name rotate)
  (modules rotate)
  (libraries joy))
- 
-(executable 
+
+(executable
  (name line)
  (modules line)
- (libraries joy) )
+ (libraries joy))
