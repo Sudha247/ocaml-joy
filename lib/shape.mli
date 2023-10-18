@@ -2,9 +2,9 @@ type shape
 type shapes = shape list
 
 val render_shape : shape -> unit
-val circle : ?x:int -> ?y:int -> int -> shape
-val rectangle : ?x:int -> ?y:int -> int -> int -> shape
-val ellipse : ?x:int -> ?y:int -> int -> int -> shape
+val circle : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * int -> int -> shape
+val rectangle : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * int -> int -> int -> shape
+val ellipse : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * int -> int -> int -> shape
 
 val line : ?x1:int -> ?y1:int -> int -> int -> shape
 val translate: int -> int -> shape -> shape

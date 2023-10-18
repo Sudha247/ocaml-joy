@@ -2,9 +2,9 @@ open Graphics
 
 type point = { x : int; y : int }
 type line = { a : point; b : point }
-type rectangle = { c : point; length : int; width : int }
-type circle = { c : point; radius : int }
-type ellipse = {c : point; rx : int; ry: int}
+type circle = { c : point; radius : int; fill : (int * int * int) option; stroke : (int * int * int) option }
+type rectangle = { c : point; length : int; width : int; fill : (int * int * int) option; stroke : (int * int * int) option }
+type ellipse = { c : point; rx : int; ry: int; fill : (int * int * int) option; stroke : (int * int * int) option }
 type shape = Circle of circle | Rectangle of rectangle | Ellipse of ellipse | Line of line
 type shapes = shape list
 
@@ -38,20 +38,20 @@ let render_shape s =
     let b = denormalize line.b in
     draw_line a.x a.y b.x b.y
 
-let circle ?x ?y r =
-  match (x, y) with
-  | Some x, Some y -> Circle { c = { x; y }; radius = r }
-  | _ -> Circle { c = { x = 0; y = 0 }; radius = r }
+  let circle ?x ?y ?fill ?stroke r =
+    match (x, y) with
+    | Some x, Some y -> Circle { c = { x; y }; radius = r; fill; stroke }
+    | _ -> Circle { c = { x = 0; y = 0 }; radius = r; fill; stroke }  
 
-let rectangle ?x ?y length width =
+let rectangle ?x ?y ?fill ?stroke length width =
   match (x, y) with
-  | Some x, Some y -> Rectangle { c = { x; y }; length; width }
-  | _ -> Rectangle { c = { x = 0; y = 0 }; length; width }
+  | Some x, Some y -> Rectangle { c = { x; y }; length; width; fill; stroke }
+  | _ -> Rectangle { c = { x = 0; y = 0 }; length; width; fill; stroke }
 
-let ellipse ?x ?y rx ry =
+let ellipse ?x ?y ?fill ?stroke rx ry =
   match (x, y) with
-  | Some x, Some y -> Ellipse {c = {x; y}; rx; ry}
-  | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry}
+  | Some x, Some y -> Ellipse {c = {x; y}; rx; ry; fill; stroke}
+  | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry; fill; stroke}
 
 let line ?x1 ?y1 x2 y2 =
   match (x1, y1) with 
@@ -84,9 +84,10 @@ let rot { x : int; y : int} degrees =
 
 let rotate degrees shape = 
   match shape with 
-  | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius }
-  | Rectangle rectangle -> Rectangle { c = (rot rectangle.c degrees); length = rectangle.length; width = rectangle.width }
-  | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry }
+  | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius; fill = circle.fill; stroke = circle.stroke }
+  | Rectangle rectangle -> Rectangle { c = (rot rectangle.c degrees); length = rectangle.length; width = rectangle.width; fill = rectangle.fill; stroke = rectangle.stroke }
+  | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry; fill = ellipse.fill; stroke = ellipse.stroke }
+  | Line line -> Line {a = (rot line.a degrees); b = (rot line.b degrees)}
 
 let render_axes () = 
   set_color (rgb 192 192 192);
