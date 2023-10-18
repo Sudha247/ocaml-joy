@@ -81,4 +81,9 @@
 (executable 
  (name line)
  (modules line)
- (libraries joy) )
+ (libraries joy))
+
+(executable 
+ (name ellipse)
+ (modules ellipse)
+ (libraries joy))
