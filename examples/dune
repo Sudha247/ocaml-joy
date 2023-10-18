@@ -43,6 +43,11 @@
  (modules star)
  (libraries graphics))
 
+ (executable
+ (name polygons)
+ (modules polygons)
+ (libraries graphics))
+
 (executable
  (name axes)
  (modules axes)
@@ -71,9 +76,9 @@
 (executable
  (name rotate)
  (modules rotate)
- (libraries joy)))
+ (libraries joy))
  
 (executable 
  (name line)
  (modules line)
- (libraries joy)
+ (libraries joy) )
