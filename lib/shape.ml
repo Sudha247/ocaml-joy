@@ -98,6 +98,8 @@ let rotate degrees shape =
   | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry }
   | Line _line -> failwith "Not Implemented"
 
+let comp f g x = g (f x)
+
 let render_axes () = 
   set_color (rgb 192 192 192);
   let half_x = (size_x ()) / 2 in 

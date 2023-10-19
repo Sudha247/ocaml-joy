@@ -43,7 +43,7 @@
  (modules star)
  (libraries graphics))
 
- (executable
+(executable
  (name polygons)
  (modules polygons)
  (libraries graphics))
@@ -77,13 +77,18 @@
  (name rotate)
  (modules rotate)
  (libraries joy))
- 
-(executable 
+
+(executable
  (name line)
  (modules line)
  (libraries joy))
 
-(executable 
+(executable
  (name ellipse)
  (modules ellipse)
+ (libraries joy))
+
+(executable
+ (name higher_transforms)
+ (modules higher_transforms)
  (libraries joy))
