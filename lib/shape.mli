@@ -9,6 +9,7 @@ val ellipse : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * i
 val line : ?x1:int -> ?y1:int -> int -> int -> shape
 val translate: int -> int -> shape -> shape
 val show : shape list -> unit
+val scale: float -> shape -> shape
 
 val rotate : int -> shape -> shape
 

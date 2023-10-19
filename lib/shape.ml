@@ -65,6 +65,15 @@ let translate dx dy shape =
   | Ellipse ellipse -> Ellipse { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
   | Line line -> Line {a = {x = line.a.x + dx; y = line.a.y + dy}; b = {x = line.b.x + dx; y = line.b.y + dy}}
 
+let scale factor s =
+  let round x = int_of_float(x +. 0.5) in
+  let scale_length len fact =  round ((float_of_int len) *. sqrt(fact)) in
+  match s with
+  | Circle circle' -> circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
+  | Rectangle rectangle' -> rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y (scale_length rectangle'.length factor) (scale_length rectangle'.width factor)
+  | Ellipse ellipse' -> ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y (scale_length ellipse'.rx factor) (scale_length ellipse'.ry factor)
+  | Line _line' -> failwith "Not Implemented"
+
 let show shapes = List.iter render_shape shapes
 
 let bi_to_uni x y = 
@@ -87,7 +96,7 @@ let rotate degrees shape =
   | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius; fill = circle.fill; stroke = circle.stroke }
   | Rectangle rectangle -> Rectangle { c = (rot rectangle.c degrees); length = rectangle.length; width = rectangle.width; fill = rectangle.fill; stroke = rectangle.stroke }
   | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry; fill = ellipse.fill; stroke = ellipse.stroke }
-  | Line line -> Line {a = (rot line.a degrees); b = (rot line.b degrees)}
+  | Line _line -> failwith "Not Implemented"
 
 let render_axes () = 
   set_color (rgb 192 192 192);
