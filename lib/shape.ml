@@ -96,18 +96,19 @@ let rot { x : int; y : int } degrees =
   let dx, dy = bi_to_uni dx dy in
   { x = dx; y = dy }
 
-let rotate degrees shape =
-  match shape with
-  | Circle circle -> Circle { c = rot circle.c degrees; radius = circle.radius }
-  | Rectangle rectangle ->
-      Rectangle
-        {
-          c = rot rectangle.c degrees;
-          length = rectangle.length;
-          width = rectangle.width;
-        }
-  | Ellipse ellipse ->
-      Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
+ 
+let rotate degrees shape = 
+  match shape with 
+  | Circle circle -> Circle { c = (rot circle.c degrees); radius = circle.radius } 
+  | Rectangle rectangle -> 
+      Rectangle 
+        { 
+          c = (rot rectangle.c degrees); 
+          length = rectangle.length; 
+          width = rectangle.width 
+        } 
+    | Ellipse ellipse -> Ellipse { c = (rot ellipse.c degrees); rx = ellipse.rx; ry = ellipse.ry } 
+    | Line line -> Line {a = (rot line.a degrees); b = (rot line.b degrees)}
 
 let render_axes () =
   set_color (rgb 192 192 192);
