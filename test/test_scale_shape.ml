@@ -12,5 +12,4 @@ let run () =
   let e2 = scale 2. e1 in
   let e3 = scale 0.7 e1 in
   show [ c1; c2; c3; r1; r2; r3; e1; e2; e3 ];
-  close ();
-  
+  close ()
