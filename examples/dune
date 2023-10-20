@@ -82,3 +82,11 @@
  (name line)
  (modules line)
  (libraries joy))
+<<<<<<< HEAD
+=======
+
+(executable 
+ (name ellipse)
+ (modules ellipse)
+ (libraries joy))
+>>>>>>> origin/main
