@@ -8,6 +8,6 @@ let () =
   (* Translate it to the right by 100 and up by 50 *)
   let e2 = translate 100 50 e1 in
   (* Display both ellipses *)
-  show [e1; e2];
+  show [ e1; e2 ];
 
   close ()
