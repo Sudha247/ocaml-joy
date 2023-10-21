@@ -2,7 +2,6 @@ open Graphics
 
 type point = { x : int; y : int }
 type rectangle = { c : point; length : int; width : int }
-
 type shape = Rectangle of rectangle
 
 let canvas_size = (500, 500)
@@ -18,19 +17,23 @@ let render_shape s =
       draw_rect x1 y1 (x2 - x1) (y2 - y1)
 
 let rectangle ?x ?y length width =
-  let center = match (x, y) with
-    | Some x, Some y -> { x; y }
-    | _ -> canvas_mid in
+  let center =
+    match (x, y) with Some x, Some y -> { x; y } | _ -> canvas_mid
+  in
   Rectangle { c = center; length; width }
 
 let show shapes = List.iter render_shape shapes
 
 let () =
-  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  open_graph
+    (" "
+    ^ string_of_int (fst canvas_size)
+    ^ "x"
+    ^ string_of_int (snd canvas_size));
   set_color black;
 
   let rect = rectangle 200 100 in
-  show [rect];
+  show [ rect ];
 
   ignore (read_line ());
   close_graph ()
