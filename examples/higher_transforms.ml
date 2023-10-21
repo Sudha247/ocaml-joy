@@ -4,7 +4,7 @@ open Joy.Shape
    which applies its function args right-to-left.
    This allows us to create complex series transformations,
    that can be applied iteratively *)
-let transform = comp (translate 10 10) (scale 0.9)
+let transform = compose (translate 10 10) (scale 0.9)
 
 let rec range a b = if a > b then [] else a :: range (a + 1) b
 

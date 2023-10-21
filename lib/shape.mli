@@ -12,7 +12,7 @@ val show : shape list -> unit
 val scale: float -> shape -> shape
 
 val rotate : int -> shape -> shape
-val comp : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
+val compose : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
 
 val draw_axes : bool -> unit
 val set_dimensions : int -> int -> unit
