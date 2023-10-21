@@ -2,7 +2,6 @@ open Graphics
 
 type point = { x : int; y : int }
 type circle = { c : point; radius : int }
-
 type shape = Circle of circle
 
 let canvas_size = (1000, 1000)
@@ -13,16 +12,14 @@ let render_shape s =
   | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
 
 let grid_of_circles ?x ?y spacing =
-  let center = match (x, y) with
-    | Some x, Some y -> { x; y }
-    | _ -> canvas_mid in
-  let create_circle x y =
-    Circle { c = { x; y }; radius = 50 } 
+  let center =
+    match (x, y) with Some x, Some y -> { x; y } | _ -> canvas_mid
   in
+  let create_circle x y = Circle { c = { x; y }; radius = 50 } in
   let circles = ref [] in
   let half_spacing = spacing / 2 in
-  let x_positions = [center.x - half_spacing; center.x + half_spacing] in
-  let y_positions = [center.y - half_spacing; center.y + half_spacing] in
+  let x_positions = [ center.x - half_spacing; center.x + half_spacing ] in
+  let y_positions = [ center.y - half_spacing; center.y + half_spacing ] in
   for x = 0 to 1 do
     for y = 0 to 1 do
       let circle_x = List.nth x_positions x in
@@ -35,10 +32,14 @@ let grid_of_circles ?x ?y spacing =
 let show shapes = List.iter render_shape shapes
 
 let () =
-  open_graph (" " ^ string_of_int (fst canvas_size) ^ "x" ^ string_of_int (snd canvas_size));
+  open_graph
+    (" "
+    ^ string_of_int (fst canvas_size)
+    ^ "x"
+    ^ string_of_int (snd canvas_size));
   set_color black;
 
-  let spacing = 100 in 
+  let spacing = 100 in
   let circles = grid_of_circles spacing in
   show circles;
 
