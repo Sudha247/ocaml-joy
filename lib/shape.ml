@@ -62,32 +62,29 @@ let line ?x1 ?y1 x2 y2 =
   | Some x, Some y -> Line { a = { x; y }; b = { x = x2; y = y2 } }
   | _ -> Line { a = { x = 0; y = 0 }; b = { x = x2; y = y2 } }
 
-let complex arg = 
-  match arg with 
-  | [single] -> Complex [single] 
-  | _ :: _ -> Complex arg
-  | [] -> failwith "invalid complex shape"
+let complex shapes =
+  match shapes with _ :: _ -> Complex shapes | [] -> Complex []
 
 let rec translate dx dy shape =
   match shape with
   | Circle circle ->
-    Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
-| Rectangle rectangle ->
-    Rectangle
-      {
-        rectangle with
-        c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy };
-      }
-| Ellipse ellipse ->
-    Ellipse
-      { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
-| Line line ->
-    Line
-      {
-        a = { x = line.a.x + dx; y = line.a.y + dy };
-        b = { x = line.b.x + dx; y = line.b.y + dy };
-      }
-  | Complex complex -> Complex (List.map (translate dx dy) complex)
+      Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
+  | Rectangle rectangle ->
+      Rectangle
+        {
+          rectangle with
+          c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy };
+        }
+  | Ellipse ellipse ->
+      Ellipse
+        { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
+  | Line line ->
+      Line
+        {
+          a = { x = line.a.x + dx; y = line.a.y + dy };
+          b = { x = line.b.x + dx; y = line.b.y + dy };
+        }
+  | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
 let rec scale factor s =
   let round x = int_of_float (x +. 0.5) in
@@ -104,7 +101,7 @@ let rec scale factor s =
         (scale_length ellipse'.rx factor)
         (scale_length ellipse'.ry factor)
   | Line _line' -> failwith "Not Implemented"
-  | Complex complex -> Complex (List.map (scale factor) complex)
+  | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let show shapes = List.iter render_shape shapes
 
@@ -122,8 +119,8 @@ let rot { x : int; y : int } degrees =
   let dx, dy = bi_to_uni dx dy in
   { x = dx; y = dy }
 
-let rec rotate degrees shape = 
-  match shape with 
+let rec rotate degrees shape =
+  match shape with
   | Circle circle -> Circle { c = rot circle.c degrees; radius = circle.radius }
   | Rectangle rectangle ->
       Rectangle
@@ -135,8 +132,7 @@ let rec rotate degrees shape =
   | Ellipse ellipse ->
       Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
   | Line _line -> failwith "Not Implemented"
-  | Complex complex -> Complex (List.map (rotate degrees) complex)
-
+  | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
 
