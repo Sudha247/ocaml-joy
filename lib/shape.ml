@@ -137,6 +137,9 @@ let rec rotate degrees shape =
   | Line _line -> failwith "Not Implemented"
   | Complex complex -> Complex (List.map (rotate degrees) complex)
 
+
+let compose f g x = g (f x)
+
 let render_axes () =
   set_color (rgb 192 192 192);
   let half_x = size_x () / 2 in

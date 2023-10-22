@@ -89,6 +89,11 @@
  (libraries joy))
 
 (executable
+ (name higher_transforms)
+ (modules higher_transforms)
+ (libraries joy))
+
+(executable
  (name complex)
  (modules complex)
  (libraries joy))
