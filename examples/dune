@@ -1,0 +1,80 @@
+(executable
+ (name circle)
+ (modules circle)
+ (libraries graphics))
+
+(executable
+ (name circle_graph)
+ (modules circle_graph)
+ (libraries graphics))
+
+(executable
+ (name concentric_circles)
+ (modules concentric_circles)
+ (libraries graphics))
+
+(executable
+ (name rectangle)
+ (modules rectangle)
+ (libraries graphics))
+
+(executable
+ (name circle_grid)
+ (modules circle_grid)
+ (libraries graphics))
+
+(executable
+ (name circle_row)
+ (modules circle_row)
+ (libraries graphics))
+
+(executable
+ (name circle_rectangle)
+ (modules circle_rectangle)
+ (libraries graphics))
+
+(executable
+ (name triangle)
+ (modules triangle)
+ (libraries graphics))
+
+(executable
+ (name star)
+ (modules star)
+ (libraries graphics))
+
+(executable
+ (modules joy_circle_grid)
+ (name joy_circle_grid)
+ (libraries joy))
+
+
+(executable
+ (modules traffic_light)
+ (name traffic_light)
+ (libraries joy))
+
+(executable
+ (name axes)
+ (modules axes)
+ (libraries joy))
+
+(executable
+ (name translate_circle)
+ (modules translate_circle)
+ (libraries joy))
+
+(executable
+ (name translate_rectangle)
+ (modules translate_rectangle)
+ (libraries joy))
+
+(executable
+ (name translate_ellipse)
+ (modules translate_ellipse)
+ (libraries joy))
+
+(executable
+ (name line)
+ (modules line)
+ (libraries joy))
