@@ -1,7 +1,7 @@
 (executable
  (name circle)
  (modules circle)
- (libraries joy))
+ (libraries graphics))
 
 (executable
  (name circle_graph)
@@ -91,4 +91,9 @@
 (executable
  (name higher_transforms)
  (modules higher_transforms)
+ (libraries joy))
+
+(executable
+ (name colored_circle)
+ (modules colored_circle)
  (libraries joy))

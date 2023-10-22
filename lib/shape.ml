@@ -1,10 +1,11 @@
 open Graphics
 
 type point = { x : int; y : int }
+type color = Transparent | Fill of int * int * int | Stroke of int * int * int
 type line = { a : point; b : point }
-type rectangle = { c : point; length : int; width : int }
-type circle = { c : point; radius : int }
-type ellipse = { c : point; rx : int; ry : int }
+type circle = { c : point; radius : int; fill : color; stroke : color }
+type rectangle = { c : point; length : int; width : int; fill : color; stroke : color }
+type ellipse = { c : point; rx : int; ry: int; fill : color; stroke : color }
 
 type shape =
   | Circle of circle
@@ -25,35 +26,61 @@ let denormalize point =
   { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
 
 let render_shape s =
+  let set_color_from_fill color =
+    match color with
+    | Fill (r, g, b) -> set_color (rgb r g b)
+    | Transparent -> ()
+    | Stroke (r, g, b) -> set_color (rgb r g b)
+  in
+  let set_color_from_stroke color =
+    match color with
+    | Stroke (r, g, b) -> set_color (rgb r g b)
+    | Transparent -> ()
+    | Fill (r, g, b) -> set_color (rgb r g b)
+  in
   match s with
   | Circle circle ->
-      draw_circle (denormalize circle.c).x (denormalize circle.c).y
-        circle.radius
+      set_color_from_fill circle.fill;
+      if circle.fill <> Transparent then
+        fill_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
+      set_color_from_stroke circle.stroke;
+      if circle.stroke <> Transparent then
+        draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
   | Rectangle rectangle ->
+      set_color_from_fill rectangle.fill;
       let c = denormalize rectangle.c in
-      draw_rect c.x c.y rectangle.length rectangle.width
+      if rectangle.fill <> Transparent then
+        fill_rect c.x c.y rectangle.length rectangle.width;
+      set_color_from_stroke rectangle.stroke;
+      if rectangle.stroke <> Transparent then
+        draw_rect c.x c.y rectangle.length rectangle.width;
   | Ellipse ellipse ->
+      set_color_from_fill ellipse.fill;
       let c = denormalize ellipse.c in
-      draw_ellipse c.x c.y ellipse.rx ellipse.ry
+      if ellipse.fill <> Transparent then
+        fill_ellipse c.x c.y ellipse.rx ellipse.ry;
+      set_color_from_stroke ellipse.stroke;
+      if ellipse.stroke <> Transparent then
+        draw_ellipse c.x c.y ellipse.rx ellipse.ry;
   | Line line ->
       let a = denormalize line.a in
       let b = denormalize line.b in
       draw_line a.x a.y b.x b.y
 
-  let circle ?x ?y ?fill ?stroke r =
-    match (x, y) with
-    | Some x, Some y -> Circle { c = { x; y }; radius = r; fill; stroke }
-    | _ -> Circle { c = { x = 0; y = 0 }; radius = r; fill; stroke }  
+let circle ?x ?y ?(fill = Transparent) ?(stroke = Stroke (0, 0, 0)) r =
+  match (x, y) with
+  | Some x, Some y -> Circle { c = { x; y }; radius = r; fill; stroke }
+  | _ -> Circle { c = { x = 0; y = 0 }; radius = r; fill; stroke }
 
-let rectangle ?x ?y ?fill ?stroke length width =
+let rectangle ?x ?y ?(fill = Transparent) ?(stroke = Stroke (0, 0, 0)) length width =
   match (x, y) with
   | Some x, Some y -> Rectangle { c = { x; y }; length; width; fill; stroke }
   | _ -> Rectangle { c = { x = 0; y = 0 }; length; width; fill; stroke }
 
-let ellipse ?x ?y ?fill ?stroke rx ry =
+let ellipse ?x ?y ?(fill = Transparent) ?(stroke = Stroke (0, 0, 0)) rx ry =
   match (x, y) with
-  | Some x, Some y -> Ellipse { c = { x; y }; rx; ry }
-  | _ -> Ellipse { c = { x = 0; y = 0 }; rx; ry }
+  | Some x, Some y -> Ellipse {c = {x; y}; rx; ry; fill; stroke}
+  | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry; fill; stroke}
 
 let line ?x1 ?y1 x2 y2 =
   match (x1, y1) with
@@ -81,19 +108,23 @@ let translate dx dy shape =
         }
 
 let scale factor s =
-  let round x = int_of_float (x +. 0.5) in
-  let scale_length len fact = round (float_of_int len *. sqrt fact) in
+  let round x = int_of_float(x +. 0.5) in
+  let scale_length len fact =  round ((float_of_int len) *. sqrt(fact)) in
   match s with
-  | Circle circle' ->
-      circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
-  | Rectangle rectangle' ->
-      rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y
-        (scale_length rectangle'.length factor)
-        (scale_length rectangle'.width factor)
-  | Ellipse ellipse' ->
-      ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y
-        (scale_length ellipse'.rx factor)
-        (scale_length ellipse'.ry factor)
+  | Circle circle' -> 
+      circle ~x:circle'.c.x ~y:circle'.c.y 
+      (scale_length circle'.radius factor) 
+      ~fill:circle'.fill ~stroke:circle'.stroke
+  | Rectangle rectangle' -> 
+      rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y 
+      (scale_length rectangle'.length factor) 
+      (scale_length rectangle'.width factor) 
+      ~fill:rectangle'.fill ~stroke:rectangle'.stroke
+  | Ellipse ellipse' -> 
+      ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y 
+      (scale_length ellipse'.rx factor) 
+      (scale_length ellipse'.ry factor) 
+      ~fill:ellipse'.fill ~stroke:ellipse'.stroke
   | Line _line' -> failwith "Not Implemented"
 
 let show shapes = List.iter render_shape shapes
@@ -112,20 +143,35 @@ let rot { x : int; y : int } degrees =
   let dx, dy = bi_to_uni dx dy in
   { x = dx; y = dy }
 
-let rotate degrees shape =
-  match shape with
-  | Circle circle -> Circle { c = rot circle.c degrees; radius = circle.radius }
-  | Rectangle rectangle ->
-      Rectangle
-        {
-          c = rot rectangle.c degrees;
-          length = rectangle.length;
-          width = rectangle.width;
+let rotate degrees shape = 
+  match shape with 
+  | Circle circle -> 
+      Circle 
+        { 
+          c = rot circle.c degrees; 
+          radius = circle.radius; 
+          fill = circle.fill; 
+          stroke = circle.stroke 
         }
-  | Ellipse ellipse ->
-      Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
+  | Rectangle rectangle -> 
+      Rectangle 
+        { 
+          c = rot rectangle.c degrees; 
+          length = rectangle.length; 
+          width = rectangle.width; 
+          fill = rectangle.fill; 
+          stroke = rectangle.stroke 
+        }
+  | Ellipse ellipse -> 
+      Ellipse 
+        { 
+          c = rot ellipse.c degrees; 
+          rx = ellipse.rx; 
+          ry = ellipse.ry; 
+          fill = ellipse.fill; 
+          stroke = ellipse.stroke 
+        }
   | Line _line -> failwith "Not Implemented"
-
 
 let compose f g x = g (f x)
 
@@ -138,7 +184,8 @@ let render_axes () =
 
 let init () =
   open_graph (Printf.sprintf " %ix%i" !dimensions.x !dimensions.y);
-  if !axes_flag then render_axes ();
+  if !axes_flag 
+    then render_axes ();
 
   set_color black
 

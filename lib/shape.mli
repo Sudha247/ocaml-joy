@@ -1,11 +1,11 @@
 type shape
 type shapes = shape list
+type color = Transparent | Fill of int * int * int | Stroke of int * int * int
 
 val render_shape : shape -> unit
-val circle : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * int -> int -> shape
-val rectangle : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * int -> int -> int -> shape
-val ellipse : ?x:int -> ?y:int -> ?fill:int * int * int -> ?stroke:int * int * int -> int -> int -> shape
-
+val circle : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> shape
+val rectangle : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> int -> shape
+val ellipse : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> int -> shape
 val line : ?x1:int -> ?y1:int -> int -> int -> shape
 val translate : int -> int -> shape -> shape
 val show : shape list -> unit

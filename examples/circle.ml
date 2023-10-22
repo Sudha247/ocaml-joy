@@ -1,15 +1,12 @@
-open Joy.Shape
+open Graphics
 
 let () =
-  init ();
+  open_graph " 300x300";
+  (* Open a graphics window with dimensions 800x600 *)
+  set_color black;
 
-  (* Create a black circle *)
-  let black_circle = circle 50 in
+  draw_circle 150 150 50;
 
-  (* Create a colored circle with a yellow fill and a red stroke *)
-  let colored_circle = circle ~fill:(255, 255, 0) ~stroke:(255, 0, 0) 50 in
-
-  (* Show both circles *)
-  show [black_circle; colored_circle];
-
-  close ()
+  ignore (read_line ());
+  close_graph ();
+  exit 0
