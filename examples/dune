@@ -43,6 +43,11 @@
  (modules star)
  (libraries graphics))
 
+ (executable
+ (name polygons)
+ (modules polygons)
+ (libraries graphics))
+
 (executable
  (modules joy_circle_grid)
  (name joy_circle_grid)
@@ -75,6 +80,21 @@
  (libraries joy))
 
 (executable
+ (name circle_row_joy)
+ (modules circle_row_joy)
+ (libraries joy))
+
+(executable
+ (name rotate)
+ (modules rotate)
+ (libraries joy))
+ 
+(executable 
  (name line)
  (modules line)
+ (libraries joy))
+
+(executable 
+ (name ellipse)
+ (modules ellipse)
  (libraries joy))
