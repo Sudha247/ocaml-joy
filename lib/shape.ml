@@ -1,7 +1,7 @@
 open Graphics
 
 type point = { x : int; y : int }
-type color = Transparent | Fill of int * int * int | Stroke of int * int * int
+type color = RGB of int * int * int | Transparent
 type line = { a : point; b : point }
 type circle = { c : point; radius : int; fill : color; stroke : color }
 type rectangle = { c : point; length : int; width : int; fill : color; stroke : color }
@@ -25,59 +25,56 @@ let draw_line x1 y1 x2 y2 = draw_poly_line [| (x1, y1); (x2, y2) |]
 let denormalize point =
   { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
 
-let render_shape s =
-  let set_color_from_fill color =
-    match color with
-    | Fill (r, g, b) -> set_color (rgb r g b)
-    | Transparent -> ()
-    | Stroke (r, g, b) -> set_color (rgb r g b)
-  in
-  let set_color_from_stroke color =
-    match color with
-    | Stroke (r, g, b) -> set_color (rgb r g b)
-    | Transparent -> ()
-    | Fill (r, g, b) -> set_color (rgb r g b)
-  in
+  let render_shape s =
   match s with
   | Circle circle ->
-      set_color_from_fill circle.fill;
-      if circle.fill <> Transparent then
+      set_color black;
+      if circle.fill <> Transparent then begin
+        set_color (match circle.fill with RGB (r, g, b) -> rgb r g b | Transparent -> black);
         fill_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
-      set_color_from_stroke circle.stroke;
-      if circle.stroke <> Transparent then
+      end;
+      if circle.stroke <> Transparent then begin
+        set_color (match circle.stroke with RGB (r, g, b) -> rgb r g b | Transparent -> black);
         draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
+      end;
   | Rectangle rectangle ->
-      set_color_from_fill rectangle.fill;
+      set_color black;
       let c = denormalize rectangle.c in
-      if rectangle.fill <> Transparent then
+      if rectangle.fill <> Transparent then begin
+        set_color (match rectangle.fill with RGB (r, g, b) -> rgb r g b | Transparent -> black);
         fill_rect c.x c.y rectangle.length rectangle.width;
-      set_color_from_stroke rectangle.stroke;
-      if rectangle.stroke <> Transparent then
+      end;
+      if rectangle.stroke <> Transparent then begin
+        set_color (match rectangle.stroke with RGB (r, g, b) -> rgb r g b | Transparent -> black);
         draw_rect c.x c.y rectangle.length rectangle.width;
+      end;
   | Ellipse ellipse ->
-      set_color_from_fill ellipse.fill;
+      set_color black;
       let c = denormalize ellipse.c in
-      if ellipse.fill <> Transparent then
+      if ellipse.fill <> Transparent then begin
+        set_color (match ellipse.fill with RGB (r, g, b) -> rgb r g b | Transparent -> black);
         fill_ellipse c.x c.y ellipse.rx ellipse.ry;
-      set_color_from_stroke ellipse.stroke;
-      if ellipse.stroke <> Transparent then
+      end;
+      if ellipse.stroke <> Transparent then begin
+        set_color (match ellipse.stroke with RGB (r, g, b) -> rgb r g b | Transparent -> black);
         draw_ellipse c.x c.y ellipse.rx ellipse.ry;
+      end;      
   | Line line ->
       let a = denormalize line.a in
       let b = denormalize line.b in
       draw_line a.x a.y b.x b.y
 
-let circle ?x ?y ?(fill = Transparent) ?(stroke = Stroke (0, 0, 0)) r =
+let circle ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) r =
   match (x, y) with
   | Some x, Some y -> Circle { c = { x; y }; radius = r; fill; stroke }
   | _ -> Circle { c = { x = 0; y = 0 }; radius = r; fill; stroke }
 
-let rectangle ?x ?y ?(fill = Transparent) ?(stroke = Stroke (0, 0, 0)) length width =
+let rectangle ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) length width =
   match (x, y) with
   | Some x, Some y -> Rectangle { c = { x; y }; length; width; fill; stroke }
   | _ -> Rectangle { c = { x = 0; y = 0 }; length; width; fill; stroke }
 
-let ellipse ?x ?y ?(fill = Transparent) ?(stroke = Stroke (0, 0, 0)) rx ry =
+let ellipse ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) rx ry =
   match (x, y) with
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry; fill; stroke}
   | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry; fill; stroke}
