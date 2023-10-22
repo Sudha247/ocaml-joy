@@ -43,20 +43,9 @@
  (modules star)
  (libraries graphics))
 
-
 (executable
- (name polygon)
- (modules polygon)
- (libraries graphics))
-
-(executable
- (name parallelogram)
- (modules parallelogram)
- (libraries graphics))
-
-(executable
- (name semi_circle)
- (modules semi_circle)
+ (name polygons)
+ (modules polygons)
  (libraries graphics))
 
 (executable
@@ -88,10 +77,18 @@
  (name rotate)
  (modules rotate)
  (libraries joy))
- 
-(executable 
+
+(executable
  (name line)
  (modules line)
  (libraries joy))
 
+(executable
+ (name ellipse)
+ (modules ellipse)
+ (libraries joy))
 
+(executable
+ (name higher_transforms)
+ (modules higher_transforms)
+ (libraries joy))
