@@ -8,6 +8,6 @@ let () =
   let r2 = translate 100 0 r1 in
 
   (* Display rectangle transform *)
-  show [r1; r2];
+  show [ r1; r2 ];
 
   close ()
