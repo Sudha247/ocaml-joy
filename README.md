@@ -1,5 +1,14 @@
 # Joy in OCaml
 
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Project Benefits](#project-benefits)
+- [Installation](#installation)
+- [Getting Help](#getting-help)
+- [Other wonderful Shapes](#other-wonderful-shapes)
+- [Contribution](#contribution)
+- [Acknowlegments](#acknowlegments)
+
 ## Project Overview
 This library is like a toolbox for creating cool shapes and patterns using OCaml. It takes inspiration from [joy](https://github.com/fossunited/joy). Whether you're an artist or a coder, you can use it to make interesting art with code.
 
@@ -16,7 +25,7 @@ Here's how this project can make your life easier and more creative:
 4. **Mix and Match with Ease:** Combine, transform, and build complex shapes effortlessly.
 
 
-## Getting Started with OCaml
+## Installation
 
 Follow these simple steps to begin working with ocaml-joy :
 
@@ -92,7 +101,7 @@ At any point, please don't hesitate to ask questions. You can contact the mentor
 ![circle grid image](https://github.com/joanita-51/ocaml-joy/assets/82649346/2d24f4a5-2d06-4091-806a-1c7b412a3ef7)
 
 
-## Contributing to Ocaml-Joy
+## Contribution
 
 We warmly welcome contributions from the community. If you'd like to contribute to Ocaml-Joy after setting it up on your machine, follow these steps to get started:
 
