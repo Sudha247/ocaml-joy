@@ -87,3 +87,8 @@
  (name ellipse)
  (modules ellipse)
  (libraries joy))
+
+(executable
+ (name higher_transforms)
+ (modules higher_transforms)
+ (libraries joy))
