@@ -124,7 +124,8 @@ let rotate degrees shape =
         }
   | Ellipse ellipse ->
       Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
-  | Line _line -> failwith "Not Implemented"
+  | Line line -> 
+      Line { a= rot line.a degrees; b = rot line.b degrees }
 
 
 let compose f g x = g (f x)

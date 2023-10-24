@@ -11,5 +11,7 @@ let run () =
   let e1 = ellipse 30 50 |> translate 500 500 in
   let e2 = scale 2. e1 in
   let e3 = scale 0.7 e1 in
-  show [ c1; c2; c3; r1; r2; r3; e1; e2; e3 ];
+  let line1 = line 100 100 in
+  let rotatedLine = rotate 45 line1 in
+  show [ c1; c2; c3; r1; r2; r3; e1; e2; e3; rotatedLine ];
   close ()
