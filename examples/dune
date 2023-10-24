@@ -92,3 +92,8 @@
  (name higher_transforms)
  (modules higher_transforms)
  (libraries joy))
+
+(executable
+ (name joy_circle_grid)
+ (modules joy_circle_grid)
+ (libraries joy))
