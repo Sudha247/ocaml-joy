@@ -10,7 +10,7 @@ let _ =
   let rotated =
     List.map
       (fun i ->
-        rotate (float_of_int i /. float_of_int max *. 360.0) ellipse)
+        rotate i ellipse)
       nums
   in
   show rotated;
