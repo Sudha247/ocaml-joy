@@ -93,7 +93,7 @@
  (modules higher_transforms)
  (libraries joy))
 
-(executable 
+(executable
  (name polygon)
  (modules polygon)
  (libraries joy))
