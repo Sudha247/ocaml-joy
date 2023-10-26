@@ -92,3 +92,8 @@
  (name higher_transforms)
  (modules higher_transforms)
  (libraries joy))
+
+(executable 
+ (name polygon)
+ (modules polygon)
+ (libraries joy))

@@ -5,24 +5,51 @@ type line = { a : point; b : point }
 type rectangle = { c : point; length : int; width : int }
 type circle = { c : point; radius : int }
 type ellipse = { c : point; rx : int; ry : int }
+type polygon = point list
 
 type shape =
   | Circle of circle
   | Rectangle of rectangle
   | Ellipse of ellipse
   | Line of line
+  | Polygon of polygon
 
 type shapes = shape list
 
 let dimensions = ref { x = 500; y = 500 }
 let set_dimensions x y = dimensions := { x; y }
-let canvas_mid = { x = !dimensions.x / 2; y = !dimensions.y / 2 }
+(* let canvas_mid = { x = !dimensions.x / 2; y = !dimensions.y / 2 } *)
 let axes_flag = ref false
 let draw_axes flag = axes_flag := flag
 let draw_line x1 y1 x2 y2 = draw_poly_line [| (x1, y1); (x2, y2) |]
 
-let denormalize point =
-  { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
+let bi_to_uni x y =
+  let nx = (x *. 0.5) +. (float_of_int !dimensions.x *. 0.5) in
+  let ny = (y *. 0.5) +. (float_of_int !dimensions.y *. 0.5) in
+  (int_of_float nx, int_of_float ny)
+
+let denormalize point = 
+  let (x, y) = (bi_to_uni (float_of_int point.x) (float_of_int point.y)) in
+  { x = x; y = y }
+
+let rec take n lst = 
+  match n, lst with
+  | 0, _ -> [], lst
+  | _, [] -> [], []
+  | n, x :: xs -> let taken, rest = take (n - 1) xs in x :: taken, rest
+
+let rec partition n step lst = 
+  match lst with 
+  | [] -> []
+  | _ -> let taken, _ = (take n lst) in 
+  if List.length taken = n then taken :: partition n step (List.tl lst) else []
+
+let render_polygon polygon =
+  let denorm_points = List.map denormalize polygon in 
+  let point_to_tuples = List.map (fun {x: int; y: int} -> (x, y)) denorm_points in
+  let partitioned = partition 2 1 point_to_tuples in 
+  let array_of_points = Array.of_list (List.flatten partitioned) in
+  draw_poly_line array_of_points
 
 let render_shape s =
   match s with
@@ -39,6 +66,8 @@ let render_shape s =
       let a = denormalize line.a in
       let b = denormalize line.b in
       draw_line a.x a.y b.x b.y
+  | Polygon polygon -> 
+      render_polygon polygon
 
 let circle ?x ?y r =
   match (x, y) with
@@ -60,6 +89,9 @@ let line ?x1 ?y1 x2 y2 =
   | Some x, Some y -> Line { a = { x; y }; b = { x = x2; y = y2 } }
   | _ -> Line { a = { x = 0; y = 0 }; b = { x = x2; y = y2 } }
 
+let polygon lst_points = 
+  Polygon lst_points
+
 let translate dx dy shape =
   match shape with
   | Circle circle ->
@@ -79,6 +111,7 @@ let translate dx dy shape =
           a = { x = line.a.x + dx; y = line.a.y + dy };
           b = { x = line.b.x + dx; y = line.b.y + dy };
         }
+  | Polygon polygon' -> polygon (List.map (fun {x: int; y: int} -> {x = (x + dx); y = (y + dy)}) polygon')
 
 let scale factor s =
   let round x = int_of_float (x +. 0.5) in
@@ -95,13 +128,9 @@ let scale factor s =
         (scale_length ellipse'.rx factor)
         (scale_length ellipse'.ry factor)
   | Line _line' -> failwith "Not Implemented"
+  | Polygon _polygon' -> failwith "Scale not implemeted for polygons"
 
 let show shapes = List.iter render_shape shapes
-
-let bi_to_uni x y =
-  let nx = (x *. 0.5) +. (float_of_int !dimensions.x *. 0.5) in
-  let ny = (y *. 0.5) +. (float_of_int !dimensions.y *. 0.5) in
-  (int_of_float nx, int_of_float ny)
 
 let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)
 
@@ -125,6 +154,7 @@ let rotate degrees shape =
   | Ellipse ellipse ->
       Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
   | Line _line -> failwith "Not Implemented"
+  | Polygon polygon' -> polygon (List.map (fun p -> rot p degrees) polygon')
 
 
 let compose f g x = g (f x)
