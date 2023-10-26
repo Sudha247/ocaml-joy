@@ -87,7 +87,9 @@ At any point, please don't hesitate to ask questions. You can contact the mentor
 ![circle graph image](https://github.com/joanita-51/ocaml-joy/assets/82649346/1ac34bd9-553b-45e2-90cf-240c73b63256)
 ![rectangle image](https://github.com/joanita-51/ocaml-joy/assets/82649346/c00e5df4-83bd-4cf7-a864-6f26da0d1fac)
 ![circle grid image](https://github.com/joanita-51/ocaml-joy/assets/82649346/20176f2d-cf96-4ec1-93ed-e5eaf1682600)
-![star image](https://github.com/joanita-51/ocaml-joy/assets/82649346/5a8cd0ea-f00b-46b0-b34d-406d76561a2d)
+[star image](https://github.com/joanita-51/ocaml-joy/assets/82649346/5a8cd0ea-f00b-46b0-b34d-406d76561a2d)
+![high order transformation image](https://github.com/joanita-51/ocaml-joy/assets/82649346/eeb2d2fc-86c5-4159-b559-4e280232798f)
+<!-- ![star image](https://github.com/joanita-51/ocaml-joy/assets/82649346/5a8cd0ea-f00b-46b0-b34d-406d76561a2d)
 ![circle rectangle image](https://github.com/joanita-51/ocaml-joy/assets/82649346/d53af149-83e3-40ac-b34d-d83c69eede3b)
 ![circle row joy image](https://github.com/joanita-51/ocaml-joy/assets/82649346/6a67187a-ef85-4549-9920-a674740731a7)
 ![triangle image](https://github.com/joanita-51/ocaml-joy/assets/82649346/de6f1384-94cd-4d78-8380-74d0c38b9331)
@@ -98,7 +100,7 @@ At any point, please don't hesitate to ask questions. You can contact the mentor
 ![polygon image](https://github.com/joanita-51/ocaml-joy/assets/82649346/1201e352-ef3f-433c-82cc-c834b3d52daf)
 ![high order transformation image](https://github.com/joanita-51/ocaml-joy/assets/82649346/eeb2d2fc-86c5-4159-b559-4e280232798f)
 ![translate eclipse image](https://github.com/joanita-51/ocaml-joy/assets/82649346/70026da8-92a3-4c3f-a90a-6827b87e1b8a)
-![circle grid image](https://github.com/joanita-51/ocaml-joy/assets/82649346/2d24f4a5-2d06-4091-806a-1c7b412a3ef7)
+![circle grid image](https://github.com/joanita-51/ocaml-joy/assets/82649346/2d24f4a5-2d06-4091-806a-1c7b412a3ef7) -->
 
 
 ## Contribution
