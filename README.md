@@ -83,11 +83,14 @@ To verify the success of this installation, you will see the following output:
 At any point, please don't hesitate to ask questions. You can contact the mentors either here in the issue tracker or in the #outreachy channel in [OCaml discord](https://discord.com/invite/cCYQbqN). 
 
 ## Shape Examples
+
+These shapes have been crafted with the aid of this library.
+
 ![axes image](https://github.com/joanita-51/ocaml-joy/assets/82649346/0b8b402e-65ee-45a8-b568-cf0434a10f5e)
 ![circle graph image](https://github.com/joanita-51/ocaml-joy/assets/82649346/1ac34bd9-553b-45e2-90cf-240c73b63256)
 ![rectangle image](https://github.com/joanita-51/ocaml-joy/assets/82649346/c00e5df4-83bd-4cf7-a864-6f26da0d1fac)
 ![circle grid image](https://github.com/joanita-51/ocaml-joy/assets/82649346/20176f2d-cf96-4ec1-93ed-e5eaf1682600)
-[star image](https://github.com/joanita-51/ocaml-joy/assets/82649346/5a8cd0ea-f00b-46b0-b34d-406d76561a2d)
+![star image](https://github.com/joanita-51/ocaml-joy/assets/82649346/5a8cd0ea-f00b-46b0-b34d-406d76561a2d)
 ![high order transformation image](https://github.com/joanita-51/ocaml-joy/assets/82649346/eeb2d2fc-86c5-4159-b559-4e280232798f)
 <!-- ![star image](https://github.com/joanita-51/ocaml-joy/assets/82649346/5a8cd0ea-f00b-46b0-b34d-406d76561a2d)
 ![circle rectangle image](https://github.com/joanita-51/ocaml-joy/assets/82649346/d53af149-83e3-40ac-b34d-d83c69eede3b)
