@@ -50,7 +50,7 @@ These shapes have been crafted with the aid of this library.
 
 ## How to Contribute
 
-For information on how to contribute to this project, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+For information on how to contribute to this project, please see [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## License
 
