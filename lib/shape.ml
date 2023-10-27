@@ -142,15 +142,13 @@ let rec rotate degrees shape =
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
+let rec range a b = if a >= b then [] else a :: range (a + 1) b
 
-let rec range a b = if a >= b then [] else a :: range (a + 1) b  
-let repeat n op shape = 
-  let match_list l = 
-    match l with
-    | [] -> [ op shape ]
-    | last :: _ -> op last :: l
+let repeat n op shape =
+  let match_list l =
+    match l with [] -> [ op shape ] | last :: _ -> op last :: l
   in
-  let shapes = List.fold_right (fun _ acc -> match_list acc) (range 0 n) [] in 
+  let shapes = List.fold_right (fun _ acc -> match_list acc) (range 0 n) [] in
   complex shapes
 
 let render_axes () =
