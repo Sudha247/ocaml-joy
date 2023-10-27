@@ -1,6 +1,6 @@
 type shape
 type shapes = shape list
-type color = RGB of int * int * int | Transparent
+type color = RGB of int * int * int | Default
 
 val render_shape : shape -> unit
 val circle : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> shape

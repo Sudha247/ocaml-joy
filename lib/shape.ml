@@ -1,7 +1,7 @@
 open Graphics
 
 type point = { x : int; y : int }
-type color = RGB of int * int * int | Transparent
+type color = RGB of int * int * int | Default
 type line = { a : point; b : point }
 type circle = { c : point; radius : int; fill : color; stroke : color }
 type rectangle = { c : point; length : int; width : int; fill : color; stroke : color }
@@ -29,49 +29,49 @@ let denormalize point =
 let rec render_shape s =
   match s with
   | Circle circle ->
-      if circle.fill <> Transparent then begin
+      if circle.fill <> Default then begin
         match circle.fill with
         | RGB (r, g, b) -> set_color (rgb r g b);
-        | Transparent -> ()
+        | Default -> ()
       end;
       fill_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
 
-      if circle.stroke <> Transparent then begin
+      if circle.stroke <> Default then begin
         match circle.stroke with
         | RGB (r, g, b) -> set_color (rgb r g b);
-        | Transparent -> ()
+        | Default -> ()
       end;
       draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
 
   | Rectangle rectangle ->
       let c = denormalize rectangle.c in
-      if rectangle.fill <> Transparent then begin
+      if rectangle.fill <> Default then begin
         match rectangle.fill with
         | RGB (r, g, b) -> set_color (rgb r g b);
-        | Transparent -> ()
+        | Default -> ()
       end;
       fill_rect c.x c.y rectangle.length rectangle.width;
 
-      if rectangle.stroke <> Transparent then begin
+      if rectangle.stroke <> Default then begin
         match rectangle.stroke with
         | RGB (r, g, b) -> set_color (rgb r g b);
-        | Transparent -> ()
+        | Default -> ()
       end;
       draw_rect c.x c.y rectangle.length rectangle.width;
 
   | Ellipse ellipse ->
       let c = denormalize ellipse.c in
-      if ellipse.fill <> Transparent then begin
+      if ellipse.fill <> Default then begin
         match ellipse.fill with
         | RGB (r, g, b) -> set_color (rgb r g b);
-        | Transparent -> ()
+        | Default -> ()
       end;
       fill_ellipse c.x c.y ellipse.rx ellipse.ry;
 
-      if ellipse.stroke <> Transparent then begin
+      if ellipse.stroke <> Default then begin
         match ellipse.stroke with
         | RGB (r, g, b) -> set_color (rgb r g b);
-        | Transparent -> ()
+        | Default -> ()
       end;
       draw_ellipse c.x c.y ellipse.rx ellipse.ry;
 
@@ -82,17 +82,17 @@ let rec render_shape s =
 
   | Complex complex -> List.iter render_shape complex
 
-let circle ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) r =
+let circle ?x ?y ?(fill = Default) ?(stroke = RGB (0, 0, 0)) r =
   match (x, y) with
   | Some x, Some y -> Circle { c = { x; y }; radius = r; fill; stroke }
   | _ -> Circle { c = { x = 0; y = 0 }; radius = r; fill; stroke }
 
-let rectangle ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) length width =
+let rectangle ?x ?y ?(fill = Default) ?(stroke = RGB (0, 0, 0)) length width =
   match (x, y) with
   | Some x, Some y -> Rectangle { c = { x; y }; length; width; fill; stroke }
   | _ -> Rectangle { c = { x = 0; y = 0 }; length; width; fill; stroke }
 
-let ellipse ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) rx ry =
+let ellipse ?x ?y ?(fill = Default) ?(stroke = RGB (0, 0, 0)) rx ry =
   match (x, y) with
   | Some x, Some y -> Ellipse {c = {x; y}; rx; ry; fill; stroke}
   | _ -> Ellipse {c = { x = 0; y = 0}; rx; ry; fill; stroke}
