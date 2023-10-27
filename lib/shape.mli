@@ -1,10 +1,11 @@
 type shape
 type shapes = shape list
+type color = RGB of int * int * int | Default
 
 val render_shape : shape -> unit
-val circle : ?x:int -> ?y:int -> int -> shape
-val rectangle : ?x:int -> ?y:int -> int -> int -> shape
-val ellipse : ?x:int -> ?y:int -> int -> int -> shape
+val circle : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> shape
+val rectangle : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> int -> shape
+val ellipse : ?x:int -> ?y:int -> ?fill:color -> ?stroke:color -> int -> int -> shape
 val complex : shape list -> shape
 val line : ?x1:int -> ?y1:int -> int -> int -> shape
 val translate : int -> int -> shape -> shape
