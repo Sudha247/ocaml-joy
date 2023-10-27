@@ -16,7 +16,7 @@
 (executable
  (name rectangle)
  (modules rectangle)
- (libraries graphics))
+ (libraries joy))
 
 (executable
  (name circle_grid)
@@ -91,6 +91,11 @@
 (executable
  (name higher_transforms)
  (modules higher_transforms)
+ (libraries joy))
+
+(executable
+ (name complex)
+ (modules complex)
  (libraries joy))
 
 (executable
