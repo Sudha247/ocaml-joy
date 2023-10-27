@@ -97,3 +97,8 @@
  (name colored_circle)
  (modules colored_circle)
  (libraries joy))
+
+(executable 
+ (name complex)
+ (modules complex)
+ (libraries joy))

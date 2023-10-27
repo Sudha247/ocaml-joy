@@ -1,9 +1,11 @@
 name: main
 
 on:
+  pull_request:
   push:
     branches:
-      - main
+    - main
+ 
 
 jobs:
   build:
@@ -11,7 +13,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        ocaml-compiler: ["ocaml.5.0.0", "ocaml-option-mingw"]
 
     steps:
       - name: Checkout code
@@ -22,7 +23,7 @@ jobs:
         with:
           opam-pin: false
           opam-depext: false
-          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          ocaml-compiler: ocaml.5.0.0,ocaml-option-mingw
           opam-repositories: |
             dra27: https://github.com/dra27/opam-repository.git#windows-5.0
             default: https://github.com/ocaml-opam/opam-repository-mingw.git#sunset
