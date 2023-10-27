@@ -94,6 +94,6 @@
  (libraries joy))
 
 (executable
- (name complex)
- (modules complex)
+ (name joy_circle_grid)
+ (modules joy_circle_grid)
  (libraries joy))
