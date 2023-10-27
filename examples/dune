@@ -107,3 +107,8 @@
  (name circle_packing)
  (modules circle_packing)
  (libraries joy))
+ 
+(executable 
+ (name repeat)
+ (modules repeat)
+ (libraries joy))

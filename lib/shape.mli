@@ -15,6 +15,7 @@ val show : shape list -> unit
 val scale : float -> shape -> shape
 val rotate : int -> shape -> shape
 val compose : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
+val repeat : int -> (shape -> shape) -> shape -> shape
 val draw_axes : bool -> unit
 val set_dimensions : int -> int -> unit
 val init : unit -> unit
