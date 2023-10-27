@@ -30,14 +30,22 @@ let bi_to_uni x y =
 let denormalize point =
   { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
 
+let render_polygon polygon' =
+  let points =
+    Array.of_list
+      (List.map
+          (fun point ->
+            let { x; y } = denormalize point in
+            (x, y))
+          polygon')
+  in
+  draw_poly points
+
 let rec render_shape s =
   match s with
   | Circle circle ->
       draw_circle (denormalize circle.c).x (denormalize circle.c).y
         circle.radius
-  | Rectangle rectangle ->
-      let c = denormalize rectangle.c in
-      draw_rect c.x c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
       let c = denormalize ellipse.c in
       draw_ellipse c.x c.y ellipse.rx ellipse.ry
@@ -74,17 +82,6 @@ let line ?x1 ?y1 x2 y2 =
   | _ -> Line { a = { x = 0; y = 0 }; b = { x = x2; y = y2 } }
 
 let polygon lst_points = Polygon lst_points
-
-let render_polygon polygon' =
-  let points =
-    Array.of_list
-      (List.map
-         (fun point ->
-           let { x; y } = denormalize point in
-           (x, y))
-         polygon')
-  in
-  draw_poly points
 
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
