@@ -48,6 +48,10 @@ These shapes have been crafted with the aid of this library.
 ![translate eclipse image](https://github.com/joanita-51/ocaml-joy/assets/82649346/70026da8-92a3-4c3f-a90a-6827b87e1b8a)
 ![circle grid image](https://github.com/joanita-51/ocaml-joy/assets/82649346/2d24f4a5-2d06-4091-806a-1c7b412a3ef7) -->
 
+## Getting Help
+
+At any point, please don't hesitate to ask questions. You can contact the mentors either here in the issue tracker or in the #outreachy channel in [OCaml discord](https://discord.com/invite/cCYQbqN).
+
 ## How to Contribute
 
 For information on how to contribute to this project, please see [CONTRIBUTING.md](CONTRIBUTING.md) file.
