@@ -1,11 +1,9 @@
 name: main
 
 on:
-  pull_request:
   push:
     branches:
-    - main
- 
+      - main
 
 jobs:
   build:
@@ -13,17 +11,24 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+        ocaml-compiler: ["ocaml.5.0.0", "ocaml-option-mingw"]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Generate Commit Hash
+        id: multicore_hash
+        run: |
+          commit_hash=$(git rev-parse HEAD)
+          echo "::set-output name=commit::$commit_hash"
 
       - name: Use OCaml ${{ matrix.ocaml-compiler }}
         uses: ocaml/setup-ocaml@v2
         with:
           opam-pin: false
           opam-depext: false
-          ocaml-compiler: ocaml.5.0.0,ocaml-option-mingw
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-repositories: |
             dra27: https://github.com/dra27/opam-repository.git#windows-5.0
             default: https://github.com/ocaml-opam/opam-repository-mingw.git#sunset
