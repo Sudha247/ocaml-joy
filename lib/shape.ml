@@ -31,35 +31,50 @@ let rec render_shape s =
   | Circle circle ->
       set_color black;
       if circle.fill <> Transparent then begin
-        set_color (match circle.fill with RGB (r, g, b) -> rgb r g b | Transparent -> black);
-        fill_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
+        match circle.fill with
+        | RGB (r, g, b) -> set_color (rgb r g b);
+        | Transparent -> ()
       end;
+      fill_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
+
       if circle.stroke <> Transparent then begin
-        set_color (match circle.stroke with RGB (r, g, b) -> rgb r g b | Transparent -> black);
-        draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
+        match circle.stroke with
+        | RGB (r, g, b) -> set_color (rgb r g b);
+        | Transparent -> ()
       end;
+      draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
   | Rectangle rectangle ->
       set_color black;
       let c = denormalize rectangle.c in
       if rectangle.fill <> Transparent then begin
-        set_color (match rectangle.fill with RGB (r, g, b) -> rgb r g b | Transparent -> black);
-        fill_rect c.x c.y rectangle.length rectangle.width;
+        match rectangle.fill with
+        | RGB (r, g, b) -> set_color (rgb r g b);
+        | Transparent -> ()
       end;
+      fill_rect c.x c.y rectangle.length rectangle.width;
+
       if rectangle.stroke <> Transparent then begin
-        set_color (match rectangle.stroke with RGB (r, g, b) -> rgb r g b | Transparent -> black);
-        draw_rect c.x c.y rectangle.length rectangle.width;
+        match rectangle.stroke with
+        | RGB (r, g, b) -> set_color (rgb r g b);
+        | Transparent -> ()
       end;
+      draw_rect c.x c.y rectangle.length rectangle.width;
   | Ellipse ellipse ->
       set_color black;
       let c = denormalize ellipse.c in
       if ellipse.fill <> Transparent then begin
-        set_color (match ellipse.fill with RGB (r, g, b) -> rgb r g b | Transparent -> black);
-        fill_ellipse c.x c.y ellipse.rx ellipse.ry;
+        match ellipse.fill with
+        | RGB (r, g, b) -> set_color (rgb r g b);
+        | Transparent -> ()
       end;
+      fill_ellipse c.x c.y ellipse.rx ellipse.ry;
+
       if ellipse.stroke <> Transparent then begin
-        set_color (match ellipse.stroke with RGB (r, g, b) -> rgb r g b | Transparent -> black);
-        draw_ellipse c.x c.y ellipse.rx ellipse.ry;
-      end;      
+        match ellipse.stroke with
+        | RGB (r, g, b) -> set_color (rgb r g b);
+        | Transparent -> ()
+      end;
+      draw_ellipse c.x c.y ellipse.rx ellipse.ry;
   | Line line ->
       let a = denormalize line.a in
       let b = denormalize line.b in
