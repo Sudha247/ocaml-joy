@@ -11,6 +11,7 @@ type shape =
   | Rectangle of rectangle
   | Ellipse of ellipse
   | Line of line
+  | Complex of shape list
 
 type shapes = shape list
 
@@ -24,7 +25,7 @@ let draw_line x1 y1 x2 y2 = draw_poly_line [| (x1, y1); (x2, y2) |]
 let denormalize point =
   { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
 
-let render_shape s =
+let rec render_shape s =
   match s with
   | Circle circle ->
       draw_circle (denormalize circle.c).x (denormalize circle.c).y
@@ -39,6 +40,7 @@ let render_shape s =
       let a = denormalize line.a in
       let b = denormalize line.b in
       draw_line a.x a.y b.x b.y
+  | Complex complex -> List.iter render_shape complex
 
 let circle ?x ?y r =
   match (x, y) with
@@ -60,7 +62,10 @@ let line ?x1 ?y1 x2 y2 =
   | Some x, Some y -> Line { a = { x; y }; b = { x = x2; y = y2 } }
   | _ -> Line { a = { x = 0; y = 0 }; b = { x = x2; y = y2 } }
 
-let translate dx dy shape =
+let complex shapes =
+  match shapes with _ :: _ -> Complex shapes | [] -> Complex []
+
+let rec translate dx dy shape =
   match shape with
   | Circle circle ->
       Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
@@ -79,8 +84,9 @@ let translate dx dy shape =
           a = { x = line.a.x + dx; y = line.a.y + dy };
           b = { x = line.b.x + dx; y = line.b.y + dy };
         }
+  | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
-let scale factor s =
+let rec scale factor s =
   let round x = int_of_float (x +. 0.5) in
   let scale_length len fact = round (float_of_int len *. sqrt fact) in
   match s with
@@ -95,6 +101,7 @@ let scale factor s =
         (scale_length ellipse'.rx factor)
         (scale_length ellipse'.ry factor)
   | Line _line' -> failwith "Not Implemented"
+  | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let show shapes = List.iter render_shape shapes
 
@@ -112,7 +119,7 @@ let rot { x : int; y : int } degrees =
   let dx, dy = bi_to_uni dx dy in
   { x = dx; y = dy }
 
-let rotate degrees shape =
+let rec rotate degrees shape =
   match shape with
   | Circle circle -> Circle { c = rot circle.c degrees; radius = circle.radius }
   | Rectangle rectangle ->
@@ -125,7 +132,7 @@ let rotate degrees shape =
   | Ellipse ellipse ->
       Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
   | Line _line -> failwith "Not Implemented"
-
+  | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
 
