@@ -17,29 +17,55 @@ type shapes = shape list
 
 let dimensions = ref { x = 500; y = 500 }
 let set_dimensions x y = dimensions := { x; y }
+
 let canvas_mid = { x = !dimensions.x / 2; y = !dimensions.y / 2 }
+
 let axes_flag = ref false
 let draw_axes flag = axes_flag := flag
+
 let draw_line x1 y1 x2 y2 = draw_poly_line [| (x1, y1); (x2, y2) |]
 
 let denormalize point =
   { x = point.x + canvas_mid.x; y = point.y + canvas_mid.y }
 
+let deg_to_rad degrees = degrees *. (Float.pi /. 180.)
+
+let rotate_point point radians =
+  let cartesian_to_polar { x; y } =
+    let r = sqrt (float_of_int (x * x + y * y)) in
+    let theta = atan2 (float_of_int y) (float_of_int x) in
+    (r, theta)
+  in
+
+  let polar_to_cartesian (r, theta) =
+    let x = int_of_float (r *. cos theta) in
+    let y = int_of_float (r *. sin theta) in
+    { x; y }
+  in
+
+  match point with
+  | { x = x'; y = y' } ->
+    let (r, theta) = cartesian_to_polar point in
+    let { x; y } = polar_to_cartesian (r, theta +. radians) in
+    { x = x + x'; y = y + y' }
+
 let rec render_shape s =
   match s with
   | Circle circle ->
-      draw_circle (denormalize circle.c).x (denormalize circle.c).y
-        circle.radius
+    let rotated_center = rotate_point circle.c (deg_to_rad 30.0) in
+    draw_circle (denormalize rotated_center).x (denormalize rotated_center).y circle.radius
   | Rectangle rectangle ->
-      let c = denormalize rectangle.c in
-      draw_rect c.x c.y rectangle.length rectangle.width
+    let rotated_center = rotate_point rectangle.c (deg_to_rad 30.0) in
+    let c = denormalize rotated_center in
+    draw_rect c.x c.y rectangle.length rectangle.width
   | Ellipse ellipse ->
-      let c = denormalize ellipse.c in
-      draw_ellipse c.x c.y ellipse.rx ellipse.ry
+    let rotated_center = rotate_point ellipse.c (deg_to_rad 30.0) in
+    let c = denormalize rotated_center in
+    draw_ellipse c.x c.y ellipse.rx ellipse.ry
   | Line line ->
-      let a = denormalize line.a in
-      let b = denormalize line.b in
-      draw_line a.x a.y b.x b.y
+    let a = denormalize (rotate_point line.a (deg_to_rad 30.0)) in
+    let b = denormalize (rotate_point line.b (deg_to_rad 30.0)) in
+    draw_line a.x a.y b.x b.y
   | Complex complex -> List.iter render_shape complex
 
 let circle ?x ?y r =
@@ -68,16 +94,16 @@ let complex shapes =
 let rec translate dx dy shape =
   match shape with
   | Circle circle ->
-      Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
+    Circle { circle with c = { x = circle.c.x + dx; y = circle.c.y + dy } }
   | Rectangle rectangle ->
-      Rectangle
-        {
-          rectangle with
-          c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy };
-        }
+    Rectangle
+      {
+        rectangle with
+        c = { x = rectangle.c.x + dx; y = rectangle.c.y + dy };
+      }
   | Ellipse ellipse ->
-      Ellipse
-        { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
+    Ellipse
+      { ellipse with c = { x = ellipse.c.x + dx; y = ellipse.c.y + dy } }
   | Line line ->
       Line
         {
@@ -91,46 +117,43 @@ let rec scale factor s =
   let scale_length len fact = round (float_of_int len *. sqrt fact) in
   match s with
   | Circle circle' ->
-      circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
+    circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
   | Rectangle rectangle' ->
-      rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y
-        (scale_length rectangle'.length factor)
-        (scale_length rectangle'.width factor)
+    rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y
+      (scale_length rectangle'.length factor)
+      (scale_length rectangle'.width factor)
   | Ellipse ellipse' ->
-      ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y
-        (scale_length ellipse'.rx factor)
-        (scale_length ellipse'.ry factor)
+    ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y
+      (scale_length ellipse'.rx factor)
+      (scale_length ellipse'.ry factor)
   | Line _line' -> failwith "Not Implemented"
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let show shapes = List.iter render_shape shapes
 
-let bi_to_uni x y =
-  let nx = (x *. 0.5) +. (float_of_int !dimensions.x *. 0.5) in
-  let ny = (y *. 0.5) +. (float_of_int !dimensions.y *. 0.5) in
-  (int_of_float nx, int_of_float ny)
-
 let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)
-
-let rot { x : int; y : int } degrees =
-  let radians = deg_to_rad (float_of_int degrees) in
-  let dx = (float_of_int x *. cos radians) -. (float_of_int y *. sin radians) in
-  let dy = (float_of_int x *. sin radians) +. (float_of_int y *. cos radians) in
-  let dx, dy = bi_to_uni dx dy in
-  { x = dx; y = dy }
 
 let rec rotate degrees shape =
   match shape with
-  | Circle circle -> Circle { c = rot circle.c degrees; radius = circle.radius }
+  | Circle circle ->
+    let rotated_center = rotate_point circle.c (deg_to_rad (float_of_int degrees)) in
+    Circle { c = rotated_center; radius = circle.radius }
   | Rectangle rectangle ->
-      Rectangle
-        {
-          c = rot rectangle.c degrees;
-          length = rectangle.length;
-          width = rectangle.width;
-        }
+    let rotated_center = rotate_point rectangle.c (deg_to_rad (float_of_int degrees)) in
+    Rectangle
+      {
+        c = rotated_center;
+        length = rectangle.length;
+        width = rectangle.width;
+      }
   | Ellipse ellipse ->
-      Ellipse { c = rot ellipse.c degrees; rx = ellipse.rx; ry = ellipse.ry }
+    let rotated_center = rotate_point ellipse.c (deg_to_rad (float_of_int degrees)) in
+    Ellipse
+      {
+        c = rotated_center;
+        rx = ellipse.rx;
+        ry = ellipse.ry;
+      }
   | Line _line -> failwith "Not Implemented"
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 

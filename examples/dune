@@ -94,6 +94,11 @@
  (libraries joy))
 
 (executable
+ (name ellipse_rotate)
+ (modules ellipse_rotate)
+ (libraries joy))
+
+(executable 
  (name complex)
  (modules complex)
  (libraries joy))
