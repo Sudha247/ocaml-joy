@@ -29,7 +29,6 @@ let denormalize point =
 let rec render_shape s =
   match s with
   | Circle circle ->
-      set_color black;
       if circle.fill <> Transparent then begin
         match circle.fill with
         | RGB (r, g, b) -> set_color (rgb r g b);
@@ -43,8 +42,8 @@ let rec render_shape s =
         | Transparent -> ()
       end;
       draw_circle (denormalize circle.c).x (denormalize circle.c).y circle.radius;
+
   | Rectangle rectangle ->
-      set_color black;
       let c = denormalize rectangle.c in
       if rectangle.fill <> Transparent then begin
         match rectangle.fill with
@@ -59,8 +58,8 @@ let rec render_shape s =
         | Transparent -> ()
       end;
       draw_rect c.x c.y rectangle.length rectangle.width;
+
   | Ellipse ellipse ->
-      set_color black;
       let c = denormalize ellipse.c in
       if ellipse.fill <> Transparent then begin
         match ellipse.fill with
@@ -75,10 +74,12 @@ let rec render_shape s =
         | Transparent -> ()
       end;
       draw_ellipse c.x c.y ellipse.rx ellipse.ry;
+
   | Line line ->
       let a = denormalize line.a in
       let b = denormalize line.b in
-      draw_line a.x a.y b.x b.y
+      draw_line a.x a.y b.x b.y;
+
   | Complex complex -> List.iter render_shape complex
 
 let circle ?x ?y ?(fill = Transparent) ?(stroke = RGB (0, 0, 0)) r =
