@@ -1,5 +1,7 @@
 type shape
 type shapes = shape list
+type point = { x : int; y : int }
+type circle = { c : point; radius : int }
 
 val render_shape : shape -> unit
 val circle : ?x:int -> ?y:int -> int -> shape

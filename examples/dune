@@ -97,3 +97,8 @@
  (name complex)
  (modules complex)
  (libraries joy))
+
+(executable
+ (name circle_packing)
+ (modules circle_packing)
+ (libraries joy))
