@@ -1,11 +1,11 @@
 open Joy.Shape
 
 (* global constants // RNG initialization *)
-let resolution = (500, 500)
-let min_radius = 3
-let max_radius = 50
-let num_circles = 500
-let max_attempts = 2000
+let resolution = (1200, 900)
+let min_radius = 10
+let max_radius = 200
+let num_circles = 5000
+let max_attempts = 50000
 let _ = Stdlib.Random.self_init
 
 let palette =
@@ -35,8 +35,8 @@ let overlap ({ c = c1; radius = r1 } : circle)
 (* creates a random point within screen bounds *)
 let rand_point () =
   {
-    x = Stdlib.Random.full_int (fst resolution) - (fst resolution / 2);
-    y = Stdlib.Random.full_int (snd resolution) - (snd resolution / 2);
+    x = Stdlib.Random.full_int (fst resolution * 2) - fst resolution;
+    y = Stdlib.Random.full_int (snd resolution * 2) - snd resolution;
   }
 
 (* creates a circle with a random center point and radius *)
@@ -76,14 +76,30 @@ let draw_with_color circle =
   let idx = Stdlib.Random.full_int (List.length palette - 1) in
   let r, g, b = List.nth palette idx in
   Graphics.set_color (Graphics.rgb r g b);
-  render_shape circle
+  Graphics.draw_circle circle.c.x circle.c.y circle.radius
+
+let make_concentric circle =
+  let rec choose lst =
+    let first = List.hd (List.rev lst) in
+    if first.radius <= 1 then lst
+    else
+      let new_circle =
+        {
+          c = first.c;
+          radius =
+            int_of_float
+              (float_of_int first.radius *. 0.9);
+        }
+      in
+      choose (lst @ [ new_circle ])
+  in
+  choose [ circle ]
 
 let () =
   set_dimensions (fst resolution) (snd resolution);
   init ();
-  Graphics.set_line_width 2;
+  Graphics.set_line_width 4;
   let circles = pack_circles () in
-  (* converting circle type to more general 'shape' type for rendering *)
-  let circles = List.map (fun c -> circle ~x:c.c.x ~y:c.c.y c.radius) circles in
+  let circles = List.flatten (List.map make_concentric circles) in
   List.iter draw_with_color circles;
   close ()
