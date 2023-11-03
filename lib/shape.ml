@@ -82,19 +82,26 @@ let translate dx dy shape =
 
 let scale factor s =
   let round x = int_of_float (x +. 0.5) in
-  let scale_length len fact = round (float_of_int len *. sqrt fact) in
+  let scale_length len fact = round (float_of_int len *. fact) in
+  let scale_point { x; y } fact = { x = round (float_of_int x *. fact); y = round (float_of_int y *. fact) } in
+
   match s with
   | Circle circle' ->
-      circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
+      let new_radius = scale_length circle'.radius factor in
+      let scaled_center = scale_point circle'.c factor in
+      Circle { c = scaled_center; radius = new_radius }
   | Rectangle rectangle' ->
-      rectangle ~x:rectangle'.c.x ~y:rectangle'.c.y
-        (scale_length rectangle'.length factor)
-        (scale_length rectangle'.width factor)
+      let new_length = scale_length rectangle'.length factor in
+      let new_width = scale_length rectangle'.width factor in
+      let scaled_center = scale_point rectangle'.c factor in
+      Rectangle { c = scaled_center; length = new_length; width = new_width }
   | Ellipse ellipse' ->
-      ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y
-        (scale_length ellipse'.rx factor)
-        (scale_length ellipse'.ry factor)
+      let new_rx = scale_length ellipse'.rx factor in
+      let new_ry = scale_length ellipse'.ry factor in
+      let scaled_center = scale_point ellipse'.c factor in
+      Ellipse { c = scaled_center; rx = new_rx; ry = new_ry }
   | Line _line' -> failwith "Not Implemented"
+
 
 let show shapes = List.iter render_shape shapes
 
