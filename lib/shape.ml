@@ -34,10 +34,10 @@ let render_polygon polygon' =
   let points =
     Array.of_list
       (List.map
-          (fun point ->
-            let { x; y } = denormalize point in
-            (x, y))
-          polygon')
+         (fun point ->
+           let { x; y } = denormalize point in
+           (x, y))
+         polygon')
   in
   draw_poly points
 
@@ -61,8 +61,8 @@ let circle ?x ?y r =
   | Some x, Some y -> Circle { c = { x; y }; radius = r }
   | _ -> Circle { c = { x = 0; y = 0 }; radius = r }
 
-let rectangle ?x ?y length width =
-  let x, y = match (x, y) with Some x, Some y -> (x, y) | _ -> (0, 0) in
+let rectangle ?point length width =
+  let x, y = match point with Some { x; y } -> (x, y) | None -> (0, 0) in
   Polygon
     [
       { x; y };
