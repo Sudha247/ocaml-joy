@@ -104,6 +104,6 @@ let () =
   let circles = pack_circles () in
   let circles = List.flatten (List.map make_concentric circles) in
   List.iter
-    (fun ((x, y), radius) -> draw_with_color (circle ~x ~y radius))
+    (fun ((x, y), radius) -> draw_with_color (circle ~point:(point x y) radius))
     circles;
   close ()
