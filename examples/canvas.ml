@@ -16,6 +16,10 @@ let bl = Js.bool
 let doc = Html.document
 let window = Html.window
 
+(* Context *)
+let context : Html.canvasRenderingContext2D Js.t option ref = ref None
+let fail () = window##alert (str "Rendering context not found")
+
 let draw_circle ctx { c; radius } =
   let { x; y } = c in
   ctx##beginPath;
@@ -36,23 +40,28 @@ let create_canvas () =
   canvas##.height := int_of_float h;
   canvas
 
-let render ctx =
-  let w, h = get_window_size () in
-  let x, y = (w /. 2., h /. 2.) in
-  ctx##.fillStyle := str "white";
-  ctx##fillRect 0. 0. w h;
-  ctx##.fillStyle := str "black";
-  let c = { c = { x; y }; radius = 50. } in
-  let r = { c = { x = x -. 75.; y = y -. 75. }; width = 150.; height = 150. } in
-  draw_circle ctx c;
-  draw_rect ctx r
+let render () =
+  match !context with
+  | Some ctx ->
+      let w, h = get_window_size () in
+      let x, y = (w /. 2., h /. 2.) in
+      ctx##.fillStyle := str "white";
+      ctx##fillRect 0. 0. w h;
+      ctx##.fillStyle := str "black";
+      let c = { c = { x; y }; radius = 50. } in
+      let r =
+        { c = { x = x -. 75.; y = y -. 75. }; width = 150.; height = 150. }
+      in
+      draw_circle ctx c;
+      draw_rect ctx r
+  | None -> fail ()
 
 let onload _ =
   let canvas = create_canvas () in
   G.open_canvas canvas;
   Dom.appendChild doc##.body canvas;
-  let context = canvas##getContext Html._2d_ in
-  render context;
+  context := Some (canvas##getContext Html._2d_);
+  render ();
   Js._true
 
 let _ = window##.onload := Html.handler onload
