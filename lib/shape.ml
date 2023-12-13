@@ -56,9 +56,11 @@ let rec render_shape s =
   | Polygon polygon' -> render_polygon polygon'
   | Complex complex -> List.iter render_shape complex
 
-let circle ?x ?y r =
-  match (x, y) with
-  | Some x, Some y -> Circle { c = { x; y }; radius = r }
+let point x y = { x; y }
+
+let circle ?point r =
+  match point with
+  | Some point -> Circle { c = point; radius = r }
   | _ -> Circle { c = { x = 0; y = 0 }; radius = r }
 
 let rectangle ?point length width =
@@ -71,15 +73,15 @@ let rectangle ?point length width =
       { x = x + width; y };
     ]
 
-let ellipse ?x ?y rx ry =
-  match (x, y) with
-  | Some x, Some y -> Ellipse { c = { x; y }; rx; ry }
+let ellipse ?point rx ry =
+  match point with
+  | Some point -> Ellipse { c = point; rx; ry }
   | _ -> Ellipse { c = { x = 0; y = 0 }; rx; ry }
 
-let line ?x1 ?y1 x2 y2 =
-  match (x1, y1) with
-  | Some x, Some y -> Line { a = { x; y }; b = { x = x2; y = y2 } }
-  | _ -> Line { a = { x = 0; y = 0 }; b = { x = x2; y = y2 } }
+let line ?point_a point_b =
+  match point_a with
+  | Some point_a -> Line { a = point_a; b = point_b }
+  | _ -> Line { a = { x = 0; y = 0 }; b = point_b }
 
 let polygon lst_points = Polygon lst_points
 
@@ -111,9 +113,9 @@ let rec scale factor s =
   let scale_length len fact = round (float_of_int len *. sqrt fact) in
   match s with
   | Circle circle' ->
-      circle ~x:circle'.c.x ~y:circle'.c.y (scale_length circle'.radius factor)
+      circle ~point:circle'.c (scale_length circle'.radius factor)
   | Ellipse ellipse' ->
-      ellipse ~x:ellipse'.c.x ~y:ellipse'.c.y
+      ellipse ~point:ellipse'.c
         (scale_length ellipse'.rx factor)
         (scale_length ellipse'.ry factor)
   | Line _line' -> failwith "Not Implemented"
