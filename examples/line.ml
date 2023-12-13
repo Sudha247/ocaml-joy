@@ -9,7 +9,7 @@ let lines =
   List.map
     (fun i ->
       let newx = i |> inc |> ( * ) line_interval in
-      line ~x1:newx ~y1:0 newx 500)
+      line ~point_a:(point newx 0) (point newx 500))
     (range 0 interval)
 
 let _ =

@@ -1,13 +1,15 @@
+type point
 type shape
 type shapes = shape list
 type point = { x : int; y : int }
 
 val render_shape : shape -> unit
-val circle : ?x:int -> ?y:int -> int -> shape
-val rectangle : ?x:int -> ?y:int -> int -> int -> shape
-val ellipse : ?x:int -> ?y:int -> int -> int -> shape
+val point : int -> int -> point
+val circle : ?point:point -> int -> shape
+val rectangle : ?point:point -> int -> int -> shape
+val ellipse : ?point:point -> int -> int -> shape
 val complex : shape list -> shape
-val line : ?x1:int -> ?y1:int -> int -> int -> shape
+val line : ?point_a:point -> point -> shape
 val translate : int -> int -> shape -> shape
 val show : shape list -> unit
 val scale : float -> shape -> shape
