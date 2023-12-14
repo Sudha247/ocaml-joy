@@ -115,3 +115,11 @@
  (preprocess
   (pps js_of_ocaml-ppx))
  (libraries joy js_of_ocaml js_of_ocaml-lwt js_of_ocaml-lwt.graphics))
+
+(executable
+ (name canvas_ellipse)
+ (modules canvas_ellipse)
+ (modes js)
+ (preprocess
+  (pps js_of_ocaml-ppx))
+ (libraries joy js_of_ocaml js_of_ocaml-lwt js_of_ocaml-lwt.graphics))
