@@ -76,7 +76,6 @@ let background color =
 let scale_point size point =
   let { x; y } = point in
   let x, y = (x /. size.x, y /. size.y) in
-  List.iter (fun n -> print_float n |> print_newline) [ x; y ];
   (x, y)
 
 (* Shape rendering fns *)
