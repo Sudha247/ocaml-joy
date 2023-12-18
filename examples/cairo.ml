@@ -60,8 +60,8 @@ let get_dimensions () =
 let set_color color =
   match !context with
   | Some ctx ->
-      let r, g, b = color in
-      Cairo.set_source_rgb ctx.ctx r g b
+      let r, g, b, a = color in
+      Cairo.set_source_rgba ctx.ctx r g b a
   | None -> failwith fail
 
 let background color =
@@ -72,12 +72,14 @@ let background color =
       Cairo.paint ctx.ctx
   | None -> failwith fail
 
+(* Scales points from 0 - image size to 0-1 *)
 let scale_point size point =
   let { x; y } = point in
   let x, y = (x /. size.x, y /. size.y) in
   List.iter (fun n -> print_float n |> print_newline) [ x; y ];
   (x, y)
 
+(* Shape rendering fns *)
 let draw_circle ctx (circle : circle) =
   let x, y = scale_point ctx.size circle.c in
   let radius = circle.radius /. min ctx.size.x ctx.size.y in
@@ -159,9 +161,6 @@ let draw () =
   let c = { x = w /. 2.; y = h /. 2. } in
   let circle = Circle { c; radius = 100. } in
   let rect = Rectangle { c; width = w /. 4.; height = h /. 4. } in
-  let _cartesian_product l l' =
-    List.concat (List.map (fun e -> List.map (fun e' -> (e, e')) l') l)
-  in
   let polygon =
     Polygon
       (List.map
@@ -185,7 +184,7 @@ let init ?size ?filename () =
   let filename = match filename with Some s -> s | None -> "cairo.png" in
   init_context (x, y) filename;
   background (1., 1., 1.);
-  set_color (0., 0., 0.);
+  set_color (0., 0., 0., 1.);
   draw ()
 
 let () = init ()
