@@ -40,17 +40,16 @@ let context = ref None
 (* Error message *)
 let fail = "Context not initialized"
 
-
 (* Context initialization, render, and update fns *)
-let init_context ?line_width (w, h) filename = 
+let init_context ?line_width (w, h) filename =
   let surface =
-    Cairo.Image.create Cairo.Image.ARGB32 ~w: (int_of_float w)
-      ~h: (int_of_float h)
+    Cairo.Image.create Cairo.Image.ARGB32 ~w:(int_of_float w)
+      ~h:(int_of_float h)
   in
   let ctx = Cairo.create surface in
   Cairo.scale ctx w h;
-  Cairo.set_line_width ctx (match line_width with | Some n -> n | None -> 0.002);
-  context := Some { ctx; surface; size = {x = w; y = h}; filename }
+  Cairo.set_line_width ctx (match line_width with Some n -> n | None -> 0.002);
+  context := Some { ctx; surface; size = { x = w; y = h }; filename }
 
 (* Renders context to PNG *)
 let write ctx = Cairo.PNG.write ctx.surface ctx.filename
@@ -164,7 +163,10 @@ let draw () =
     List.concat (List.map (fun e -> List.map (fun e' -> (e, e')) l') l)
   in
   let polygon =
-    Polygon (List.map (fun {x; y} -> {x = x +. 10.; y = y +. 10.})[ c; { x = c.x; y = c.y +. 100. }; { x = c.x +. 100.; y = c.y } ])
+    Polygon
+      (List.map
+         (fun { x; y } -> { x = x +. 10.; y = y +. 10. })
+         [ c; { x = c.x; y = c.y +. 100. }; { x = c.x +. 100.; y = c.y } ])
   in
 
   let axes =
