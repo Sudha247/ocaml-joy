@@ -4,27 +4,38 @@ let tau = 2. *. Float.pi
 
 type point = { x : float; y : float }
 type circle = { c : point; radius : float }
+type ellipse = { c : point; rx : float; ry : float }
 type rectangle = { c : point; width : float; height : float }
 type line = { a : point; b : point }
 type polygon = point list
 
 type shape =
   | Circle of circle
+  | Ellipse of ellipse
   | Rectangle of rectangle
   | Line of line
   | Polygon of polygon
   | Complex of shape list
 
 (* Point arithmetic operators
+    I think thesse would be useful, 
+    but also undeerstand not everyone likes the arithmetic operator 
+    symbol overload thing
 
    let ( +~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 +. x2; y = y1 +. y2}
    let ( *~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 *. x2; y = y1 *. y2}
-   let ( /~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 /. x2; y = y1 /. y2}
+
    let ( -~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 -. x2; y = y1 -. y2}
 
    let ( +! ) {x = x1; y = y1} scalar = {x = x1 +. scalar; y = y1 +. scalar}
    let ( *! ) {x = x1; y = y1} scalar = {x = x1 *. scalar; y = y1 *. scalar}
    let ( /! ) {x = x1; y = y1} scalar = {x = x1 /. scalar; y = y1 /. scalar} *)
+
+(* point + point arithmetic *)
+let ( /~ ) { x = x1; y = y1 } { x = x2; y = y2 } =
+  { x = x1 /. x2; y = y1 /. y2 }
+
+(* point + scalar arithmetic *)
 let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
 
 (* Global rendering context singleton definition and instantiation *)
@@ -79,18 +90,48 @@ let scale_point size point =
   (x, y)
 
 (* Shape rendering fns *)
-let draw_circle ctx (circle : circle) =
-  let x, y = scale_point ctx.size circle.c in
-  let radius = circle.radius /. min ctx.size.x ctx.size.y in
+let draw_circle ctx ({ c; radius } : circle) =
+  let x, y = scale_point ctx.size c in
+  let radius = radius /. min ctx.size.x ctx.size.y in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:tau;
   Cairo.stroke ctx.ctx
 
-let draw_rect ctx (rect : rectangle) =
-  let x, y =
-    scale_point ctx.size (rect.c -! ((rect.width +. rect.height) /. 4.))
-  in
-  let w = rect.width /. ctx.size.x in
-  let h = rect.height /. ctx.size.y in
+(* Ellipse helper fn & rendering fn *)
+
+let calculate_control_points (size : point) ({ c; rx; ry } : ellipse) =
+  let { x; y } = c in
+  let { x = w; y = h } = size in
+  let half_height = ry /. 2. in
+  let width_two_thirds = rx *. (2. /. 3.) in
+  ( { x; y = y -. half_height } /~ size,
+    ( (x +. width_two_thirds) /. w,
+      (y -. half_height) /. h,
+      (x +. width_two_thirds) /. w,
+      (y +. half_height) /. h,
+      x /. w,
+      (y +. half_height) /. h ),
+    ( (x -. width_two_thirds) /. w,
+      (y +. half_height) /. h,
+      (x -. width_two_thirds) /. w,
+      (y -. half_height) /. h,
+      x /. w,
+      (y -. half_height) /. h ) )
+
+let draw_ellipse (ctx : cairo_context) (ellipse : ellipse) =
+  let start, curve_one, curve_two = calculate_control_points ctx.size ellipse in
+  Cairo.save ctx.ctx;
+  Cairo.move_to ctx.ctx start.x start.y;
+  let x1, y1, x2, y2, x3, y3 = curve_one in
+  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
+  let x1, y1, x2, y2, x3, y3 = curve_two in
+  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
+  Cairo.stroke ctx.ctx;
+  Cairo.restore ctx.ctx
+
+let draw_rect ctx ({ c; width; height } : rectangle) =
+  let x, y = scale_point ctx.size (c -! ((width +. height) /. 4.)) in
+  let w = width /. ctx.size.x in
+  let h = height /. ctx.size.y in
   Cairo.rectangle ctx.ctx x y ~w ~h;
   Cairo.stroke ctx.ctx
 
@@ -138,14 +179,13 @@ let draw_polygon ctx (polygon : polygon) =
 
 (* Root render fn *)
 let rec render_shape ctx shape =
-  let _ =
-    match shape with
-    | Circle circle -> draw_circle ctx circle
-    | Rectangle rectangle -> draw_rect ctx rectangle
-    | Line line -> draw_line ctx line
-    | Polygon polygon -> draw_polygon ctx polygon
-    | Complex complex -> List.iter (render_shape ctx) complex
-  in
+  (match shape with
+  | Circle circle -> draw_circle ctx circle
+  | Rectangle rectangle -> draw_rect ctx rectangle
+  | Ellipse ellipse -> draw_ellipse ctx ellipse
+  | Line line -> draw_line ctx line
+  | Polygon polygon -> draw_polygon ctx polygon
+  | Complex complex -> List.iter (render_shape ctx) complex);
   write ctx
 
 (* Validates context before rendering *)
@@ -160,13 +200,13 @@ let draw () =
   let c = { x = w /. 2.; y = h /. 2. } in
   let circle = Circle { c; radius = 100. } in
   let rect = Rectangle { c; width = w /. 4.; height = h /. 4. } in
+  let ellip = Ellipse { c; rx = 75.; ry = 50. } in
   let polygon =
     Polygon
       (List.map
          (fun { x; y } -> { x = x +. 10.; y = y +. 10. })
          [ c; { x = c.x; y = c.y +. 100. }; { x = c.x +. 100.; y = c.y } ])
   in
-
   let axes =
     Complex
       [
@@ -174,7 +214,7 @@ let draw () =
         Line { a = { x = 0.; y = h /. 2. }; b = { x = w; y = h /. 2. } };
       ]
   in
-  let complex = Complex [ circle; rect; polygon; axes ] in
+  let complex = Complex [ circle; rect; ellip; polygon; axes ] in
   render complex
 
 let init ?size ?filename () =
