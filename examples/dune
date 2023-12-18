@@ -108,7 +108,7 @@
  (modules circle_packing)
  (libraries joy))
 
-(executable 
+(executable
  (name cairo)
  (modules cairo)
  (libraries cairo2))
