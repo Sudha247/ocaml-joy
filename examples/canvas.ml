@@ -95,9 +95,10 @@ let draw_circle ctx { c; radius } =
   ctx##arc x y radius 0. (2. *. Float.pi) (bl false);
   ctx##stroke
 
+(* 'Normalize' values so that API matches native implementation *)
 let draw_rect ctx { c; width; height } =
-  let w, h = get_window_size () in
-  let c = c -! ((w +. h) /. 8.) in
+  let width, height = (width *. 2., height *. 2.) in
+  let c = c -! ((width +. height) /. 4.) in
   ctx##strokeRect c.x c.y width height
 
 let draw_line ctx { a = { x = x1; y = y1 }; b = { x = x2; y = y2 } } =
