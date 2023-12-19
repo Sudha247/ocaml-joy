@@ -18,22 +18,21 @@ type shape =
   | Complex of shape list
 
 (* Point arithmetic operators
-    I think thesse would be useful, 
-    but also undeerstand not everyone likes the arithmetic operator 
-    symbol overload thing
+     I think thesse would be useful,
+     but also undeerstand not everyone likes the arithmetic operator
+     symbol overload thing
 
-   let ( +~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 +. x2; y = y1 +. y2}
-   let ( *~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 *. x2; y = y1 *. y2}
+   let ( /~ ) { x = x1; y = y1 } { x = x2; y = y2 } = { x = x1 /. x2; y = y1 /. y2 }
+    let ( +~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 +. x2; y = y1 +. y2}
+    let ( *~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 *. x2; y = y1 *. y2}
 
-   let ( -~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 -. x2; y = y1 -. y2}
+    let ( -~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 -. x2; y = y1 -. y2}
 
-   let ( +! ) {x = x1; y = y1} scalar = {x = x1 +. scalar; y = y1 +. scalar}
-   let ( *! ) {x = x1; y = y1} scalar = {x = x1 *. scalar; y = y1 *. scalar}
-   let ( /! ) {x = x1; y = y1} scalar = {x = x1 /. scalar; y = y1 /. scalar} *)
+    let ( +! ) {x = x1; y = y1} scalar = {x = x1 +. scalar; y = y1 +. scalar}
+    let ( *! ) {x = x1; y = y1} scalar = {x = x1 *. scalar; y = y1 *. scalar}
+    let ( /! ) {x = x1; y = y1} scalar = {x = x1 /. scalar; y = y1 /. scalar} *)
 
 (* point + point arithmetic *)
-let ( /~ ) { x = x1; y = y1 } { x = x2; y = y2 } =
-  { x = x1 /. x2; y = y1 /. y2 }
 
 (* point + scalar arithmetic *)
 let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
@@ -47,27 +46,31 @@ type cairo_context = {
 }
 
 let context = ref None
-
-(* Error message *)
 let fail = "Context not initialized"
 
 (* Context initialization, render, and update fns *)
-let init_context ?line_width (w, h) filename =
+let init_context ?line_width (x, y) filename =
+  (* Fail if context has already been instantiated *)
+  if Option.is_some !context then
+    failwith "Context cannot be initialized twice!";
+
   let surface =
-    Cairo.Image.create Cairo.Image.ARGB32 ~w:(int_of_float w)
-      ~h:(int_of_float h)
+    Cairo.Image.create Cairo.Image.ARGB32 ~w:(int_of_float x)
+      ~h:(int_of_float y)
   in
   let ctx = Cairo.create surface in
-  Cairo.scale ctx w h;
+  Cairo.scale ctx x y;
   Cairo.set_line_width ctx (match line_width with Some n -> n | None -> 0.002);
-  context := Some { ctx; surface; size = { x = w; y = h }; filename }
+  context := Some { ctx; surface; size = { x; y }; filename }
 
 (* Renders context to PNG *)
 let write ctx = Cairo.PNG.write ctx.surface ctx.filename
 
+(* gets surface size in range 0..pixels *)
 let get_dimensions () =
   match !context with Some ctx -> ctx.size | None -> failwith fail
 
+(* sets global color *)
 let set_color color =
   match !context with
   | Some ctx ->
@@ -75,6 +78,7 @@ let set_color color =
       Cairo.set_source_rgba ctx.ctx r g b a
   | None -> failwith fail
 
+(* sets background color *)
 let background color =
   match !context with
   | Some ctx ->
@@ -83,7 +87,7 @@ let background color =
       Cairo.paint ctx.ctx
   | None -> failwith fail
 
-(* Scales points from 0 - image size to 0-1 *)
+(* Scales points from 0-image size to 0-1 on both axes *)
 let scale_point size point =
   let { x; y } = point in
   let x, y = (x /. size.x, y /. size.y) in
@@ -95,38 +99,6 @@ let draw_circle ctx ({ c; radius } : circle) =
   let radius = radius /. min ctx.size.x ctx.size.y in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:tau;
   Cairo.stroke ctx.ctx
-
-(* Ellipse helper fn & rendering fn *)
-
-let calculate_control_points (size : point) ({ c; rx; ry } : ellipse) =
-  let { x; y } = c in
-  let { x = w; y = h } = size in
-  let half_height = ry /. 2. in
-  let width_two_thirds = rx *. (2. /. 3.) in
-  ( { x; y = y -. half_height } /~ size,
-    ( (x +. width_two_thirds) /. w,
-      (y -. half_height) /. h,
-      (x +. width_two_thirds) /. w,
-      (y +. half_height) /. h,
-      x /. w,
-      (y +. half_height) /. h ),
-    ( (x -. width_two_thirds) /. w,
-      (y +. half_height) /. h,
-      (x -. width_two_thirds) /. w,
-      (y -. half_height) /. h,
-      x /. w,
-      (y -. half_height) /. h ) )
-
-let draw_ellipse (ctx : cairo_context) (ellipse : ellipse) =
-  let start, curve_one, curve_two = calculate_control_points ctx.size ellipse in
-  Cairo.save ctx.ctx;
-  Cairo.move_to ctx.ctx start.x start.y;
-  let x1, y1, x2, y2, x3, y3 = curve_one in
-  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
-  let x1, y1, x2, y2, x3, y3 = curve_two in
-  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
-  Cairo.stroke ctx.ctx;
-  Cairo.restore ctx.ctx
 
 let draw_rect ctx ({ c; width; height } : rectangle) =
   let x, y = scale_point ctx.size (c -! ((width +. height) /. 4.)) in
@@ -142,6 +114,38 @@ let draw_line ctx line =
   Cairo.line_to ctx.ctx x2 y2;
   Cairo.stroke ctx.ctx;
   Cairo.move_to ctx.ctx 0. 0.
+
+(* Ellipse helper fn & rendering fn 
+   currently just multiplying radii by 2 to offset scaling issue 
+   feels hacky *)
+let calculate_control_points (size : point) ({ c; rx; ry } : ellipse) =
+  let x, y = scale_point size c in
+  let half_height = ry /. size.y in
+  let width_two_thirds = rx /. size.x *. (2. /. 3.) *. 2. in
+  ( { x; y = y -. half_height },
+    ( x +. width_two_thirds,
+      y -. half_height,
+      x +. width_two_thirds,
+      y +. half_height,
+      x,
+      y +. half_height ),
+    ( x -. width_two_thirds,
+      y +. half_height,
+      x -. width_two_thirds,
+      y -. half_height,
+      x,
+      y -. half_height ) )
+
+let draw_ellipse (ctx : cairo_context) (ellipse : ellipse) =
+  let start, curve_one, curve_two = calculate_control_points ctx.size ellipse in
+  Cairo.save ctx.ctx;
+  Cairo.move_to ctx.ctx start.x start.y;
+  let x1, y1, x2, y2, x3, y3 = curve_one in
+  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
+  let x1, y1, x2, y2, x3, y3 = curve_two in
+  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
+  Cairo.stroke ctx.ctx;
+  Cairo.restore ctx.ctx
 
 (* Polygon helper fns and rendering fn *)
 let rec take n lst =
@@ -200,7 +204,7 @@ let draw () =
   let c = { x = w /. 2.; y = h /. 2. } in
   let circle = Circle { c; radius = 100. } in
   let rect = Rectangle { c; width = w /. 4.; height = h /. 4. } in
-  let ellip = Ellipse { c; rx = 75.; ry = 50. } in
+  let ellip = Ellipse { c; rx = 100.; ry = 90. } in
   let polygon =
     Polygon
       (List.map
