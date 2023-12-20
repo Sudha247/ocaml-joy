@@ -14,14 +14,13 @@ type ellipse = {
   curve_one : float * float * float * float * float * float;
   curve_two : float * float * float * float * float * float;
 }
-type rectangle = { c : point; width : float; height : float }
 type line = { a : point; b : point }
 type polygon = point list
 
 type shape =
   | Circle of circle
   | Ellipse of ellipse
-  | Rectangle of rectangle
+
   | Line of line
   | Polygon of polygon
   | Complex of shape list
@@ -104,16 +103,20 @@ let draw_circle ctx { c; radius } =
   ctx##arc x y radius 0. (2. *. Float.pi) (bl false);
   ctx##stroke
 
+(* Rectangle *)
+let make_rectangle {x; y} width height = 
+  Polygon
+    [
+      { x; y };
+      { x; y = y +. height };
+      { x = x +. width; y = y +. height };
+      { x = x +. width; y };
+    ]
+
 let rectangle ?point width height = 
   match point with 
-    | Some c -> Rectangle {c; width; height}
-    | None -> Rectangle {c = {x = 0.; y = 0.}; width; height}
-
-(* 'Normalize' values so that API matches native implementation *)
-let draw_rect ctx { c; width; height } =
-  let width, height = (width *. 2., height *. 2.) in
-  let c = c -! ((width +. height) /. 4.) in
-  ctx##strokeRect c.x c.y width height
+    | Some c -> make_rectangle c width height
+    | None -> make_rectangle {x = 0.; y = 0.} width height
 
 let line ?point b = 
   match point with
@@ -204,7 +207,6 @@ let draw_polygon ctx (polygon : polygon) =
 let rec render_shape ctx shape =
   match shape with
   | Circle circle -> draw_circle ctx circle
-  | Rectangle rectangle -> draw_rect ctx rectangle
   | Ellipse ellipse -> draw_ellipse ctx ellipse
   | Line line -> draw_line ctx line
   | Polygon polygon -> draw_polygon ctx polygon
@@ -221,7 +223,7 @@ let draw () =
   background (1., 1., 1.);
   set_color (0., 0., 0.);
   let circle = Circle { c; radius = 100. } in
-  let rect = Rectangle { c; width = 100.; height = 100. } in
+  let rect = rectangle ~point:c 100. 100. in
   let ellip = ellipse 100. 90. in
   let polygon =
     Polygon
