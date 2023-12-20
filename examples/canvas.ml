@@ -6,21 +6,22 @@ module G = Graphics_js
 
 type point = { x : float; y : float }
 
-let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
+let ( -! ) point scalar = { x = point.x -. scalar; y = point.y -. scalar }
 
 type circle = { c : point; radius : float }
+
 type ellipse = {
   start : point;
   curve_one : float * float * float * float * float * float;
   curve_two : float * float * float * float * float * float;
 }
+
 type line = { a : point; b : point }
 type polygon = point list
 
 type shape =
   | Circle of circle
   | Ellipse of ellipse
-
   | Line of line
   | Polygon of polygon
   | Complex of shape list
@@ -92,10 +93,10 @@ let background color =
       context##fillRect 0. 0. w h
   | None -> fail ()
 
-let circle ?point radius = 
-  match point with 
-    | Some c -> Circle {c; radius}
-    | None -> Circle {c = {x = 0.; y = 0.}; radius}
+let circle ?point radius =
+  match point with
+  | Some c -> Circle { c; radius }
+  | None -> Circle { c = { x = 0.; y = 0. }; radius }
 
 let draw_circle ctx { c; radius } =
   let { x; y } = c in
@@ -104,7 +105,9 @@ let draw_circle ctx { c; radius } =
   ctx##stroke
 
 (* Rectangle *)
-let make_rectangle {x; y} width height = 
+let make_rectangle c width height =
+  let width, height = (width *. 2., height *. 2.) in
+  let { x; y } = c -! ((width +. height) /. 4.) in
   Polygon
     [
       { x; y };
@@ -113,15 +116,15 @@ let make_rectangle {x; y} width height =
       { x = x +. width; y };
     ]
 
-let rectangle ?point width height = 
-  match point with 
-    | Some c -> make_rectangle c width height
-    | None -> make_rectangle {x = 0.; y = 0.} width height
-
-let line ?point b = 
+let rectangle ?point width height =
   match point with
-    | Some a -> Line {a; b} 
-    | None -> Line {a = {x = 0.; y = 0.}; b} 
+  | Some c -> make_rectangle c width height
+  | None -> make_rectangle { x = 0.; y = 0. } width height
+
+let line ?point b =
+  match point with
+  | Some a -> Line { a; b }
+  | None -> Line { a = { x = 0.; y = 0. }; b }
 
 let draw_line ctx { a = { x = x1; y = y1 }; b = { x = x2; y = y2 } } =
   ctx##moveTo x1 y1;
@@ -133,7 +136,7 @@ let draw_line ctx { a = { x = x1; y = y1 }; b = { x = x2; y = y2 } } =
    currently just multiplying radii by 2 to offset scaling issue
    feels hacky *)
 let ellipse ?point rx ry =
-  let x, y = match point with Some p -> p | None -> (0., 0.) in
+  let { x; y } = match point with Some p -> p | None -> { x = 0.; y = 0. } in
   let rx, ry = (rx *. 2., ry *. 2.) in
   let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) in
@@ -167,8 +170,7 @@ let draw_ellipse ctx (ellipse : ellipse) =
   ctx##moveTo 0. 0.
 
 (* Polygon helper fns and rendering fn *)
-let polygon points = 
-  Polygon points
+let polygon points = Polygon points
 
 let rec take n lst =
   match (n, lst) with
@@ -204,6 +206,8 @@ let draw_polygon ctx (polygon : polygon) =
   ctx##stroke;
   ctx##moveTo 0. 0.
 
+let complex shapes = Complex shapes
+
 let rec render_shape ctx shape =
   match shape with
   | Circle circle -> draw_circle ctx circle
@@ -222,23 +226,23 @@ let draw () =
   let c = { x = w /. 2.; y = h /. 2. } in
   background (1., 1., 1.);
   set_color (0., 0., 0.);
-  let circle = Circle { c; radius = 100. } in
+  let circle = circle ~point:c 100. in
   let rect = rectangle ~point:c 100. 100. in
-  let ellip = ellipse 100. 90. in
+  let ellip = ellipse ~point:c 100. 75. in
   let polygon =
-    Polygon
+    polygon
       (List.map
          (fun { x; y } -> { x = x +. 10.; y = y +. 10. })
          [ c; { x = c.x; y = c.y +. 100. }; { x = c.x +. 100.; y = c.y } ])
   in
   let axes =
-    Complex
+    complex
       [
-        Line { a = { x = w /. 2.; y = 0. }; b = { x = w /. 2.; y = h } };
-        Line { a = { x = 0.; y = h /. 2. }; b = { x = w; y = h /. 2. } };
+        line ~point:{ x = w /. 2.; y = 0. } { x = w /. 2.; y = h };
+        line ~point:{ x = 0.; y = h /. 2. } { x = w; y = h /. 2. };
       ]
   in
-  let complex = Complex [ circle; rect; ellip; polygon; axes ] in
+  let complex = complex [ rect; ellip; circle; polygon; axes ] in
   render complex
 
 let onload _ =
