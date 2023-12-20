@@ -9,7 +9,11 @@ type point = { x : float; y : float }
 let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 
 type circle = { c : point; radius : float }
-type ellipse = { c : point; rx : float; ry : float }
+type ellipse = {
+  start : point;
+  curve_one : float * float * float * float * float * float;
+  curve_two : float * float * float * float * float * float;
+}
 type rectangle = { c : point; width : float; height : float }
 type line = { a : point; b : point }
 type polygon = point list
@@ -89,11 +93,21 @@ let background color =
       context##fillRect 0. 0. w h
   | None -> fail ()
 
+let circle ?point radius = 
+  match point with 
+    | Some c -> Circle {c; radius}
+    | None -> Circle {c = {x = 0.; y = 0.}; radius}
+
 let draw_circle ctx { c; radius } =
   let { x; y } = c in
   ctx##beginPath;
   ctx##arc x y radius 0. (2. *. Float.pi) (bl false);
   ctx##stroke
+
+let rectangle ?point width height = 
+  match point with 
+    | Some c -> Rectangle {c; width; height}
+    | None -> Rectangle {c = {x = 0.; y = 0.}; width; height}
 
 (* 'Normalize' values so that API matches native implementation *)
 let draw_rect ctx { c; width; height } =
@@ -101,35 +115,46 @@ let draw_rect ctx { c; width; height } =
   let c = c -! ((width +. height) /. 4.) in
   ctx##strokeRect c.x c.y width height
 
+let line ?point b = 
+  match point with
+    | Some a -> Line {a; b} 
+    | None -> Line {a = {x = 0.; y = 0.}; b} 
+
 let draw_line ctx { a = { x = x1; y = y1 }; b = { x = x2; y = y2 } } =
   ctx##moveTo x1 y1;
   ctx##lineTo x2 y2;
   ctx##stroke;
   ctx##moveTo 0. 0.
 
-(* Ellipse helper fn & rendering fn
+(* Ellipse constructor fn & rendering fn
    currently just multiplying radii by 2 to offset scaling issue
    feels hacky *)
-let calculate_control_points ({ c = { x; y }; rx; ry } : ellipse) =
+let ellipse ?point rx ry =
+  let x, y = match point with Some p -> p | None -> (0., 0.) in
   let rx, ry = (rx *. 2., ry *. 2.) in
   let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) in
-  ( { x; y = y -. half_height },
-    ( x +. width_two_thirds,
-      y -. half_height,
-      x +. width_two_thirds,
-      y +. half_height,
-      x,
-      y +. half_height ),
-    ( x -. width_two_thirds,
-      y +. half_height,
-      x -. width_two_thirds,
-      y -. half_height,
-      x,
-      y -. half_height ) )
+  Ellipse
+    {
+      start = { x; y = y -. half_height };
+      curve_one =
+        ( x +. width_two_thirds,
+          y -. half_height,
+          x +. width_two_thirds,
+          y +. half_height,
+          x,
+          y +. half_height );
+      curve_two =
+        ( x -. width_two_thirds,
+          y +. half_height,
+          x -. width_two_thirds,
+          y -. half_height,
+          x,
+          y -. half_height );
+    }
 
 let draw_ellipse ctx (ellipse : ellipse) =
-  let start, curve_one, curve_two = calculate_control_points ellipse in
+  let { start; curve_one; curve_two } = ellipse in
   ctx##moveTo start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
   ctx##bezierCurveTo x1 y1 x2 y2 x3 y3;
@@ -139,6 +164,9 @@ let draw_ellipse ctx (ellipse : ellipse) =
   ctx##moveTo 0. 0.
 
 (* Polygon helper fns and rendering fn *)
+let polygon points = 
+  Polygon points
+
 let rec take n lst =
   match (n, lst) with
   | 0, _ -> ([], lst)
@@ -194,7 +222,7 @@ let draw () =
   set_color (0., 0., 0.);
   let circle = Circle { c; radius = 100. } in
   let rect = Rectangle { c; width = 100.; height = 100. } in
-  let ellip = Ellipse { c; rx = 100.; ry = 75. } in
+  let ellip = ellipse 100. 90. in
   let polygon =
     Polygon
       (List.map
