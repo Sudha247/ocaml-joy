@@ -4,41 +4,28 @@ let tau = 2. *. Float.pi
 
 type point = { x : float; y : float }
 type circle = { c : point; radius : float }
-type ellipse = { c : point; rx : float; ry : float }
-type rectangle = { c : point; width : float; height : float }
+
+type ellipse = {
+  start : point;
+  curve_one : float * float * float * float * float * float;
+  curve_two : float * float * float * float * float * float;
+}
+
 type line = { a : point; b : point }
 type polygon = point list
 
 type shape =
   | Circle of circle
   | Ellipse of ellipse
-  | Rectangle of rectangle
   | Line of line
   | Polygon of polygon
   | Complex of shape list
-
-(* Point arithmetic operators
-     I think thesse would be useful,
-     but also undeerstand not everyone likes the arithmetic operator
-     symbol overload thing
-
-   let ( /~ ) { x = x1; y = y1 } { x = x2; y = y2 } = { x = x1 /. x2; y = y1 /. y2 }
-    let ( +~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 +. x2; y = y1 +. y2}
-    let ( *~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 *. x2; y = y1 *. y2}
-
-    let ( -~ ) {x = x1; y = y1} {x = x2; y = y2} = {x = x1 -. x2; y = y1 -. y2}
-
-    let ( +! ) {x = x1; y = y1} scalar = {x = x1 +. scalar; y = y1 +. scalar}
-    let ( *! ) {x = x1; y = y1} scalar = {x = x1 *. scalar; y = y1 *. scalar}
-    let ( /! ) {x = x1; y = y1} scalar = {x = x1 /. scalar; y = y1 /. scalar} *)
-
-(* point + point arithmetic *)
 
 (* point + scalar arithmetic *)
 let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
 
 (* Global rendering context singleton definition and instantiation *)
-type cairo_context = {
+type joy_context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : point;
@@ -46,9 +33,14 @@ type cairo_context = {
 }
 
 let context = ref None
-let fail = "Context not initialized"
+let fail () = failwith "Context not initialized"
 
 (* Context initialization, render, and update fns *)
+(* Currently, function signature does not match the canvas
+   backend function signature, which is a problem.
+
+   Having the end-user call 'set_filename', 'set_size', and
+   'set_line_width' isn't particularly satisfying either though *)
 let init_context ?line_width (x, y) filename =
   (* Fail if context has already been instantiated *)
   if Option.is_some !context then
@@ -67,8 +59,8 @@ let init_context ?line_width (x, y) filename =
 let write ctx = Cairo.PNG.write ctx.surface ctx.filename
 
 (* gets surface size in range 0..pixels *)
-let get_dimensions () =
-  match !context with Some ctx -> ctx.size | None -> failwith fail
+let get_window_size () =
+  match !context with Some ctx -> ctx.size | None -> fail ()
 
 (* sets global color *)
 let set_color color =
@@ -76,7 +68,7 @@ let set_color color =
   | Some ctx ->
       let r, g, b, a = color in
       Cairo.set_source_rgba ctx.ctx r g b a
-  | None -> failwith fail
+  | None -> fail ()
 
 (* sets background color *)
 let background color =
@@ -85,7 +77,7 @@ let background color =
       let r, g, b = color in
       Cairo.set_source_rgb ctx.ctx r g b;
       Cairo.paint ctx.ctx
-  | None -> failwith fail
+  | None -> fail ()
 
 (* Scales points from 0-image size to 0-1 on both axes *)
 let scale_point size point =
@@ -94,18 +86,41 @@ let scale_point size point =
   (x, y)
 
 (* Shape rendering fns *)
+
+(* Circle *)
+let circle ?point radius =
+  match point with
+  | Some c -> Circle { c; radius }
+  | None -> Circle { c = { x = 0.; y = 0. }; radius }
+
 let draw_circle ctx ({ c; radius } : circle) =
   let x, y = scale_point ctx.size c in
   let radius = radius /. min ctx.size.x ctx.size.y in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:tau;
   Cairo.stroke ctx.ctx
 
-let draw_rect ctx ({ c; width; height } : rectangle) =
-  let x, y = scale_point ctx.size (c -! ((width +. height) /. 4.)) in
-  let w = width /. ctx.size.x in
-  let h = height /. ctx.size.y in
-  Cairo.rectangle ctx.ctx x y ~w ~h;
-  Cairo.stroke ctx.ctx
+(* Rectangle *)
+let make_rectangle c width height =
+  let width, height = (width *. 2., height *. 2.) in
+  let { x; y } = c -! ((width +. height) /. 4.) in
+  Polygon
+    [
+      { x; y };
+      { x; y = y +. height };
+      { x = x +. width; y = y +. height };
+      { x = x +. width; y };
+    ]
+
+let rectangle ?point width height =
+  match point with
+  | Some c -> make_rectangle c width height
+  | None -> make_rectangle { x = 0.; y = 0. } width height
+
+(* Line *)
+let line ?point b =
+  match point with
+  | Some a -> Line { a; b }
+  | None -> Line { a = { x = 0.; y = 0. }; b }
 
 let draw_line ctx line =
   let x1, y1 = scale_point ctx.size line.a in
@@ -115,29 +130,36 @@ let draw_line ctx line =
   Cairo.stroke ctx.ctx;
   Cairo.move_to ctx.ctx 0. 0.
 
-(* Ellipse helper fn & rendering fn 
-   currently just multiplying radii by 2 to offset scaling issue 
+(* Ellipse helper fn & rendering fn
+
+   currently just multiplying radii by 2 to offset scaling issue
    feels hacky *)
-let calculate_control_points (size : point) ({ c; rx; ry } : ellipse) =
+let ellipse ?point rx ry =
+  let c = match point with Some p -> p | None -> { x = 0.; y = 0. } in
+  let size = get_window_size () in
   let x, y = scale_point size c in
   let half_height = ry /. size.y in
   let width_two_thirds = rx /. size.x *. (2. /. 3.) *. 2. in
-  ( { x; y = y -. half_height },
-    ( x +. width_two_thirds,
-      y -. half_height,
-      x +. width_two_thirds,
-      y +. half_height,
-      x,
-      y +. half_height ),
-    ( x -. width_two_thirds,
-      y +. half_height,
-      x -. width_two_thirds,
-      y -. half_height,
-      x,
-      y -. half_height ) )
+  Ellipse
+    {
+      start = { x; y = y -. half_height };
+      curve_one =
+        ( x +. width_two_thirds,
+          y -. half_height,
+          x +. width_two_thirds,
+          y +. half_height,
+          x,
+          y +. half_height );
+      curve_two =
+        ( x -. width_two_thirds,
+          y +. half_height,
+          x -. width_two_thirds,
+          y -. half_height,
+          x,
+          y -. half_height );
+    }
 
-let draw_ellipse (ctx : cairo_context) (ellipse : ellipse) =
-  let start, curve_one, curve_two = calculate_control_points ctx.size ellipse in
+let draw_ellipse (ctx : joy_context) { start; curve_one; curve_two } =
   Cairo.save ctx.ctx;
   Cairo.move_to ctx.ctx start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
@@ -148,6 +170,8 @@ let draw_ellipse (ctx : cairo_context) (ellipse : ellipse) =
   Cairo.restore ctx.ctx
 
 (* Polygon helper fns and rendering fn *)
+let polygon points = Polygon points
+
 let rec take n lst =
   match (n, lst) with
   | 0, _ -> ([], lst)
@@ -181,11 +205,13 @@ let draw_polygon ctx (polygon : polygon) =
   Cairo.move_to ctx.ctx 0. 0.;
   Cairo.stroke ctx.ctx
 
+(* Complex *)
+let complex shapes = Complex shapes
+
 (* Root render fn *)
 let rec render_shape ctx shape =
   (match shape with
   | Circle circle -> draw_circle ctx circle
-  | Rectangle rectangle -> draw_rect ctx rectangle
   | Ellipse ellipse -> draw_ellipse ctx ellipse
   | Line line -> draw_line ctx line
   | Polygon polygon -> draw_polygon ctx polygon
@@ -194,34 +220,32 @@ let rec render_shape ctx shape =
 
 (* Validates context before rendering *)
 let render shape =
-  match !context with
-  | Some ctx -> render_shape ctx shape
-  | None -> failwith fail
+  match !context with Some ctx -> render_shape ctx shape | None -> fail ()
 
 (* 'sketch' functions - this is a prototype of what the user would be writing *)
 let draw () =
-  let { x = w; y = h } = get_dimensions () in
+  let { x = w; y = h } = get_window_size () in
   let c = { x = w /. 2.; y = h /. 2. } in
-  let circle = Circle { c; radius = 100. } in
-  let rect = Rectangle { c; width = w /. 4.; height = h /. 4. } in
-  let ellip = Ellipse { c; rx = 100.; ry = 90. } in
+  let circle = circle ~point:c 100. in
+  let rect = rectangle ~point:c (w /. 4.) (h /. 4.) in
+  let ellip = ellipse ~point:c 100. 75. in
   let polygon =
-    Polygon
+    polygon
       (List.map
          (fun { x; y } -> { x = x +. 10.; y = y +. 10. })
          [ c; { x = c.x; y = c.y +. 100. }; { x = c.x +. 100.; y = c.y } ])
   in
   let axes =
-    Complex
+    complex
       [
-        Line { a = { x = w /. 2.; y = 0. }; b = { x = w /. 2.; y = h } };
-        Line { a = { x = 0.; y = h /. 2. }; b = { x = w; y = h /. 2. } };
+        line ~point:{ x = w /. 2.; y = 0. } { x = w /. 2.; y = h };
+        line ~point:{ x = 0.; y = h /. 2. } { x = w; y = h /. 2. };
       ]
   in
   let complex = Complex [ circle; rect; ellip; polygon; axes ] in
   render complex
 
-let init ?size ?filename () =
+let setup ?size ?filename () =
   let size = match size with Some s -> s | None -> { x = 800.; y = 800. } in
   let { x; y } = size in
   let filename = match filename with Some s -> s | None -> "cairo.png" in
@@ -230,4 +254,4 @@ let init ?size ?filename () =
   set_color (0., 0., 0., 1.);
   draw ()
 
-let () = init ()
+let () = setup ()
