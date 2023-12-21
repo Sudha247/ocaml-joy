@@ -33,7 +33,16 @@ type joy_context = {
 }
 
 let context = ref None
-let fail () = failwith "Context not initialized"
+
+exception Context of string 
+(* Not working, could use help fixing *)
+let () = 
+  Printexc.register_printer (fun e -> match e with 
+    | Context err -> Some ("Context: " ^ err)
+    | _ -> None
+)
+
+let fail () = raise (Context "not initialized")
 
 (* Context initialization, render, and update fns *)
 (* Currently, function signature does not match the canvas
@@ -44,7 +53,7 @@ let fail () = failwith "Context not initialized"
 let init_context ?line_width (x, y) filename =
   (* Fail if context has already been instantiated *)
   if Option.is_some !context then
-    failwith "Context cannot be initialized twice!";
+    raise (Context "Cannot initialize context twice");
 
   let surface =
     Cairo.Image.create Cairo.Image.ARGB32 ~w:(int_of_float x)
@@ -53,7 +62,7 @@ let init_context ?line_width (x, y) filename =
   let ctx = Cairo.create surface in
   Cairo.scale ctx x y;
   Cairo.set_line_width ctx (match line_width with Some n -> n | None -> 0.002);
-  context := Some { ctx; surface; size = { x; y }; filename }
+  context := Some { ctx; surface; size = { x; y }; filename } 
 
 (* Renders context to PNG *)
 let write ctx = Cairo.PNG.write ctx.surface ctx.filename
@@ -245,13 +254,13 @@ let draw () =
   let complex = Complex [ circle; rect; ellip; polygon; axes ] in
   render complex
 
-let setup ?size ?filename () =
-  let size = match size with Some s -> s | None -> { x = 800.; y = 800. } in
-  let { x; y } = size in
-  let filename = match filename with Some s -> s | None -> "cairo.png" in
+let setup () =
+  let x, y = (800., 800.) in
+  let filename = "cairo.png" in
   init_context (x, y) filename;
   background (1., 1., 1.);
   set_color (0., 0., 0., 1.);
   draw ()
 
-let () = setup ()
+let _ = setup ()
+  
