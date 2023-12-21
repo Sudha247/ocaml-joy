@@ -107,3 +107,11 @@
  (name circle_packing)
  (modules circle_packing)
  (libraries joy))
+
+(executable
+ (name canvas)
+ (modules canvas)
+ (modes js)
+ (preprocess
+  (pps js_of_ocaml-ppx))
+ (libraries joy js_of_ocaml js_of_ocaml-lwt js_of_ocaml-lwt.graphics))
