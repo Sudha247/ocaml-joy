@@ -39,13 +39,20 @@ type joy_context = {
   context : Html.canvasRenderingContext2D Js.t;
   canvas : Html.canvasElement Js.t;
 }
-
 let context : joy_context option ref = ref None
-let fail () = window##alert (str "Context not initialized!")
+
+exception Context of string 
+(* Not working, could use help fixing *)
+let () = 
+  Printexc.register_printer (fun e -> match e with 
+    | Context err -> Some ("Context: " ^ err)
+    | _ -> None
+)
+let fail () = raise (Context "not initialized")
 
 let init_context canvas =
   if Option.is_some !context then
-    window##alert (str "Context cannot be initialized twice!")
+    raise (Context "cannot iniitialize context twice")
   else (
     G.open_canvas canvas;
     Dom.appendChild doc##.body canvas;
