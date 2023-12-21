@@ -17,6 +17,6 @@
  (name joy)
  (synopsis "Tiny creative coding library in OCaml")
  (description "Tiny creative coding library in OCaml")
- (depends ocaml dune graphics))
+ (depends ocaml dune graphics cairo2))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
