@@ -6,7 +6,9 @@ module G = Graphics_js
 
 type point = { x : float; y : float }
 
-let ( -! ) point scalar = { x = point.x -. scalar; y = point.y -. scalar }
+let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
+let ( +! ) { x; y } scalar = { x = x +. scalar; y = y +. scalar }
+let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
 
 type circle = { c : point; radius : float }
 
@@ -39,15 +41,16 @@ type joy_context = {
   context : Html.canvasRenderingContext2D Js.t;
   canvas : Html.canvasElement Js.t;
 }
+
 let context : joy_context option ref = ref None
 
-exception Context of string 
+exception Context of string
+
 (* Not working, could use help fixing *)
-let () = 
-  Printexc.register_printer (fun e -> match e with 
-    | Context err -> Some ("Context: " ^ err)
-    | _ -> None
-)
+let () =
+  Printexc.register_printer (fun e ->
+      match e with Context err -> Some ("Context: " ^ err) | _ -> None)
+
 let fail () = raise (Context "not initialized")
 
 let init_context canvas =
@@ -215,6 +218,58 @@ let draw_polygon ctx (polygon : polygon) =
 
 let complex shapes = Complex shapes
 
+(* transformations  *)
+let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)
+let bi_to_uni point = (point *! 0.5) +! 0.5
+
+let rotate_point degrees { x; y } =
+  let radians = deg_to_rad degrees in
+  let dx = (x *. cos radians) -. (y *. sin radians) in
+  let dy = (x *. sin radians) +. (y *. cos radians) in
+  bi_to_uni { x = dx; y = dy }
+
+let rotate_ellipse deg { start; curve_one; curve_two } =
+  let destructure_list = function
+    | [ (x1, y1); (x2, y2); (x3, y3) ] -> Ok (x1, y1, x2, y2, x3, y3)
+    | _ -> Error (Context "Error  in ellipse rotation")
+  in
+  let map_curve curve =
+    let x1, y1, x2, y2, x3, y3 = curve in
+    let points =
+      List.map
+        (fun point ->
+          let { x; y } = rotate_point deg point in
+          (x, y))
+        [ { x = x1; y = y1 }; { x = x2; y = y2 }; { x = x3; y = y3 } ]
+    in
+    Result.get_ok (destructure_list points)
+  in
+  let start = rotate_point deg start in
+  let curve_one = map_curve curve_one in
+  let curve_two = map_curve curve_two in
+  Ellipse { start; curve_one; curve_two }
+
+let rec rotate degrees shape =
+  match shape with
+  | Circle circle ->
+      Circle { c = rotate_point degrees circle.c; radius = circle.radius }
+  | Ellipse ellipse -> rotate_ellipse degrees ellipse
+  | Line _line -> failwith "Not Implemented"
+  | Polygon polygon' -> polygon (List.map (rotate_point degrees) polygon')
+  | Complex shapes -> Complex (List.map (rotate degrees) shapes)
+
+let repeat n op shape =
+  let identity n = n in
+  let match_list l =
+    match l with [] -> [ shape ] | last :: _ -> op last :: l
+  in
+  let shapes =
+    List.fold_right (fun _ acc -> match_list acc) (List.init n identity) []
+  in
+  complex shapes
+
+(* Render fns *)
+
 let rec render_shape ctx shape =
   match shape with
   | Circle circle -> draw_circle ctx circle
@@ -249,8 +304,9 @@ let draw () =
         line ~point:{ x = 0.; y = h /. 2. } { x = w; y = h /. 2. };
       ]
   in
-  let complex = complex [ rect; ellip; circle; polygon; axes ] in
-  render complex
+  let _complex = complex [ rect; ellip; circle; polygon; axes ] in
+  let ellipses = repeat 4 (rotate (360. /. 32.)) (ellipse ~point:c 100. 75.) in
+  render ellipses
 
 let onload _ =
   let canvas = create_canvas () in
