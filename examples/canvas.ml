@@ -2,7 +2,6 @@
 module Html = Js_of_ocaml.Dom_html
 module Dom = Js_of_ocaml.Dom
 module Js = Js_of_ocaml.Js
-module G = Graphics_js
 
 type point = { x : float; y : float }
 
@@ -57,7 +56,6 @@ let init_context canvas =
   if Option.is_some !context then
     raise (Context "cannot iniitialize context twice")
   else (
-    G.open_canvas canvas;
     Dom.appendChild doc##.body canvas;
     let ctx = canvas##getContext Html._2d_ in
     context := Some { context = ctx; canvas })
