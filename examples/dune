@@ -99,6 +99,7 @@
  (libraries joy))
 
 (executable
+<<<<<<< HEAD
  (name polygon)
  (modules polygon)
  (libraries joy))
@@ -106,4 +107,11 @@
 (executable
  (name circle_packing)
  (modules circle_packing)
+ (libraries joy))
+ 
+(executable 
+=======
+>>>>>>> 66df79e (formatting)
+ (name repeat)
+ (modules repeat)
  (libraries joy))
