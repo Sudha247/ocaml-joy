@@ -1,36 +1,33 @@
 open Shape
+open Context
 
 let draw_circle ctx ({ c; radius } : circle) =
   let x, y = scale_point ctx.size c in
-  let radius = radius /. min ctx.size.x ctx.size.y in
+  let radius = radius /. min (fst ctx.size) (snd ctx.size) in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
-let create_control_points {c; rx; ry} =
+let create_control_points { c; rx; ry } =
   let size = get_window_size () in
   let x, y = scale_point size c in
-  let half_height = ry /. size.y in
-  let width_two_thirds = rx /. size.x *. (2. /. 3.) *. 2. in
-    (
-      { x; y = y -. half_height },
-      
-        ( x +. width_two_thirds,
-          y -. half_height,
-          x +. width_two_thirds,
-          y +. half_height,
-          x,
-          y +. half_height ),
-      
-        ( x -. width_two_thirds,
-          y +. half_height,
-          x -. width_two_thirds,
-          y -. half_height,
-          x,
-          y -. half_height );
-    )
+  let half_height = ry /. snd size in
+  let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in
+  ( { x; y = y -. half_height },
+    ( x +. width_two_thirds,
+      y -. half_height,
+      x +. width_two_thirds,
+      y +. half_height,
+      x,
+      y +. half_height ),
+    ( x -. width_two_thirds,
+      y +. half_height,
+      x -. width_two_thirds,
+      y -. half_height,
+      x,
+      y -. half_height ) )
 
 let draw_ellipse (ctx : joy_context) ellipse =
-  let (start, curve_one, curve_two) = create_control_points ellipse in
+  let start, curve_one, curve_two = create_control_points ellipse in
   Cairo.save ctx.ctx;
   Cairo.move_to ctx.ctx start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
@@ -82,25 +79,24 @@ let draw_polygon ctx (polygon : polygon) =
   Cairo.stroke ctx.ctx
 
 let rec render_shape ctx shape =
-  (match shape with
+  match shape with
   | Circle circle -> draw_circle ctx circle
   | Ellipse ellipse -> draw_ellipse ctx ellipse
   | Line line -> draw_line ctx line
   | Polygon polygon -> draw_polygon ctx polygon
-  | Complex complex -> List.iter (render_shape ctx) complex)
-    
-  
+  | Complex complex -> List.iter (render_shape ctx) complex
+
 (* Validates context before rendering *)
 let render shape =
-  (match !context with 
-  | Some ctx -> 
-    render_shape ctx shape; 
-    write ctx
-  | None -> fail ())
+  match !context with
+  | Some ctx ->
+      render_shape ctx shape;
+      write ctx
+  | None -> fail ()
 
 let render_axes () =
-  set_color (0.75294, 0.75294, 0.75294, 1.);
-  let {x; y}: point = get_window_size () in
+  set_color (0.75294, 0.75294, 0.75294);
+  let x, y = get_window_size () in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~point:{ x = half_x; y = 0. } { x = half_x; y } in
   let y_axis = line ~point:{ x = 0.; y = half_y } { x; y = half_y } in
