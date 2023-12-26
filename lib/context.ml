@@ -1,5 +1,5 @@
 (* Global rendering context singleton definition and instantiation *)
-type joy_context = {
+type context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : float * float;

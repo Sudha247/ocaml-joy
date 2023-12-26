@@ -26,7 +26,7 @@ let create_control_points { c; rx; ry } =
       x,
       y -. half_height ) )
 
-let draw_ellipse (ctx : joy_context) ellipse =
+let draw_ellipse ctx ellipse =
   let start, curve_one, curve_two = create_control_points ellipse in
   Cairo.save ctx.ctx;
   Cairo.move_to ctx.ctx start.x start.y;

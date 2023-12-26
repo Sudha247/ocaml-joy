@@ -26,8 +26,8 @@ let default_size = (800., 800.)
 
 let bi_to_uni { x; y } =
   let cx, cy = get_window_size () in
-  let nx = x *. 0.5 +. cx *. 0.5 in
-  let ny = y *. 0.5 +. cy *. 0.5 in
+  let nx = (x *. 0.5) +. (cx *. 0.5) in
+  let ny = (y *. 0.5) +. (cy *. 0.5) in
   (nx, ny)
 
 (* Scales points from 0-image size to 0-1 on both axes *)

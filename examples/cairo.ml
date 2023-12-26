@@ -25,7 +25,7 @@ type shape =
 let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
 
 (* Global rendering context singleton definition and instantiation *)
-type joy_context = {
+type context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : point;
@@ -34,13 +34,12 @@ type joy_context = {
 
 let context = ref None
 
-exception Context of string 
+exception Context of string
+
 (* Not working, could use help fixing *)
-let () = 
-  Printexc.register_printer (fun e -> match e with 
-    | Context err -> Some ("Context: " ^ err)
-    | _ -> None
-)
+let () =
+  Printexc.register_printer (fun e ->
+      match e with Context err -> Some ("Context: " ^ err) | _ -> None)
 
 let fail () = raise (Context "not initialized")
 
@@ -62,7 +61,7 @@ let init_context ?line_width (x, y) filename =
   let ctx = Cairo.create surface in
   Cairo.scale ctx x y;
   Cairo.set_line_width ctx (match line_width with Some n -> n | None -> 0.002);
-  context := Some { ctx; surface; size = { x; y }; filename } 
+  context := Some { ctx; surface; size = { x; y }; filename }
 
 (* Renders context to PNG *)
 let write ctx = Cairo.PNG.write ctx.surface ctx.filename
@@ -168,7 +167,7 @@ let ellipse ?point rx ry =
           y -. half_height );
     }
 
-let draw_ellipse (ctx : joy_context) { start; curve_one; curve_two } =
+let draw_ellipse (ctx : context) { start; curve_one; curve_two } =
   Cairo.save ctx.ctx;
   Cairo.move_to ctx.ctx start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
@@ -263,4 +262,3 @@ let setup () =
   draw ()
 
 let _ = setup ()
-  

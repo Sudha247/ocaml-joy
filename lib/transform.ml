@@ -21,9 +21,14 @@ let rec scale factor s =
   let scale_length len fact = len *. sqrt fact in
   match s with
   | Circle circle' ->
-      Circle {circle' with radius = scale_length circle'.radius factor}
+      Circle { circle' with radius = scale_length circle'.radius factor }
   | Ellipse ellipse' ->
-      Ellipse {ellipse' with rx = scale_length ellipse'.rx factor; ry = scale_length ellipse'.ry factor}
+      Ellipse
+        {
+          ellipse' with
+          rx = scale_length ellipse'.rx factor;
+          ry = scale_length ellipse'.ry factor;
+        }
   | Line _line' -> failwith "Not Implemented"
   | Polygon _polygon' -> failwith "Scale not implemeted for polygons"
   | Complex shapes -> Complex (List.map (scale factor) shapes)
@@ -39,7 +44,7 @@ let rot degrees { x; y } =
 
 let rec rotate degrees shape =
   match shape with
-  | Circle circle' -> Circle { circle' with c = rot degrees circle'.c; }
+  | Circle circle' -> Circle { circle' with c = rot degrees circle'.c }
   | Ellipse ellipse' -> Ellipse { ellipse' with c = rot degrees ellipse'.c }
   | Line _line -> failwith "Not Implemented"
   | Polygon polygon' -> polygon (List.map (rot degrees) polygon')
