@@ -1,9 +1,7 @@
-open Joy.Shape
+open Joy
 
 let _ =
-  draw_axes true;
-  init ();
-  let c = circle 50 in
-  render_shape c;
-  close ();
+  init ~axes:true ();
+  let c = circle 50. in
+  render c;
   exit 0

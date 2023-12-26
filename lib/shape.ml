@@ -1,5 +1,3 @@
-open Context
-
 type point = { x : float; y : float }
 type line = { a : point; b : point }
 type circle = { c : point; radius : float }
@@ -20,12 +18,9 @@ let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 
 (* point + scalar arithmetic *)
 let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
-let default_line_width = 0.002
-let default_filename = "cairo.png"
-let default_size = (800., 800.)
 
 let bi_to_uni { x; y } =
-  let cx, cy = get_window_size () in
+  let cx, cy = Context.resolution () in
   let nx = (x *. 0.5) +. (cx *. 0.5) in
   let ny = (y *. 0.5) +. (cy *. 0.5) in
   (nx, ny)
@@ -37,7 +32,7 @@ let scale_point size point =
   (x, y)
 
 let denormalize point =
-  let x, y = get_window_size () in
+  let x, y = Context.resolution () in
   let canvas_mid = { x; y } /~ { x = 2.; y = 2. } in
   { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
 
@@ -78,9 +73,3 @@ let polygon lst_points = Polygon lst_points
 
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
-
-let init ?line_width ?size ?filename () =
-  let lw = Option.value line_width ~default:default_line_width in
-  let sz = Option.value size ~default:default_size in
-  let file = Option.value filename ~default:default_filename in
-  init_context lw sz file

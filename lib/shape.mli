@@ -23,6 +23,3 @@ val polygon : point list -> shape
 val scale_point : float * float -> point -> float * float
 val bi_to_uni : point -> float * float
 val denormalize : point -> point
-
-val init :
-  ?line_width:float -> ?size:float * float -> ?filename:string -> unit -> unit

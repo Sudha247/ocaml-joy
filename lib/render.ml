@@ -8,7 +8,7 @@ let draw_circle ctx ({ c; radius } : circle) =
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let size = get_window_size () in
+  let size = resolution () in
   let x, y = scale_point size c in
   let half_height = ry /. snd size in
   let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in
@@ -96,7 +96,7 @@ let render shape =
 
 let render_axes () =
   set_color (0.75294, 0.75294, 0.75294);
-  let x, y = get_window_size () in
+  let x, y = Context.resolution () in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~point:{ x = half_x; y = 0. } { x = half_x; y } in
   let y_axis = line ~point:{ x = 0.; y = half_y } { x; y = half_y } in

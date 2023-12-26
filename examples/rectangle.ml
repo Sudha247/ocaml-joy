@@ -1,10 +1,10 @@
-open Joy.Shape
+open Joy
 
-let size = 100
+let size = 100.
 
 let () =
   init ();
   (* creating a rectangle from points *)
   let rect = rectangle size size in
-  render_shape rect;
+  render rect;
   close ()

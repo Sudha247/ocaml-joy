@@ -4,6 +4,11 @@
  (libraries joy))
 
 (executable
+ (name ellipse)
+ (modules ellipse)
+ (libraries joy))
+
+(executable
  (name translate_circle)
  (modules translate_circle)
  (libraries joy))

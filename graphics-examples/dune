@@ -14,11 +14,6 @@
  (libraries graphics))
 
 (executable
- (name rectangle)
- (modules rectangle)
- (libraries joy))
-
-(executable
  (name circle_grid)
  (modules circle_grid)
  (libraries graphics))
@@ -47,8 +42,3 @@
  (name polygons)
  (modules polygons)
  (libraries graphics))
-
-(executable
- (name ellipse)
- (modules ellipse)
- (libraries joy))

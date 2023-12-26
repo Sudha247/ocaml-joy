@@ -67,8 +67,7 @@ let init_context ?line_width (x, y) filename =
 let write ctx = Cairo.PNG.write ctx.surface ctx.filename
 
 (* gets surface size in range 0..pixels *)
-let get_window_size () =
-  match !context with Some ctx -> ctx.size | None -> fail ()
+let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
 
 (* sets global color *)
 let set_color color =
@@ -144,7 +143,7 @@ let draw_line ctx line =
    feels hacky *)
 let ellipse ?point rx ry =
   let c = match point with Some p -> p | None -> { x = 0.; y = 0. } in
-  let size = get_window_size () in
+  let size = resolution () in
   let x, y = scale_point size c in
   let half_height = ry /. size.y in
   let width_two_thirds = rx /. size.x *. (2. /. 3.) *. 2. in
@@ -232,7 +231,7 @@ let render shape =
 
 (* 'sketch' functions - this is a prototype of what the user would be writing *)
 let draw () =
-  let { x = w; y = h } = get_window_size () in
+  let { x = w; y = h } = resolution () in
   let c = { x = w /. 2.; y = h /. 2. } in
   let circle = circle ~point:c 100. in
   let rect = rectangle ~point:c (w /. 4.) (h /. 4.) in

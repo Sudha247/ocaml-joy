@@ -1,19 +1,17 @@
-open Joy.Shape
+open Joy
 
-let interval = 16
-let line_interval = 500 / interval
-let rec range a b = if a > b then [] else a :: range (a + 1) b
-let inc x = x + 1
+let interval = 16.
+let line_interval = 500. /. interval
+let rec range a b = if a > b then [] else a :: range (a +. 1.) b
+let inc x = x +. 1.
 
 let lines =
   List.map
     (fun i ->
-      let newx = i |> inc |> ( * ) line_interval in
-      line ~point_a:(point newx 0) (point newx 500))
-    (range 0 interval)
+      let newx = i |> inc |> ( *. ) line_interval in
+      line ~point:(point newx 0.) (point newx 500.))
+    (range 0. interval)
 
 let _ =
   init ();
-  List.iter render_shape lines;
-  close ();
-  exit 0
+  show lines

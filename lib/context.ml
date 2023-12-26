@@ -33,8 +33,7 @@ let init_context line_width (x, y) filename =
   Cairo.set_line_width ctx line_width;
   context := Some { ctx; surface; size = (x, y); filename }
 
-let get_window_size () =
-  match !context with Some ctx -> ctx.size | None -> fail ()
+let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
 
 let set_color color =
   match !context with
@@ -50,4 +49,9 @@ let background color =
       let r, g, b, a = color in
       Cairo.set_source_rgba ctx.ctx r g b a;
       Cairo.paint ctx.ctx
+  | None -> fail ()
+
+let set_line_width line_width =
+  match !context with
+  | Some ctx -> Cairo.set_line_width ctx.ctx line_width
   | None -> fail ()
