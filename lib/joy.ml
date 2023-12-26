@@ -22,7 +22,7 @@ let set_line_width = Context.set_line_width
 let init ?(line_width = 0.002) ?(size = (800., 800.)) ?(filename = "cairo.png")
     ?(axes = false) () =
   Context.init_context line_width size filename;
-  if axes then Render.render_axes () else ()
+  if axes then Render.render_axes ()
 
-let render = Render.render
-let show = Render.show
+let render shape = Render.render shape
+let show shapes = Render.show shapes

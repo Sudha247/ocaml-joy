@@ -104,5 +104,7 @@ let render_axes () =
 
 let show shapes =
   match !context with
-  | Some ctx -> List.iter (render_shape ctx) shapes
+  | Some ctx ->
+      List.iter (render_shape ctx) shapes;
+      write ctx
   | None -> fail ()

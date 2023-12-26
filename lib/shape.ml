@@ -25,16 +25,16 @@ let bi_to_uni { x; y } =
   let ny = (y *. 0.5) +. (cy *. 0.5) in
   (nx, ny)
 
+let denormalize point =
+  let x, y = Context.resolution () in
+  let canvas_mid = { x; y } /~ { x = 2.; y = 2. } in
+  { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
+
 (* Scales points from 0-image size to 0-1 on both axes *)
 let scale_point size point =
   let { x; y } = point in
   let x, y = (x /. fst size, y /. snd size) in
   (x, y)
-
-let denormalize point =
-  let x, y = Context.resolution () in
-  let canvas_mid = { x; y } /~ { x = 2.; y = 2. } in
-  { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
 
 let point x y = { x; y }
 

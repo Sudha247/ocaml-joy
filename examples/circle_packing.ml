@@ -54,7 +54,7 @@ let rand_circle () =
 let pack_circles () =
   (* checks whether a circle intersects with a list of circles *)
   let check_overlaps lst current =
-    List.fold_right (fun circle acc -> (overlaps circle current ) || acc) lst false
+    List.fold_right (fun circle acc -> overlaps circle current || acc) lst false
   in
   (* creates a new circle, checks if it intersects previous circles,
      if max attempts have been reached,
@@ -87,9 +87,7 @@ let make_concentric circle =
     let point, radius = List.hd (List.rev lst) in
     if radius <= 1. then lst
     else
-      let new_circle =
-        (point, (radius *. shrink_factor))
-      in
+      let new_circle = (point, radius *. shrink_factor) in
       shrink (lst @ [ new_circle ])
   in
   shrink [ circle ]
