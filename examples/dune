@@ -62,3 +62,8 @@
  (name cairo)
  (modules cairo)
  (libraries cairo2))
+
+(executable
+ (name rectangle)
+ (modules rectangle)
+ (libraries joy))

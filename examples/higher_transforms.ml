@@ -9,6 +9,7 @@ let rec range a b = if a > b then [] else a :: range (a +. 1.) b
 
 let () =
   init ();
+  background (1., 1., 1., 1.);
   let initial = rectangle ~point:(point (-250.) (-250.)) 100. 100. in
   let match_list l =
     match l with [] -> [ initial ] | last :: _ -> transform last :: l
@@ -16,4 +17,6 @@ let () =
   let shapes =
     List.fold_right (fun _ acc -> match_list acc) (range 0. 32.) []
   in
-  show shapes
+  set_color (0., 0., 0.);
+  show shapes;
+  write ~filename:"higher_transforms.png" ()

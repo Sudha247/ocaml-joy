@@ -18,6 +18,7 @@ let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 
 (* point + scalar arithmetic *)
 let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
+let splat n = { x = n; y = n }
 
 let bi_to_uni { x; y } =
   let cx, cy = Context.resolution () in
@@ -27,12 +28,12 @@ let bi_to_uni { x; y } =
 
 let denormalize point =
   let x, y = Context.resolution () in
-  let canvas_mid = { x; y } /~ { x = 2.; y = 2. } in
+  let canvas_mid = { x; y } /~ splat 2. in
   { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
 
 (* Scales points from 0-image size to 0-1 on both axes *)
 let scale_point size point =
-  let { x; y } = point in
+  let { x; y } = denormalize point in
   let x, y = (x /. fst size, y /. snd size) in
   (x, y)
 

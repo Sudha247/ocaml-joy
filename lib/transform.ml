@@ -18,19 +18,19 @@ let rec translate dx dy shape =
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
 let rec scale factor s =
-  let scale_length len fact = len *. sqrt fact in
+  let scale_length fact len = len *. sqrt fact in
   match s with
   | Circle circle' ->
-      Circle { circle' with radius = scale_length circle'.radius factor }
+      Circle { circle' with radius = scale_length factor circle'.radius }
   | Ellipse ellipse' ->
       Ellipse
         {
           ellipse' with
-          rx = scale_length ellipse'.rx factor;
-          ry = scale_length ellipse'.ry factor;
+          rx = scale_length factor ellipse'.rx;
+          ry = scale_length factor ellipse'.ry;
         }
   | Line _line' -> failwith "Not Implemented"
-  | Polygon _polygon' -> failwith "Scale not implemeted for polygons"
+  | Polygon polygon' -> let scale_point factor {x; y} = {x = scale_length factor x; y = scale_length factor y } in polygon (List.map (scale_point factor) polygon')
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)

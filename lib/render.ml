@@ -42,8 +42,7 @@ let draw_line ctx line =
   let x2, y2 = scale_point ctx.size line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
-  Cairo.stroke ctx.ctx;
-  Cairo.move_to ctx.ctx 0. 0.
+  Cairo.stroke ctx.ctx
 
 let rec take n lst =
   match (n, lst) with
@@ -88,23 +87,19 @@ let rec render_shape ctx shape =
 
 (* Validates context before rendering *)
 let render shape =
-  match !context with
-  | Some ctx ->
-      render_shape ctx shape;
-      write ctx
-  | None -> fail ()
-
-let render_axes () =
-  set_color (0.75294, 0.75294, 0.75294);
-  let x, y = Context.resolution () in
-  let half_x, half_y = (x /. 2., y /. 2.) in
-  let x_axis = line ~point:{ x = half_x; y = 0. } { x = half_x; y } in
-  let y_axis = line ~point:{ x = 0.; y = half_y } { x; y = half_y } in
-  render (complex [ x_axis; y_axis ])
+  match !context with Some ctx -> render_shape ctx shape | None -> fail ()
 
 let show shapes =
   match !context with
-  | Some ctx ->
-      List.iter (render_shape ctx) shapes;
-      write ctx
+  | Some ctx -> List.iter (render_shape ctx) shapes
   | None -> fail ()
+
+let render_axes () =
+  save ();
+  let x, y = Context.resolution () in
+  let half_x, half_y = (x /. 2., y /. 2.) in
+  let x_axis = line ~point:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
+  let y_axis = line ~point:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
+  set_color (0.75294, 0.75294, 0.75294);
+  show [ x_axis; y_axis ];
+  restore ()

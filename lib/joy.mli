@@ -19,12 +19,8 @@ val background : float * float * float * float -> unit
 val set_line_width : float -> unit
 
 val init :
-  ?line_width:float ->
-  ?size:float * float ->
-  ?filename:string ->
-  ?axes:bool ->
-  unit ->
-  unit
+  ?line_width:float -> ?size:float * float -> ?axes:bool -> unit -> unit
 
 val render : shape -> unit
 val show : shapes -> unit
+val write : ?filename:string -> unit -> unit

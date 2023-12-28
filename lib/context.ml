@@ -3,11 +3,10 @@ type context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : float * float;
-  filename : string;
 }
 
 (* Renders context to PNG *)
-let write ctx = Cairo.PNG.write ctx.surface ctx.filename
+let write ctx filename = Cairo.PNG.write ctx.surface filename
 let context = ref None
 
 exception Context of string
@@ -19,7 +18,7 @@ let () =
 
 let fail () = raise (Context "not initialized")
 
-let init_context line_width (x, y) filename =
+let init_context line_width (x, y) =
   (* Fail if context has already been instantiated *)
   if Option.is_some !context then
     raise (Context "Cannot initialize context twice");
@@ -31,7 +30,7 @@ let init_context line_width (x, y) filename =
   let ctx = Cairo.create surface in
   Cairo.scale ctx x y;
   Cairo.set_line_width ctx line_width;
-  context := Some { ctx; surface; size = (x, y); filename }
+  context := Some { ctx; surface; size = (x, y) }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
 
@@ -55,3 +54,9 @@ let set_line_width line_width =
   match !context with
   | Some ctx -> Cairo.set_line_width ctx.ctx line_width
   | None -> fail ()
+
+let save () =
+  match !context with Some ctx -> Cairo.save ctx.ctx | None -> fail ()
+
+let restore () =
+  match !context with Some ctx -> Cairo.restore ctx.ctx | None -> fail ()

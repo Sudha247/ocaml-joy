@@ -2,6 +2,10 @@ open Joy
 
 let () =
   init ();
+  background (1., 1., 1., 1.);
   (* create an ellipse *)
   let e = ellipse 100. 75. in
-  render e
+  (* render it *)
+  set_color (0., 0., 0.);
+  render e;
+  write ~filename:"ellipse.png" ()

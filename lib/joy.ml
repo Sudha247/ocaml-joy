@@ -19,10 +19,14 @@ let set_color = Context.set_color
 let background = Context.background
 let set_line_width = Context.set_line_width
 
-let init ?(line_width = 0.002) ?(size = (800., 800.)) ?(filename = "cairo.png")
-    ?(axes = false) () =
-  Context.init_context line_width size filename;
+let init ?(line_width = 0.002) ?(size = (800., 800.)) ?(axes = false) () =
+  Context.init_context line_width size;
   if axes then Render.render_axes ()
+
+let write ?(filename = "cairo.png") () =
+  match !Context.context with
+  | Some ctx -> Context.write ctx filename
+  | None -> Context.fail ()
 
 let render shape = Render.render shape
 let show shapes = Render.show shapes
