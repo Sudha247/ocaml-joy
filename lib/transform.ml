@@ -30,7 +30,11 @@ let rec scale factor s =
           ry = scale_length factor ellipse'.ry;
         }
   | Line _line' -> failwith "Not Implemented"
-  | Polygon polygon' -> let scale_point factor {x; y} = {x = scale_length factor x; y = scale_length factor y } in polygon (List.map (scale_point factor) polygon')
+  | Polygon polygon' ->
+      let scale_point factor { x; y } =
+        { x = scale_length factor x; y = scale_length factor y }
+      in
+      polygon (List.map (scale_point factor) polygon')
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)

@@ -42,3 +42,8 @@
  (name polygons)
  (modules polygons)
  (libraries graphics))
+
+(executable
+ (name cairo)
+ (modules cairo)
+ (libraries cairo2))

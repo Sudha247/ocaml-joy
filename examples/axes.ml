@@ -7,5 +7,8 @@ let _ =
   init ~axes:true ();
   (* set background to opaque white *)
   background (1., 1., 1., 1.);
+  let c = circle 50. in 
+  set_color (0., 0., 0.);
+  render c;
   (* Write to PNG! *)
   write ~filename:"axes.png" ()
