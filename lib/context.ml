@@ -3,6 +3,7 @@ type context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : float * float;
+  axes: bool;
 }
 
 (* Renders context to PNG *)
@@ -18,7 +19,7 @@ let () =
 
 let fail () = raise (Context "not initialized")
 
-let init_context line_width (x, y) =
+let init_context line_width (x, y) axes =
   (* Fail if context has already been instantiated *)
   if Option.is_some !context then
     raise (Context "Cannot initialize context twice");
@@ -30,7 +31,7 @@ let init_context line_width (x, y) =
   let ctx = Cairo.create surface in
   Cairo.scale ctx x y;
   Cairo.set_line_width ctx line_width;
-  context := Some { ctx; surface; size = (x, y) }
+  context := Some { ctx; surface; size = (x, y); axes }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
 

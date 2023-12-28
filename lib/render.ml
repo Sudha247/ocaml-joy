@@ -38,11 +38,13 @@ let draw_ellipse ctx ellipse =
   Cairo.restore ctx.ctx
 
 let draw_line ctx line =
+  save ();
   let x1, y1 = scale_point ctx.size line.a in
   let x2, y2 = scale_point ctx.size line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
-  Cairo.stroke ctx.ctx
+  Cairo.stroke ctx.ctx;
+  restore ()
 
 let rec take n lst =
   match (n, lst) with
@@ -65,7 +67,7 @@ let rec partition n ?step lst =
         | None -> partition n ~step:0 (List.tl lst))
       else []
 
-let draw_polygon ctx (polygon : polygon) =
+let draw_polygon ctx polygon =
   let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
   List.iter
     (fun pair ->
@@ -95,11 +97,12 @@ let show shapes =
   | None -> fail ()
 
 let render_axes () =
+  print_endline "rendering axes!";
   save ();
   let x, y = Context.resolution () in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~point:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
   let y_axis = line ~point:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
-  set_color (0.75294, 0.75294, 0.75294);
+  set_color (0., 0., 0.);
   show [ x_axis; y_axis ];
   restore ()

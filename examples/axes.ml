@@ -5,9 +5,9 @@ open Joy
 let _ =
   (* intialize rendering context with the axes flag set to true *)
   init ~axes:true ();
-  (* set background to opaque white *)
   background (1., 1., 1., 1.);
-  let c = circle 50. in 
+  (* set background to opaque white *)
+  let c = circle 50. in
   set_color (0., 0., 0.);
   render c;
   (* Write to PNG! *)
