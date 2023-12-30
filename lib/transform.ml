@@ -39,6 +39,12 @@ let rec scale factor s =
 
 let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)
 
+let bi_to_uni { x; y } =
+  let cx, cy = Context.resolution () in
+  let nx = (x *. 0.5) +. (cx *. 0.5) in
+  let ny = (y *. 0.5) +. (cy *. 0.5) in
+  (nx, ny)
+
 let rot degrees { x; y } =
   let radians = deg_to_rad (float_of_int degrees) in
   let dx = (x *. cos radians) -. (y *. sin radians) in

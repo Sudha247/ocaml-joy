@@ -24,9 +24,9 @@ let init ?(line_width = 0.002) ?(size = (800., 800.)) ?(axes = false) () =
 
 let write ?(filename = "cairo.png") () =
   match !Context.context with
-  | Some ctx -> 
-    if ctx.axes then Render.render_axes ();
-    Context.write ctx filename
+  | Some ctx ->
+      if ctx.axes then Render.render_axes ();
+      Context.write ctx filename
   | None -> Context.fail ()
 
 let render shape = Render.render shape

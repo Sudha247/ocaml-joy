@@ -4,8 +4,23 @@
  (libraries joy))
 
 (executable
+ (name circle)
+ (modules circle)
+ (libraries joy))
+
+(executable
  (name ellipse)
  (modules ellipse)
+ (libraries joy))
+
+(executable
+ (name triangle)
+ (modules triangle)
+ (libraries joy))
+
+(executable
+ (name concentric_circles)
+ (modules concentric_circles)
  (libraries joy))
 
 (executable
@@ -61,4 +76,9 @@
 (executable
  (name rectangle)
  (modules rectangle)
+ (libraries joy))
+
+(executable
+ (name star)
+ (modules star)
  (libraries joy))

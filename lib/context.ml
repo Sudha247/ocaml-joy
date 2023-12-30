@@ -3,7 +3,7 @@ type context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : float * float;
-  axes: bool;
+  axes : bool;
 }
 
 (* Renders context to PNG *)

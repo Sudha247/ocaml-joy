@@ -17,26 +17,8 @@ type shapes = shape list
 let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 
 (* point + scalar arithmetic *)
-let ( -! ) { x = x1; y = y1 } scalar = { x = x1 -. scalar; y = y1 -. scalar }
-let splat n = { x = n; y = n }
-
-let bi_to_uni { x; y } =
-  let cx, cy = Context.resolution () in
-  let nx = (x *. 0.5) +. (cx *. 0.5) in
-  let ny = (y *. 0.5) +. (cy *. 0.5) in
-  (nx, ny)
-
-let denormalize point =
-  let x, y = Context.resolution () in
-  let canvas_mid = { x; y } /~ splat 2. in
-  { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
-
-(* Scales points from 0-image size to 0-1 on both axes *)
-let scale_point size point =
-  let { x; y } = denormalize point in
-  let x, y = (x /. fst size, y /. snd size) in
-  (x, y)
-
+let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
+let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let point x y = { x; y }
 
 let circle ?point r =
@@ -45,7 +27,6 @@ let circle ?point r =
   | _ -> Circle { c = { x = 0.; y = 0. }; radius = r }
 
 let make_rectangle c width height =
-  let width, height = (width *. 2., height *. 2.) in
   let { x; y } = c -! ((width +. height) /. 4.) in
   Polygon
     [

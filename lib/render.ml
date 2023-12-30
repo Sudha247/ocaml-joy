@@ -1,6 +1,17 @@
 open Shape
 open Context
 
+let denormalize point =
+  let x, y = Context.resolution () in
+  let canvas_mid = { x; y } /! 2. in
+  { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
+
+(* Scales points from 0-image size to 0-1 on both axes *)
+let scale_point size point =
+  let { x; y } = denormalize point in
+  let x, y = (x /. fst size, y /. snd size) in
+  (x, y)
+
 let draw_circle ctx ({ c; radius } : circle) =
   let x, y = scale_point ctx.size c in
   let radius = radius /. min (fst ctx.size) (snd ctx.size) in
