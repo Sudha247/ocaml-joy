@@ -21,10 +21,12 @@ let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let point x y = { x; y }
 
-let circle ?(point = {x = 0.; y = 0.}) r =
+let center = {x= 0.; y = 0.}
+
+let circle ?(point = center) r =
   Circle { c = point; radius = r }
 
-let rectangle ?(point = {x= 0.; y = 0.}) width height =
+let rectangle ?(point = center) width height =
   let { x; y } = point -! ((width +. height) /. 4.) in
   Polygon
     [
@@ -35,10 +37,10 @@ let rectangle ?(point = {x= 0.; y = 0.}) width height =
     ]
   
 
-let ellipse ?(point = {x = 0.; y = 0.}) rx ry =
+let ellipse ?(point = center) rx ry =
   Ellipse { c = point; rx; ry }
 
-let line ?(point = {x = 0.; y = 0.}) point_b =
+let line ?(point = center) point_b =
   Line { a = point; b = point_b }
 
 let polygon lst_points = Polygon lst_points
