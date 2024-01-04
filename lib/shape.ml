@@ -21,13 +21,11 @@ let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let point x y = { x; y }
 
-let circle ?point r =
-  match point with
-  | Some point -> Circle { c = point; radius = r }
-  | _ -> Circle { c = { x = 0.; y = 0. }; radius = r }
+let circle ?(point = {x = 0.; y = 0.}) r =
+  Circle { c = point; radius = r }
 
-let make_rectangle c width height =
-  let { x; y } = c -! ((width +. height) /. 4.) in
+let rectangle ?(point = {x= 0.; y = 0.}) width height =
+  let { x; y } = point -! ((width +. height) /. 4.) in
   Polygon
     [
       { x; y };
@@ -35,21 +33,13 @@ let make_rectangle c width height =
       { x = x +. width; y = y +. height };
       { x = x +. width; y };
     ]
+  
 
-let rectangle ?point length width =
-  make_rectangle
-    (match point with Some c -> c | None -> { x = 0.; y = 0. })
-    length width
+let ellipse ?(point = {x = 0.; y = 0.}) rx ry =
+  Ellipse { c = point; rx; ry }
 
-let ellipse ?point rx ry =
-  match point with
-  | Some c -> Ellipse { c; rx; ry }
-  | None -> Ellipse { c = { x = 0.; y = 0. }; rx; ry }
-
-let line ?point point_b =
-  match point with
-  | Some p -> Line { a = p; b = point_b }
-  | _ -> Line { a = { x = 0.; y = 0. }; b = point_b }
+let line ?(point = {x = 0.; y = 0.}) point_b =
+  Line { a = point; b = point_b }
 
 let polygon lst_points = Polygon lst_points
 
