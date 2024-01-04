@@ -19,13 +19,14 @@ let rec translate dx dy shape =
 
 let rec scale factor s =
   let scale_length fact len = len *. sqrt fact in
+  let scale_point fact pt = pt *! sqrt fact in
   match s with
   | Circle circle' ->
-      Circle { circle' with radius = scale_length factor circle'.radius }
+      Circle { c = scale_point factor circle'.c; radius = scale_length factor circle'.radius  }
   | Ellipse ellipse' ->
       Ellipse
         {
-          ellipse' with
+          c = scale_point factor ellipse'.c; 
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
         }

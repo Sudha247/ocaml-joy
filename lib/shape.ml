@@ -19,6 +19,7 @@ let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 (* point + scalar arithmetic *)
 let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
+let ( *! ) {x; y} scalar = {x = x *. scalar; y = y *. scalar}
 let point x y = { x; y }
 
 let center = {x= 0.; y = 0.}
