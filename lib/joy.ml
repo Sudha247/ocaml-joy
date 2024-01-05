@@ -22,7 +22,7 @@ let set_line_width = Context.set_line_width
 let init ?(line_width = 0.002) ?(size = (800., 800.)) ?(axes = false) () =
   Context.init_context line_width size axes
 
-let write ?(filename = "cairo.png") () =
+let write ?(filename = "joy.png") () =
   match !Context.context with
   | Some ctx ->
       if ctx.axes then Render.render_axes ();
