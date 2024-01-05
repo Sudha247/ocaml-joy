@@ -10,7 +10,7 @@ let rec range a b = if a > b then [] else a :: range (a +. 1.) b
 let () =
   init ();
   background (1., 1., 1., 1.);
-  let initial = rectangle ~point:(point (-250.) (-250.)) 100. 100. in
+  let initial = rectangle ~c:(point (-250.) (-250.)) 100. 100. in
   let match_list l =
     match l with [] -> [ initial ] | last :: _ -> transform last :: l
   in

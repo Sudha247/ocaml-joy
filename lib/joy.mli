@@ -3,10 +3,10 @@ type shape = Shape.shape
 type shapes = Shape.shapes
 
 val point : float -> float -> point
-val circle : ?point:point -> float -> shape
-val rectangle : ?point:point -> float -> float -> shape
-val ellipse : ?point:point -> float -> float -> shape
-val line : ?point:point -> point -> shape
+val circle : ?c:point -> float -> shape
+val rectangle : ?c:point -> float -> float -> shape
+val ellipse : ?c:point -> float -> float -> shape
+val line : ?a:point -> point -> shape
 val polygon : point list -> shape
 val complex : shapes -> shape
 val rotate : int -> shape -> shape

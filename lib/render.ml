@@ -112,8 +112,8 @@ let render_axes () =
   save ();
   let x, y = Context.resolution () in
   let half_x, half_y = (x /. 2., y /. 2.) in
-  let x_axis = line ~point:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
-  let y_axis = line ~point:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
+  let x_axis = line ~a:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
+  let y_axis = line ~a:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
   set_color (0., 0., 0.);
   show [ x_axis; y_axis ];
   restore ()

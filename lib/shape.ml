@@ -24,11 +24,11 @@ let point x y = { x; y }
 
 let center = {x= 0.; y = 0.}
 
-let circle ?(point = center) r =
-  Circle { c = point; radius = r }
+let circle ?(c = center) r =
+  Circle { c; radius = r }
 
-let rectangle ?(point = center) width height =
-  let { x; y } = point -! ((width +. height) /. 4.) in
+let rectangle ?(c = center) width height =
+  let { x; y } = c -! ((width +. height) /. 4.) in
   Polygon
     [
       { x; y };
@@ -38,11 +38,11 @@ let rectangle ?(point = center) width height =
     ]
   
 
-let ellipse ?(point = center) rx ry =
-  Ellipse { c = point; rx; ry }
+let ellipse ?(c = center) rx ry =
+  Ellipse { c; rx; ry }
 
-let line ?(point = center) point_b =
-  Line { a = point; b = point_b }
+let line ?(a = center) b =
+  Line { a; b }
 
 let polygon lst_points = Polygon lst_points
 
