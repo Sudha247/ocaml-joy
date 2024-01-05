@@ -38,27 +38,28 @@ let rec scale factor s =
       polygon (List.map (scale_point factor) polygon')
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
-let deg_to_rad degrees = degrees *. (Stdlib.Float.pi /. 180.)
+let to_radians degrees = float_of_int degrees *. Stdlib.Float.pi /. 180.
 
-let bi_to_uni { x; y } =
-  let cx, cy = Context.resolution () in
-  let nx = (x *. 0.5) +. (cx *. 0.5) in
-  let ny = (y *. 0.5) +. (cy *. 0.5) in
-  (nx, ny)
+let to_polar point =
+  let { x; y } = point in
+    ( sqrt ((x *. x) +. (y *. y)),
+      atan2 y x )
 
-let rot degrees { x; y } =
-  let radians = deg_to_rad (float_of_int degrees) in
-  let dx = (x *. cos radians) -. (y *. sin radians) in
-  let dy = (x *. sin radians) +. (y *. cos radians) in
-  let dx, dy = bi_to_uni { x = dx; y = dy } in
-  { x = dx; y = dy }
+let from_polar polar_point =
+  let (r, theta) = polar_point in
+  { x = r *. cos theta; y = r *. sin theta }
+
+let rotate_point degrees point =
+  let radians = to_radians degrees in
+  let (r, theta) = to_polar point in
+  from_polar (r, theta +. radians)
 
 let rec rotate degrees shape =
   match shape with
-  | Circle circle' -> Circle { circle' with c = rot degrees circle'.c }
-  | Ellipse ellipse' -> Ellipse { ellipse' with c = rot degrees ellipse'.c }
+  | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
+  | Ellipse ellipse' -> Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
   | Line _line -> failwith "Not Implemented"
-  | Polygon polygon' -> polygon (List.map (rot degrees) polygon')
+  | Polygon polygon' -> polygon (List.map (rotate_point degrees) polygon')
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
