@@ -13,10 +13,10 @@ type shape =
 
 type shapes = shape list
 
-(* point - point arithmetic *)
+(* point -> point arithmetic *)
 let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 
-(* point + scalar arithmetic *)
+(* point -> scalar arithmetic *)
 let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let ( *! ) {x; y} scalar = {x = x *. scalar; y = y *. scalar}
