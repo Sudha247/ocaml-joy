@@ -82,3 +82,8 @@
  (name star)
  (modules star)
  (libraries joy))
+ 
+(executable 
+ (name repeat)
+ (modules repeat)
+ (libraries joy))
