@@ -12,5 +12,5 @@ let () =
   let initial = rectangle ~c:(point (-250.) (-250.)) 100. 100. in
   let shapes = repeat 32 transform initial in
   set_color (0., 0., 0.);
-  show shapes;
+  render shapes;
   write ~filename:"higher_transforms.png" ()

@@ -13,6 +13,7 @@ val rotate : int -> shape -> shape
 val translate : float -> float -> shape -> shape
 val scale : float -> shape -> shape
 val compose : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
+val repeat : int -> (shape -> shape) -> shape -> shape
 val context : Context.context option ref
 val set_color : float * float * float -> unit
 val background : float * float * float * float -> unit

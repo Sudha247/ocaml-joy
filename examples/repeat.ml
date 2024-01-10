@@ -1,4 +1,4 @@
-open Joy.Shape
+open Joy
 
 (*
     demonstration of the repeat function
@@ -10,12 +10,9 @@ open Joy.Shape
 
 let () =
   init ();
-<<<<<<< HEAD
-  let circle = circle ~point:{x = (-100); y = 0} 50 in 
-  let shapes = repeat 10 (translate 10 0) circle in 
-=======
-  let circle = circle ~x:(-100) ~y:0 50 in
-  let shapes = repeat 10 (translate 10 0) circle in
->>>>>>> 66df79e (formatting)
-  render_shape shapes;
-  close ()
+  background (1., 1., 1., 1.);
+  let circle = circle ~c:(point (-100.) 0.) 50. in
+  let shapes = repeat 10 (translate 10. 0.) circle in 
+  set_color (0., 0., 0.);
+  render shapes;
+  write ~filename:"repeat.png" ()

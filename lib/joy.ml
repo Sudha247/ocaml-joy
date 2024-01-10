@@ -15,6 +15,7 @@ let rotate = Transform.rotate
 let scale = Transform.scale
 let translate = Transform.translate
 let compose = Transform.compose
+let repeat = Transform.repeat
 let set_color = Context.set_color
 let background = Context.background
 let set_line_width = Context.set_line_width
