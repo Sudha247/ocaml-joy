@@ -1,56 +1,26 @@
 (executable
- (name circle)
- (modules circle)
- (libraries graphics))
-
-(executable
- (name circle_graph)
- (modules circle_graph)
- (libraries graphics))
-
-(executable
- (name concentric_circles)
- (modules concentric_circles)
- (libraries graphics))
-
-(executable
- (name rectangle)
- (modules rectangle)
+ (name axes)
+ (modules axes)
  (libraries joy))
 
 (executable
- (name circle_grid)
- (modules circle_grid)
- (libraries graphics))
+ (name circle)
+ (modules circle)
+ (libraries joy))
 
 (executable
- (name circle_row)
- (modules circle_row)
- (libraries graphics))
-
-(executable
- (name circle_rectangle)
- (modules circle_rectangle)
- (libraries graphics))
+ (name ellipse)
+ (modules ellipse)
+ (libraries joy))
 
 (executable
  (name triangle)
  (modules triangle)
- (libraries graphics))
+ (libraries joy))
 
 (executable
- (name star)
- (modules star)
- (libraries graphics))
-
-(executable
- (name polygons)
- (modules polygons)
- (libraries graphics))
-
-(executable
- (name axes)
- (modules axes)
+ (name concentric_circles)
+ (modules concentric_circles)
  (libraries joy))
 
 (executable
@@ -84,11 +54,6 @@
  (libraries joy))
 
 (executable
- (name ellipse)
- (modules ellipse)
- (libraries joy))
-
-(executable
  (name higher_transforms)
  (modules higher_transforms)
  (libraries joy))
@@ -99,7 +64,6 @@
  (libraries joy))
 
 (executable
-<<<<<<< HEAD
  (name polygon)
  (modules polygon)
  (libraries joy))
@@ -108,10 +72,18 @@
  (name circle_packing)
  (modules circle_packing)
  (libraries joy))
+
+(executable
+ (name rectangle)
+ (modules rectangle)
+ (libraries joy))
+
+(executable
+ (name star)
+ (modules star)
+ (libraries joy))
  
 (executable 
-=======
->>>>>>> 66df79e (formatting)
  (name repeat)
  (modules repeat)
  (libraries joy))

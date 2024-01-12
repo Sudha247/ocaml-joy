@@ -1,0 +1,49 @@
+(executable
+ (name circle)
+ (modules circle)
+ (libraries graphics))
+
+(executable
+ (name circle_graph)
+ (modules circle_graph)
+ (libraries graphics))
+
+(executable
+ (name concentric_circles)
+ (modules concentric_circles)
+ (libraries graphics))
+
+(executable
+ (name circle_grid)
+ (modules circle_grid)
+ (libraries graphics))
+
+(executable
+ (name circle_row)
+ (modules circle_row)
+ (libraries graphics))
+
+(executable
+ (name circle_rectangle)
+ (modules circle_rectangle)
+ (libraries graphics))
+
+(executable
+ (name triangle)
+ (modules triangle)
+ (libraries graphics))
+
+(executable
+ (name star)
+ (modules star)
+ (libraries graphics))
+
+(executable
+ (name polygons)
+ (modules polygons)
+ (libraries graphics))
+
+(executable
+ (name cairo)
+ (modules cairo)
+ (libraries cairo2))

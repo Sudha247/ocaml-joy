@@ -1,12 +1,11 @@
-open Graphics
+open Joy
 
 let () =
-  open_graph " 300x300";
-  set_color black;
-
-  (* Draw an ellipse  *)
-  draw_ellipse 150 150 50 30;
-
-  ignore (read_line ());
-  close_graph ();
-  exit 0
+  init ();
+  background (1., 1., 1., 1.);
+  (* create an ellipse *)
+  let e = ellipse 100. 75. in
+  (* render it *)
+  set_color (0., 0., 0.);
+  render e;
+  write ~filename:"ellipse.png" ()

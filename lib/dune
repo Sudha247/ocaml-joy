@@ -1,5 +1,5 @@
 (library
  (name joy)
  (public_name joy)
- (libraries graphics)
+ (libraries cairo2)
  (wrapped false))

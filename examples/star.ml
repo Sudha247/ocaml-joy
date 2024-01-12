@@ -1,57 +1,24 @@
-open Graphics
+open Joy
 
-type point = { x : int; y : int }
+let outer_radius = 200.
+let inner_radius = 80.
+let points = 5
+let angle_step = 2. *. Float.pi /. float_of_int points
 
-type star = {
-  center : point;
-  outer_radius : int;
-  inner_radius : int;
-  num_points : int;
-}
-
-type shape = Star of star
-
-let canvas_size = (500, 500)
-
-let render_shape s =
-  match s with
-  | Star star ->
-      let center_x = star.center.x in
-      let center_y = star.center.y in
-      let outer_r = float_of_int star.outer_radius in
-      let inner_r = float_of_int star.inner_radius in
-      let num_points = star.num_points in
-      let angle_step = 360.0 /. float_of_int num_points in
-      moveto (center_x + int_of_float outer_r) center_y;
-      for i = 1 to num_points * 2 do
-        let angle = float_of_int i *. angle_step in
-        let radius = if i mod 2 = 0 then outer_r else inner_r in
-        let x =
-          center_x + int_of_float (radius *. cos (angle *. 3.14159265 /. 180.0))
-        in
-        let y =
-          center_y + int_of_float (radius *. sin (angle *. 3.14159265 /. 180.0))
-        in
-        lineto x y
-      done;
-      lineto (center_x + int_of_float outer_r) center_y
-
-let star center outer_radius inner_radius num_points =
-  Star { center; outer_radius; inner_radius; num_points }
-
-let show shapes = List.iter render_shape shapes
+let star_section i =
+  let i = float_of_int i in
+  let x = outer_radius *. cos (angle_step *. i)
+  and y = outer_radius *. sin (angle_step *. i) in
+  let outer_point : point = { x; y } in
+  let x = inner_radius *. cos ((i +. 0.5) *. angle_step)
+  and y = inner_radius *. sin ((i +. 0.5) *. angle_step) in
+  [ outer_point; { x; y } ]
 
 let () =
-  open_graph
-    (" "
-    ^ string_of_int (fst canvas_size)
-    ^ "x"
-    ^ string_of_int (snd canvas_size));
-  set_color black;
-
-  let star_shape = star { x = 250; y = 250 } 50 20 5 in
-
-  show [ star_shape ];
-
-  ignore (read_line ());
-  close_graph ()
+  init ();
+  background (1., 1., 1., 1.);
+  set_line_width 0.0035;
+  let star = List.init points star_section |> List.flatten |> polygon in
+  set_color (0., 0., 0.);
+  render star;
+  write ~filename:"star.png" ()

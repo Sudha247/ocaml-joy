@@ -1,12 +1,9 @@
-open Graphics
+open Joy
 
 let () =
-  open_graph " 300x300";
-  (* Open a graphics window with dimensions 800x600 *)
-  set_color black;
-
-  draw_circle 150 150 50;
-
-  ignore (read_line ());
-  close_graph ();
-  exit 0
+  init ();
+  background (1., 1., 1., 1.);
+  let c = circle 50. in
+  set_color (0., 0., 0.);
+  render c;
+  write ~filename:"circle.png" ()

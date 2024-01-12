@@ -1,40 +1,19 @@
-open Graphics
-
-type point = { x : int; y : int }
-type circle = { c : point; radius : int }
-type shape = Circle of circle
-
-let canvas_size = (500, 500)
-let canvas_mid = { x = fst canvas_size / 2; y = snd canvas_size / 2 }
-
-let render_shape s =
-  match s with
-  | Circle circle -> draw_circle circle.c.x circle.c.y circle.radius
-
-let concentric_circles ?x ?y num_circles spacing =
-  let center =
-    match (x, y) with Some x, Some y -> { x; y } | _ -> canvas_mid
-  in
-  let rec create_circles n radius acc =
-    if n <= 0 then acc
-    else
-      let c = Circle { c = center; radius } in
-      create_circles (n - 1) (radius + spacing) (c :: acc)
-  in
-  create_circles num_circles 10 []
-
-let show shapes = List.iter render_shape shapes
+open Joy
 
 let () =
-  open_graph
-    (" "
-    ^ string_of_int (fst canvas_size)
-    ^ "x"
-    ^ string_of_int (snd canvas_size));
-  set_color black;
+  init ();
+  background (1., 1., 1., 1.);
 
-  let circles = concentric_circles 5 20 in
-  show circles;
-
-  ignore (read_line ());
-  close_graph ()
+  let init_circle = circle 200. in
+  let interval = 1. -. (1. /. 20.) in
+  let rec make_concentric (arr : shape list) (i : int) : shape list =
+    match (arr, i) with
+    | [], 21 -> make_concentric [ init_circle ] 20
+    | hd :: _, n when n > 0 ->
+        make_concentric ([ scale interval hd ] @ arr) (n - 1)
+    | _, _ -> arr
+  in
+  let circles = complex (make_concentric [] 21) in
+  set_color (0., 0., 0.);
+  render circles;
+  write ~filename:"concentric_circles.png" ()
