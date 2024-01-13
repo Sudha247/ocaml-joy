@@ -41,10 +41,14 @@ let rectangle ?(c = center) width height =
       { x = x1 +. w; y = y1 };
     ]
 
+<<<<<<< HEAD
 let ellipse ?(c = center) rx ry =
   let rx, ry = (float_of_int rx, float_of_int ry) in
   Ellipse { c; rx; ry }
 
+=======
+let ellipse ?(c = center) rx ry = Ellipse { c; rx; ry }
+>>>>>>> 7ad720e (added flowfield example, dune fmt)
 let line ?(a = center) b = Line { a; b }
 let polygon lst_points = Polygon lst_points
 
