@@ -82,8 +82,13 @@
  (name star)
  (modules star)
  (libraries joy))
- 
-(executable 
+
+(executable
  (name repeat)
  (modules repeat)
  (libraries joy))
+
+(executable
+ (name flowfield)
+ (modules flowfield noise)
+ (libraries joy base))
