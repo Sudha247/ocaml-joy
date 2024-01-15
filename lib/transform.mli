@@ -1,5 +1,6 @@
-val translate : float -> float -> Shape.shape -> Shape.shape
-val scale : float -> Shape.shape -> Shape.shape
-val rotate : int -> Shape.shape -> Shape.shape
-val compose : (Shape.shape -> Shape.shape) -> (Shape.shape -> Shape.shape) -> Shape.shape -> Shape.shape
-val repeat : int -> (Shape.shape -> Shape.shape) -> Shape.shape -> Shape.shape
+type transform = (Shape.shape -> Shape.shape)
+val translate : float -> float -> transform
+val scale : float -> transform
+val rotate : int -> transform
+val compose : transform -> transform -> transform
+val repeat : int -> transform -> transform

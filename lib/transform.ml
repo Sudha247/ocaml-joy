@@ -1,5 +1,7 @@
 open Shape
 
+type transform = (shape -> shape)
+
 let rec translate dx dy shape =
   match shape with
   | Circle circle ->
