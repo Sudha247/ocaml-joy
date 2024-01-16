@@ -14,10 +14,14 @@ let scale_point size point =
   let x, y = (x /. fst size, y /. snd size) in
   (x, y)
 
+let euclid_norm (x, y) = (sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.)
+
 let draw_circle ctx ({ c; radius } : circle) =
   let size = tmap float_of_int ctx.size in
   let x, y = scale_point size c in
-  let radius = radius /. min (fst size) (snd size) in
+  let radius =
+    radius /. euclid_norm size
+  in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
