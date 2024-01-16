@@ -87,3 +87,8 @@
  (name repeat)
  (modules repeat)
  (libraries joy))
+
+(executable 
+ (name ellipse_rotation)
+ (modules ellipse_rotation)
+ (libraries joy))

@@ -25,10 +25,11 @@ let rec scale factor s =
       Circle { c = scale_point factor circle'.c; radius = scale_length factor circle'.radius  }
   | Ellipse ellipse' ->
       Ellipse
-        {
+        { ellipse' with
           c = scale_point factor ellipse'.c; 
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
+          
         }
   | Line _line' -> failwith "Not Implemented"
   | Polygon polygon' ->
@@ -57,7 +58,7 @@ let rotate_point degrees point =
 let rec rotate degrees shape =
   match shape with
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
-  | Ellipse ellipse' -> Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
+  | Ellipse ellipse' -> Ellipse { ellipse' with rot = float_of_int degrees +. ellipse'.rot }
   | Line _line -> failwith "Not Implemented"
   | Polygon polygon' -> polygon (List.map (rotate_point degrees) polygon')
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)

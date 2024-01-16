@@ -18,7 +18,7 @@ let draw_circle ctx ({ c; radius } : circle) =
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
-let create_control_points { c; rx; ry } =
+let create_control_points { c; rx; ry; _ } =
   let size = resolution () in
   let x, y = scale_point size c in
   let half_height = ry /. snd size in
@@ -40,6 +40,7 @@ let create_control_points { c; rx; ry } =
 let draw_ellipse ctx ellipse =
   let start, curve_one, curve_two = create_control_points ellipse in
   Cairo.save ctx.ctx;
+  Cairo.rotate ctx.ctx (ellipse.rot /. 360.);
   Cairo.move_to ctx.ctx start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
   Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;

@@ -1,6 +1,6 @@
 type point = { x : float; y : float }
 type circle = { c : point; radius : float }
-type ellipse = { c : point; rx : float; ry : float }
+type ellipse = { c : point; rx : float; ry : float; rot : float }
 type polygon = point list
 type line = { a : point; b : point }
 

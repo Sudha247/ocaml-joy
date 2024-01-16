@@ -1,7 +1,7 @@
 type point = { x : float; y : float }
 type line = { a : point; b : point }
 type circle = { c : point; radius : float }
-type ellipse = { c : point; rx : float; ry : float }
+type ellipse = { c : point; rx : float; ry : float; rot: float }
 type polygon = point list
 
 type shape =
@@ -39,7 +39,7 @@ let rectangle ?(c = center) width height =
   
 
 let ellipse ?(c = center) rx ry =
-  Ellipse { c; rx; ry }
+  Ellipse { c; rx; ry; rot = 0. }
 
 let line ?(a = center) b =
   Line { a; b }
