@@ -49,9 +49,6 @@ let rec scale factor = function
         }
   | Line _line' -> failwith "Not Implemented"
   | Polygon polygon' ->
-      let scale_point factor { x; y } =
-        { x = scale_length factor x; y = scale_length factor y }
-      in
       Polygon
         {
           polygon' with
