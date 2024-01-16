@@ -24,20 +24,16 @@ let init_context line_width (w, h) axes =
   if Option.is_some !context then
     raise (Context "Cannot initialize context twice");
 
-  let surface =
-    Cairo.Image.create Cairo.Image.ARGB32 ~w
-      ~h
-  in
+  let surface = Cairo.Image.create Cairo.Image.ARGB32 ~w ~h in
   let ctx = Cairo.create surface in
-  Cairo.scale ctx (float_of_int w ) (float_of_int h);
+  Cairo.scale ctx (float_of_int w) (float_of_int h);
   Cairo.set_line_width ctx line_width;
   context := Some { ctx; surface; size = (w, h); axes }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
-
-let tmap3 f (a, b ,c) = (f a, f b, f c) 
-let tmap4 f (a, b , c, d) = (f a, f b, f c, f d) 
-let (>>) f g x = g (f x) 
+let tmap3 f (a, b, c) = (f a, f b, f c)
+let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
+let ( >> ) f g x = g (f x)
 let scale_color_channel x = x /. 256.
 
 let set_color color =

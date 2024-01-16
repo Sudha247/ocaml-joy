@@ -15,7 +15,10 @@ let _ =
       (fun i ->
         let newx = i |> inc |> ( *. ) line_interval in
         line
-          ~a:(point (int_of_float (newx -. half_size)) (int_of_float (-.half_size)))
+          ~a:
+            (point
+               (int_of_float (newx -. half_size))
+               (int_of_float (-.half_size)))
           (point (int_of_float (newx -. half_size)) (int_of_float half_size)))
       (range 0. interval)
   in

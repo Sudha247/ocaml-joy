@@ -11,22 +11,22 @@ let shrink_factor = 0.85
 let _ = Stdlib.Random.self_init ()
 
 let palette =
-    [
-      (* purple *)
-      (107, 108, 163);
-      (* light blue *)
-      (135, 188, 189);
-      (* green *)
-      (111, 153, 84);
-      (* light purple *)
-      (150, 155, 199);
-      (* light green *)
-      (137, 171, 124);
-      (* dark purple *)
-      (67, 68, 117);
-      (* darker purple *)
-      (44, 45, 84);
-    ]
+  [
+    (* purple *)
+    (107, 108, 163);
+    (* light blue *)
+    (135, 188, 189);
+    (* green *)
+    (111, 153, 84);
+    (* light purple *)
+    (150, 155, 199);
+    (* light green *)
+    (137, 171, 124);
+    (* dark purple *)
+    (67, 68, 117);
+    (* darker purple *)
+    (44, 45, 84);
+  ]
 
 (* utility Functions *)
 
@@ -101,6 +101,10 @@ let () =
   let circles = pack_circles () in
   let circles = List.flatten (List.map make_concentric circles) in
   List.iter
-    (fun ((x, y), radius) -> draw_with_color (circle ~c:(point (int_of_float x) (int_of_float y)) (int_of_float radius)))
+    (fun ((x, y), radius) ->
+      draw_with_color
+        (circle
+           ~c:(point (int_of_float x) (int_of_float y))
+           (int_of_float radius)))
     circles;
   write ~filename:"Circle packing.png" ()

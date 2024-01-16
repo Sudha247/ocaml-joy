@@ -18,10 +18,7 @@ val context : Context.context option ref
 val set_color : int * int * int -> unit
 val background : int * int * int * int -> unit
 val set_line_width : int -> unit
-
-val init :
-  ?line_width:int -> ?size:int * int -> ?axes:bool -> unit -> unit
-
+val init : ?line_width:int -> ?size:int * int -> ?axes:bool -> unit -> unit
 val render : shape -> unit
 val show : shapes -> unit
 val write : ?filename:string -> unit -> unit

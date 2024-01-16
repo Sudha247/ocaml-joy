@@ -12,7 +12,7 @@ let () =
   init ();
   background (255, 255, 255, 255);
   let circle = circle ~c:(point (-100) 0) 50 in
-  let shapes = repeat 10 (translate 10 0) circle in 
+  let shapes = repeat 10 (translate 10 0) circle in
   set_color (0, 0, 0);
   render shapes;
   write ~filename:"repeat.png" ()

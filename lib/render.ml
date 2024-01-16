@@ -1,7 +1,7 @@
 open Shape
 open Context
 
-let tmap f (x, y) = (f x, f y) 
+let tmap f (x, y) = (f x, f y)
 
 let denormalize point =
   let x, y = Context.resolution () in
@@ -22,7 +22,7 @@ let draw_circle ctx ({ c; radius } : circle) =
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let size = resolution () |> tmap float_of_int in 
+  let size = resolution () |> tmap float_of_int in
   let x, y = scale_point size c in
   let half_height = ry /. snd size in
   let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in

@@ -26,8 +26,7 @@ let () =
   let complex_shape =
     complex
       (List.map
-         (fun (x, y) ->
-           circle ~c:(point (x * radius) (y * radius)) radius)
+         (fun (x, y) -> circle ~c:(point (x * radius) (y * radius)) radius)
          coords)
   in
   (* translating that complex shape by radius / 2 *)

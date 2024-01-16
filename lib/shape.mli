@@ -25,4 +25,3 @@ val ellipse : ?c:float point -> int -> int -> shape
 val complex : shape list -> shape
 val line : ?a:float point -> float point -> shape
 val polygon : float point list -> shape
-
