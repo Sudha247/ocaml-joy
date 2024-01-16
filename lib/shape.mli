@@ -1,8 +1,8 @@
-type point = { x : float; y : float }
-type circle = { c : point; radius : float }
-type ellipse = { c : point; rx : float; ry : float }
-type polygon = point list
-type line = { a : point; b : point }
+type 'a point = { x : 'a; y : 'a }
+type circle = { c : float point; radius : float }
+type ellipse = { c : float point; rx : float; ry : float }
+type polygon = float point list
+type line = { a : float point; b : float point }
 
 type shape =
   | Circle of circle
@@ -13,15 +13,16 @@ type shape =
 
 type shapes = shape list
 
-val point : float -> float -> point
-val ( /~ ) : point -> point -> point
-val ( -! ) : point -> float -> point
-val ( /! ) : point -> float -> point
-val ( *! ) : point -> float -> point
-val circle : ?c:point -> float -> shape
-val rectangle : ?c:point -> float -> float -> shape
-val ellipse : ?c:point -> float -> float -> shape
+val point : int -> int -> float point
+val ( /~ ) : float point -> float point -> float point
+val ( -! ) : float point -> float -> float point
+val ( /! ) : float point -> float -> float point
+val ( *! ) : float point -> float -> float point
+val pmap : ('a -> 'b) -> 'a point -> 'b point
+val circle : ?c:float point -> int -> shape
+val rectangle : ?c:float point -> int -> int -> shape
+val ellipse : ?c:float point -> int -> int -> shape
 val complex : shape list -> shape
-val line : ?a:point -> point -> shape
-val polygon : point list -> shape
+val line : ?a:float point -> float point -> shape
+val polygon : float point list -> shape
 

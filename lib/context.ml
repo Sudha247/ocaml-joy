@@ -2,7 +2,7 @@
 type context = {
   ctx : Cairo.context;
   surface : Cairo.Surface.t;
-  size : float * float;
+  size : int * int;
   axes : bool;
 }
 
@@ -19,26 +19,31 @@ let () =
 
 let fail () = raise (Context "not initialized")
 
-let init_context line_width (x, y) axes =
+let init_context line_width (w, h) axes =
   (* Fail if context has already been instantiated *)
   if Option.is_some !context then
     raise (Context "Cannot initialize context twice");
 
   let surface =
-    Cairo.Image.create Cairo.Image.ARGB32 ~w:(int_of_float x)
-      ~h:(int_of_float y)
+    Cairo.Image.create Cairo.Image.ARGB32 ~w
+      ~h
   in
   let ctx = Cairo.create surface in
-  Cairo.scale ctx x y;
+  Cairo.scale ctx (float_of_int w ) (float_of_int h);
   Cairo.set_line_width ctx line_width;
-  context := Some { ctx; surface; size = (x, y); axes }
+  context := Some { ctx; surface; size = (w, h); axes }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
+
+let tmap3 f (a, b ,c) = (f a, f b, f c) 
+let tmap4 f (a, b , c, d) = (f a, f b, f c, f d) 
+let (>>) f g x = g (f x) 
+let scale_color_channel x = x /. 256.
 
 let set_color color =
   match !context with
   | Some ctx ->
-      let r, g, b = color in
+      let r, g, b = tmap3 (float_of_int >> scale_color_channel) color in
       Cairo.set_source_rgba ctx.ctx r g b 1.
   | None -> fail ()
 
@@ -46,14 +51,14 @@ let set_color color =
 let background color =
   match !context with
   | Some ctx ->
-      let r, g, b, a = color in
+      let r, g, b, a = tmap4 (float_of_int >> scale_color_channel) color in
       Cairo.set_source_rgba ctx.ctx r g b a;
       Cairo.paint ctx.ctx
   | None -> fail ()
 
 let set_line_width line_width =
   match !context with
-  | Some ctx -> Cairo.set_line_width ctx.ctx line_width
+  | Some ctx -> Cairo.set_line_width ctx.ctx (float_of_int line_width /. 1000.)
   | None -> fail ()
 
 let save () =

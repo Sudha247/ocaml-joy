@@ -2,6 +2,7 @@ open Joy
 
 (* global constants // RNG initialization *)
 let resolution = (1200., 900.)
+let tmap f (x, y) = (f x, f y)
 let min_radius = 20.
 let max_radius = 150.
 let num_circles = 5_000
@@ -10,23 +11,21 @@ let shrink_factor = 0.85
 let _ = Stdlib.Random.self_init ()
 
 let palette =
-  List.map
-    (fun (r, g, b) -> (r /. 255., g /. 255., b /. 255.))
     [
       (* purple *)
-      (107., 108., 163.);
+      (107, 108, 163);
       (* light blue *)
-      (135., 188., 189.);
+      (135, 188, 189);
       (* green *)
-      (111., 153., 84.);
+      (111, 153, 84);
       (* light purple *)
-      (150., 155., 199.);
+      (150, 155, 199);
       (* light green *)
-      (137., 171., 124.);
+      (137, 171, 124);
       (* dark purple *)
-      (67., 68., 117.);
+      (67, 68, 117);
       (* darker purple *)
-      (44., 45., 84.);
+      (44, 45, 84);
     ]
 
 (* utility Functions *)
@@ -96,12 +95,12 @@ let make_concentric circle =
 
 (* main fn *)
 let () =
-  init ~size:resolution ();
-  background (1., 1., 1., 1.);
-  set_line_width 0.001;
+  init ~size:(tmap int_of_float resolution) ();
+  background (255, 255, 255, 255);
+  set_line_width 1;
   let circles = pack_circles () in
   let circles = List.flatten (List.map make_concentric circles) in
   List.iter
-    (fun ((x, y), radius) -> draw_with_color (circle ~c:(point x y) radius))
+    (fun ((x, y), radius) -> draw_with_color (circle ~c:(point (int_of_float x) (int_of_float y)) (int_of_float radius)))
     circles;
   write ~filename:"Circle packing.png" ()

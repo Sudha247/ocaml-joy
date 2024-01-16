@@ -1,9 +1,11 @@
 open Shape
 open Context
 
+let tmap f (x, y) = (f x, f y) 
+
 let denormalize point =
   let x, y = Context.resolution () in
-  let canvas_mid = { x; y } /! 2. in
+  let canvas_mid = pmap float_of_int { x; y } /! 2. in
   { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
 
 (* Scales points from 0-image size to 0-1 on both axes *)
@@ -13,13 +15,14 @@ let scale_point size point =
   (x, y)
 
 let draw_circle ctx ({ c; radius } : circle) =
-  let x, y = scale_point ctx.size c in
-  let radius = radius /. min (fst ctx.size) (snd ctx.size) in
+  let size = tmap float_of_int ctx.size in
+  let x, y = scale_point size c in
+  let radius = radius /. min (fst size) (snd size) in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let size = resolution () in
+  let size = resolution () |> tmap float_of_int in 
   let x, y = scale_point size c in
   let half_height = ry /. snd size in
   let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in
@@ -50,8 +53,9 @@ let draw_ellipse ctx ellipse =
 
 let draw_line ctx line =
   save ();
-  let x1, y1 = scale_point ctx.size line.a in
-  let x2, y2 = scale_point ctx.size line.b in
+  let size = resolution () |> tmap float_of_int in
+  let x1, y1 = scale_point size line.a in
+  let x2, y2 = scale_point size line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
   Cairo.stroke ctx.ctx;
@@ -82,7 +86,7 @@ let draw_polygon ctx polygon =
   let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
   List.iter
     (fun pair ->
-      let pair = List.map (scale_point ctx.size) pair in
+      let pair = List.map (tmap float_of_int ctx.size |> scale_point) pair in
       let (x1, y1), (x2, y2) = (List.nth pair 0, List.nth pair 1) in
       Cairo.move_to ctx.ctx x1 y1;
       Cairo.line_to ctx.ctx x2 y2)
@@ -110,10 +114,10 @@ let show shapes =
 let render_axes () =
   print_endline "rendering axes!";
   save ();
-  let x, y = Context.resolution () in
+  let x, y = Context.resolution () |> tmap float_of_int in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~a:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
   let y_axis = line ~a:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
-  set_color (0., 0., 0.);
+  set_color (0, 0, 0);
   show [ x_axis; y_axis ];
   restore ()
