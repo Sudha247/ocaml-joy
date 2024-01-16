@@ -22,8 +22,8 @@ let rec translate dx dy shape =
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
 let rec scale factor s =
-  let scale_length fact len = len *. sqrt fact in
-  let scale_point fact pt = pt *! sqrt fact in
+  let scale_length fact len = len *. fact in
+  let scale_point fact pt = pt *! fact in
   match s with
   | Circle circle' ->
       Circle

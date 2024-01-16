@@ -79,6 +79,11 @@
  (libraries joy))
 
 (executable
+ (name rectangle_canvas)
+ (modules rectangle_canvas)
+ (libraries joy))
+
+(executable
  (name star)
  (modules star)
  (libraries joy))
@@ -86,4 +91,9 @@
 (executable
  (name repeat)
  (modules repeat)
+ (libraries joy))
+
+(executable
+ (name donut_with_scale)
+ (modules donut_with_scale)
  (libraries joy))
