@@ -53,7 +53,8 @@ let background color =
   | None -> fail ()
 
 (** Sets the width of lines for both stroke of shapes and line primitives. 
-    Can be any positive integer, default is 2 *)
+    Can be any positive integer, with larger numbers producing thicker lines. 
+    default is 2 *)
 let set_line_width line_width =
   match !context with
   | Some ctx -> Cairo.set_line_width ctx.ctx (float_of_int line_width /. 1000.)
