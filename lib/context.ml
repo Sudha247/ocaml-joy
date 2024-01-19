@@ -36,18 +36,22 @@ let init_context line_width (w, h) axes =
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
 let tmap3 f (a, b, c) = (f a, f b, f c)
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
-let ( >> ) f g x = g (f x)
 let scale_color_channel x = x /. 256.
 let scale_color_channel = float_of_int >> scale_color_channel
 
 let tmap3 f (a, b, c) = (f a, f b, f c) 
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
 let scale_channel n = float_of_int n /. 255.
+
 let set_color color =
   match !context with
   | Some ctx ->
       let r, g, b = tmap3 scale_color_channel color in
+<<<<<<< HEAD
       Cairo.set_source_rgb ctx.ctx r g b
+=======
+      Cairo.set_source_rgba ctx.ctx r g b 1.
+>>>>>>> 9b47680 (dune fmt)
   | None -> fail ()
 
 (* sets background color *)

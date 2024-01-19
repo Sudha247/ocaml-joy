@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 type 'a point = { x : 'a; y : 'a }
 type line = { a : float point; b : float point; color: Color.color }
 type circle = { c : float point; radius : float; color: Color.color }
 type ellipse = { c : float point; rx : float; ry : float; color: Color.color }
 type polygon = { vertices: float point list; color: Color.color}
+=======
+type point = { x : float; y : float }
+type line = { a : point; b : point; color : Color.color }
+type circle = { c : point; radius : float; color : Color.color }
+type ellipse = { c : point; rx : float; ry : float; color : Color.color }
+type polygon = { vertices : point list; color : Color.color }
+>>>>>>> e3eb27d (dune fmt)
 
 type shape =
   | Circle of circle
@@ -52,9 +60,9 @@ let line ?(a = center) b = Line { a; b; color = Color.black }
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
 
-let rec with_color color = function 
-| Circle circle -> Circle { circle with color = color }
-| Ellipse ellipse -> Ellipse { ellipse with color = color }
-| Line line -> Line { line with color = color }
-| Polygon polygon' -> Polygon { polygon' with color = color } 
-| Complex complex' -> Complex (List.map (with_color color) complex')
+let rec with_color color = function
+  | Circle circle -> Circle { circle with color }
+  | Ellipse ellipse -> Ellipse { ellipse with color }
+  | Line line -> Line { line with color }
+  | Polygon polygon' -> Polygon { polygon' with color }
+  | Complex complex' -> Complex (List.map (with_color color) complex')

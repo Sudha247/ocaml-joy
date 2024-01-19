@@ -37,7 +37,7 @@ let create_control_points (c, rx, ry) =
       x,
       y -. half_height ) )
 
-let draw_ellipse ctx {c; rx; ry; color} =
+let draw_ellipse ctx { c; rx; ry; color } =
   let start, curve_one, curve_two = create_control_points (c, rx, ry) in
   save ();
   set_color color;
@@ -49,7 +49,7 @@ let draw_ellipse ctx {c; rx; ry; color} =
   Cairo.stroke ctx.ctx;
   restore ()
 
-let draw_line ctx {a; b; color} =
+let draw_line ctx { a; b; color } =
   save ();
   let x1, y1 = denormalize a in
   let x2, y2 = denormalize b in
@@ -79,7 +79,7 @@ let rec partition n ?step lst =
         | None -> partition n ~step:0 (List.tl lst))
       else []
 
-let draw_polygon ctx {vertices = points; color} =
+let draw_polygon ctx { vertices = points; color} =
   save ();
   set_color color;
   let points = partition 2 ~step:1 (points @ [ List.hd points ]) in

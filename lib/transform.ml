@@ -14,12 +14,20 @@ let rec translate dx dy shape =
   | Line line ->
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Line
-        { line with
+        {
+          line with
           a = { x = line.a.x +. dx; y = line.a.y +. dy };
           b = { x = line.b.x +. dx; y = line.b.y +. dy };
         }
   | Polygon polygon' ->
-      Polygon { polygon' with vertices = (List.map (fun { x; y } -> { x = x +. dx; y = y +. dy }) polygon'.vertices)}
+      Polygon
+        {
+          polygon' with
+          vertices =
+            List.map
+              (fun { x; y } -> { x = x +. dx; y = y +. dy })
+              polygon'.vertices;
+        }
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
 let rec scale factor s =
@@ -27,11 +35,17 @@ let rec scale factor s =
   let scale_point fact pt = pt *! fact in
   match s with
   | Circle circle' ->
-      Circle { circle' with c = scale_point factor circle'.c; radius = scale_length factor circle'.radius  }
+      Circle
+        {
+          circle' with
+          c = scale_point factor circle'.c;
+          radius = scale_length factor circle'.radius;
+        }
   | Ellipse ellipse' ->
       Ellipse
-        { ellipse' with
-          c = scale_point factor ellipse'.c; 
+        {
+          ellipse' with
+          c = scale_point factor ellipse'.c;
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
         }
@@ -40,7 +54,11 @@ let rec scale factor s =
       let scale_point factor { x; y } =
         { x = scale_length factor x; y = scale_length factor y }
       in
-      Polygon { polygon' with vertices = (List.map (scale_point factor) polygon'.vertices)}
+      Polygon
+        {
+          polygon' with
+          vertices = List.map (scale_point factor) polygon'.vertices;
+        }
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let to_radians degrees = float_of_int degrees *. Stdlib.Float.pi /. 180.
@@ -64,7 +82,12 @@ let rec rotate degrees shape =
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
   | Line _line -> failwith "Not Implemented"
-  | Polygon polygon' -> Polygon { polygon' with vertices = (List.map (rotate_point degrees) polygon'.vertices)}
+  | Polygon polygon' ->
+      Polygon
+        {
+          polygon' with
+          vertices = List.map (rotate_point degrees) polygon'.vertices;
+        }
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)

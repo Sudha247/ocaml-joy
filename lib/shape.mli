@@ -1,7 +1,8 @@
+type color = Color.color
 type 'a point = { x : 'a; y : 'a }
-type circle = { c : float point; radius : float }
-type ellipse = { c : float point; rx : float; ry : float }
-type polygon = float point list
+type circle = { c : float point; radius : float; color : color }
+type ellipse = { c : float point; rx : float; ry : float; color : color }
+type polygon = { vertices : float point list; color : color }
 type line = { a : float point; b : float point }
 
 type shape =
@@ -12,8 +13,6 @@ type shape =
   | Complex of shape list
 
 type shapes = shape list
-
-type color = Color.color
 
 val point : int -> int -> float point
 val ( /~ ) : float point -> float point -> float point
