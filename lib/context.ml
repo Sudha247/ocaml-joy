@@ -40,6 +40,9 @@ let ( >> ) f g x = g (f x)
 let scale_color_channel x = x /. 256.
 let scale_color_channel = float_of_int >> scale_color_channel
 
+let tmap3 f (a, b, c) = (f a, f b, f c) 
+let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
+let scale_channel n = float_of_int n /. 255.
 let set_color color =
   match !context with
   | Some ctx ->
@@ -70,3 +73,18 @@ let save () =
 
 let restore () =
   match !context with Some ctx -> Cairo.restore ctx.ctx | None -> fail ()
+
+let init_context background_color line_width (x, y) axes =
+  (* Fail if context has already been instantiated *)
+  if Option.is_some !context then
+    raise (Context "Cannot initialize context twice");
+
+  let surface =
+    Cairo.Image.create Cairo.Image.ARGB32 ~w:(int_of_float x)
+      ~h:(int_of_float y)
+  in
+  let ctx = Cairo.create surface in
+  Cairo.scale ctx x y;
+  Cairo.set_line_width ctx line_width;
+  context := Some { ctx; surface; size = (x, y); axes };
+  background background_color

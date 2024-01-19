@@ -4,6 +4,8 @@ type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
 type transformation = Transform.transformation
+(** Three-tuple representing a 24-bit RGB color *)
+type color = Color.color
 
 let point = Shape.point
 let circle = Shape.circle
@@ -12,6 +14,7 @@ let polygon = Shape.polygon
 let ellipse = Shape.ellipse
 let line = Shape.line
 let complex = Shape.complex
+let with_color = Shape.with_color
 let rotate = Transform.rotate
 let scale = Transform.scale
 let translate = Transform.translate

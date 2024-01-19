@@ -13,6 +13,8 @@ type shape =
 
 type shapes = shape list
 
+type color = Color.color
+
 val point : int -> int -> float point
 val ( /~ ) : float point -> float point -> float point
 val ( -! ) : float point -> float -> float point
@@ -25,3 +27,4 @@ val ellipse : ?c:float point -> int -> int -> shape
 val complex : shape list -> shape
 val line : ?a:float point -> float point -> shape
 val polygon : float point list -> shape
+val with_color : color -> shape -> shape
