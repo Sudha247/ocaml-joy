@@ -89,14 +89,14 @@ let make_concentric circle =
 
 (* main fn *)
 let () =
-  init ~size:resolution ();
-  set_line_width 0.001;
+  init ~size:(int_of_float w, int_of_float h) ();
+  set_line_width 1;
   let circle_params = pack_circles () in
   let concentric = List.flatten (List.map make_concentric circle_params) in
   let circles =
     List.map
       (fun ((x, y), radius) ->
-        circle ~c:(point x y) radius |> with_color (rand_nth palette))
+        circle ~c:(point (int_of_float x) (int_of_float y)) (int_of_float radius) |> with_stroke (rand_nth palette))
       concentric
   in
   show circles;

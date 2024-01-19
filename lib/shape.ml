@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 type 'a point = { x : 'a; y : 'a }
 type line = { a : float point; b : float point; color: Color.color }
 type circle = { c : float point; radius : float; color: Color.color }
 type ellipse = { c : float point; rx : float; ry : float; color: Color.color }
 type polygon = { vertices: float point list; color: Color.color}
-=======
-type point = { x : float; y : float }
-type line = { a : point; b : point; color : Color.color }
-type circle = { c : point; radius : float; color : Color.color }
-type ellipse = { c : point; rx : float; ry : float; color : Color.color }
-type polygon = { vertices : point list; color : Color.color }
->>>>>>> e3eb27d (dune fmt)
 
 type shape =
   | Circle of circle
@@ -20,6 +12,8 @@ type shape =
   | Complex of shape list
 
 type shapes = shape list
+
+type color = Color.color
 
 (* point -> point arithmetic *)
 let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
@@ -37,7 +31,7 @@ let point x y =
 let center = { x = 0.; y = 0. }
 let circle ?(c = center) r = Circle { c; radius = float_of_int r; color = Color.black }
 
-let polygon vertices = {vertices; color = Color.black}
+let polygon vertices = Polygon { vertices; color = Color.black }
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
   let x1 = c.x -. (w /. 2.) in
@@ -60,9 +54,9 @@ let line ?(a = center) b = Line { a; b; color = Color.black }
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
 
-let rec with_color color = function
+let rec with_stroke color = function
   | Circle circle' -> Circle { circle' with color }
   | Ellipse ellipse' -> Ellipse { ellipse' with color }
   | Line line' -> Line { line' with color }
   | Polygon polygon' -> Polygon { polygon' with color }
-  | Complex complex' -> Complex (List.map (with_color color) complex')
+  | Complex complex' -> Complex (List.map (with_stroke color) complex')

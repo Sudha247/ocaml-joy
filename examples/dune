@@ -102,3 +102,8 @@
  (name donut_with_scale)
  (modules donut_with_scale)
  (libraries joy))
+
+(executable 
+ (name color)
+ (modules color)
+ (libraries joy))

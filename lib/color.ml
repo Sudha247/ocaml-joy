@@ -6,6 +6,18 @@ let black = (0, 0, 0)
 (** RGB code for white *)
 let white = (255, 255, 255)
 
+(** RGB color code for red *)
+let red = (255, 1, 1)
+
+(** RGB color code for green *)
+let green = (1, 255, 1)
+
+(** RGB color code for blue *)
+let blue = (1, 1, 255)
+
+(** RGB color code for yellow *)
+let yellow = (255, 255, 1)
+
 (** RGBA color constant to set transparent background *)
 let transparent = (0, 0, 0, 0)
 

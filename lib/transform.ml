@@ -10,13 +10,13 @@ let rec translate dx dy = function
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Ellipse
         { ellipse with c = { x = ellipse.c.x +. dx; y = ellipse.c.y +. dy } }
-  | Line line ->
+  | Line line' ->
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Line
         {
-          line with
-          a = { x = line.a.x +. dx; y = line.a.y +. dy };
-          b = { x = line.b.x +. dx; y = line.b.y +. dy };
+          line' with
+          a = { x = line'.a.x +. dx; y = line'.a.y +. dy };
+          b = { x = line'.b.x +. dx; y = line'.b.y +. dy };
         }
   | Polygon polygon' ->
       Polygon
@@ -24,26 +24,27 @@ let rec translate dx dy = function
           polygon' with
           vertices =
             List.map
-              (fun { x; y } -> { x = x +. dx; y = y +. dy })
+              (fun { x; y } -> { x = x +. float_of_int dx; y = y +. float_of_int dy })
               polygon'.vertices;
         }
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
-let scale_length fact len = len *. sqrt fact
-let scale_point fact pt = pt *! sqrt fact 
+let scale_length fact len = len *. fact
+let pmap f { x; y } = { x = f x; y = f y }
+
 let rec scale factor = function
   | Circle circle' ->
       Circle
         {
           circle' with
-          c = scale_point factor circle'.c;
+          c = pmap (scale_length factor) circle'.c;
           radius = scale_length factor circle'.radius;
         }
   | Ellipse ellipse' ->
       Ellipse
         {
           ellipse' with
-          c = scale_point factor ellipse'.c;
+          c = pmap (scale_length factor) ellipse'.c;
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
         }
@@ -52,7 +53,7 @@ let rec scale factor = function
       Polygon
         {
           polygon' with
-          vertices = List.map (scale_point factor) polygon'.vertices;
+          vertices = List.map (pmap (scale_length factor)) polygon'.vertices;
         }
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
@@ -95,23 +96,10 @@ let repeat n op shape =
   complex shapes
 
 (** Takes a function and a shape and returns a new shape with the 
-    function applied to the original's color *)  
-let rec color_op f = function 
-  | Circle circle' -> Circle { circle' with color = f circle'.color}
+    function applied to the original's color *)
+let rec map_color f = function
+  | Circle circle' -> Circle { circle' with color = f circle'.color }
   | Ellipse ellipse' -> Ellipse { ellipse' with color = f ellipse'.color }
-  | Line line' -> Line { line' with color = f line'.color}
-  | Polygon polygon' -> Polygon { polygon' with color = f polygon'.color}
-  | Complex complex' -> Complex (List.map (color_op f) complex')
-
-(** Linear interpolation *)
-let lerp t a b = 
-  let a, b = (float_of_int a, float_of_int b) in 
-int_of_float ((1. -. t) *. a +. t *. b)
-
-(** Takes float t between 0..1, a color, and a shape 
-    returns a new shape whose color is the linear interpolation between the color 
-    and the shape's color at t *)
-let mix t other shape = 
-  let pairwise fn (a, b, c) (d, e, f) = (fn a d, fn b e, fn c f) in 
-  let op = pairwise (lerp t) other in 
-  color_op op shape
+  | Line line' -> Line { line' with color = f line'.color }
+  | Polygon polygon' -> Polygon { polygon' with color = f polygon'.color }
+  | Complex complex' -> Complex (List.map (map_color f) complex')

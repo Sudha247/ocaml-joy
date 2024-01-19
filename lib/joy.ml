@@ -5,8 +5,21 @@ type shape = Shape.shape
 type shapes = Shape.shapes
 
 type transformation = Transform.transformation
+
 (** Three-tuple representing a 24-bit RGB color *)
 type color = Color.color
+<<<<<<< HEAD
+=======
+
+let black = Color.black 
+let white = Color.white 
+let red = Color.red 
+let green = Color.green 
+let blue = Color.blue 
+let yellow = Color.yellow
+let transparent = Color.transparent
+let opaque = Color.opaque
+>>>>>>> b1a2518 (merging w/ main branch)
 
 let point = Shape.point
 let circle = Shape.circle
@@ -15,7 +28,7 @@ let polygon = Shape.polygon
 let ellipse = Shape.ellipse
 let line = Shape.line
 let complex = Shape.complex
-let with_color = Shape.with_color
+let with_stroke = Shape.with_stroke
 let rotate = Transform.rotate
 let scale = Transform.scale
 let translate = Transform.translate

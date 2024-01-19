@@ -1,5 +1,4 @@
 (* simple example demonstrating drawing x and y axes for debugging or plots *)
-
 open Joy
 
 let _ =
