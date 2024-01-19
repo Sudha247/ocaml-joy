@@ -79,10 +79,10 @@ let rec partition n ?step lst =
         | None -> partition n ~step:0 (List.tl lst))
       else []
 
-let draw_polygon ctx {vertices = polygon; color} =
+let draw_polygon ctx {vertices = points; color} =
   save ();
   set_color color;
-  let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
+  let points = partition 2 ~step:1 (points @ [ List.hd points ]) in
   List.iter
     (fun pair ->
       let { x = x1; y = y1 }, { x = x2; y = y2 } =

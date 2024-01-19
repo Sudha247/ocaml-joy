@@ -1,8 +1,8 @@
-type point = { x : float; y : float }
-type line = { a : point; b : point; color: Color.color }
-type circle = { c : point; radius : float; color: Color.color }
-type ellipse = { c : point; rx : float; ry : float; color: Color.color }
-type polygon = { vertices: point list; color: Color.color}
+type 'a point = { x : 'a; y : 'a }
+type line = { a : float point; b : float point; color: Color.color }
+type circle = { c : float point; radius : float; color: Color.color }
+type ellipse = { c : float point; rx : float; ry : float; color: Color.color }
+type polygon = { vertices: float point list; color: Color.color}
 
 type shape =
   | Circle of circle
@@ -27,13 +27,14 @@ let point x y =
   { x; y }
 
 let center = { x = 0.; y = 0. }
-let circle ?(c = center) r = Circle { c; radius = float_of_int r }
+let circle ?(c = center) r = Circle { c; radius = float_of_int r; color = Color.black }
 
+let polygon vertices = {vertices; color = Color.black}
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
   let x1 = c.x -. (w /. 2.) in
-  let y1 = c.y -. (h /. 2.) in
-  Polygon
+  let y1 = c.x -. (h /. 2.) in
+  polygon
     [
       { x = x1; y = y1 };
       { x = x1; y = y1 +. h };
@@ -43,10 +44,10 @@ let rectangle ?(c = center) width height =
 
 let ellipse ?(c = center) rx ry =
   let rx, ry = (float_of_int rx, float_of_int ry) in
-  Ellipse { c; rx; ry }
+  Ellipse { c; rx; ry; color = Color.black }
 
-let line ?(a = center) b = Line { a; b }
-let polygon lst_points = Polygon lst_points
+let line ?(a = center) b = Line { a; b; color = Color.black }
+
 
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []

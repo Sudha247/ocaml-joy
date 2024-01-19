@@ -16,7 +16,6 @@ let star_section i =
 
 let () =
   init ();
-  background (255, 255, 255, 255);
   set_line_width 3;
   let star = List.init points star_section |> List.flatten |> polygon in
   set_color (0, 0, 0);

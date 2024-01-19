@@ -2,6 +2,7 @@ type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
 type transformation = Transform.transformation
+type color = Color.color
 
 val point : int -> int -> float point
 val circle : ?c:float point -> int -> shape
