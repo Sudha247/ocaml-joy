@@ -2,8 +2,7 @@ open Shape
 
 type transformation = shape -> shape
 
-let rec translate dx dy shape =
-  match shape with
+let rec translate dx dy = function
   | Circle circle ->
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Circle { circle with c = { x = circle.c.x +. dx; y = circle.c.y +. dy } }
@@ -30,10 +29,9 @@ let rec translate dx dy shape =
         }
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
-let rec scale factor s =
-  let scale_length fact len = len *. fact in
-  let scale_point fact pt = pt *! fact in
-  match s with
+let scale_length fact len = len *. sqrt fact
+let scale_point fact pt = pt *! sqrt fact 
+let rec scale factor = function
   | Circle circle' ->
       Circle
         {
@@ -76,8 +74,7 @@ let rotate_point degrees point =
   let r, theta = to_polar point in
   from_polar (r, theta +. radians)
 
-let rec rotate degrees shape =
-  match shape with
+let rec rotate degrees = function
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
@@ -99,3 +96,25 @@ let repeat n op shape =
   in
   let shapes = List.fold_right (fun _ acc -> match_list acc) (range n) [] in
   complex shapes
+
+(** Takes a function and a shape and returns a new shape with the 
+    function applied to the original's color *)  
+let rec color_op f = function 
+  | Circle circle' -> Circle { circle' with color = f circle'.color}
+  | Ellipse ellipse' -> Ellipse { ellipse' with color = f ellipse'.color }
+  | Line line' -> Line { line' with color = f line'.color}
+  | Polygon polygon' -> Polygon { polygon' with color = f polygon'.color}
+  | Complex complex' -> Complex (List.map (color_op f) complex')
+
+(** Linear interpolation *)
+let lerp t a b = 
+  let a, b = (float_of_int a, float_of_int b) in 
+int_of_float ((1. -. t) *. a +. t *. b)
+
+(** Takes float t between 0..1, a color, and a shape 
+    returns a new shape whose color is the linear interpolation between the color 
+    and the shape's color at t *)
+let mix t other shape = 
+  let pairwise fn (a, b, c) (d, e, f) = (fn a d, fn b e, fn c f) in 
+  let op = pairwise (lerp t) other in 
+  color_op op shape

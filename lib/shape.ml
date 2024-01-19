@@ -61,8 +61,8 @@ let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
 
 let rec with_color color = function
-  | Circle circle -> Circle { circle with color }
-  | Ellipse ellipse -> Ellipse { ellipse with color }
-  | Line line -> Line { line with color }
+  | Circle circle' -> Circle { circle' with color }
+  | Ellipse ellipse' -> Ellipse { ellipse' with color }
+  | Line line' -> Line { line' with color }
   | Polygon polygon' -> Polygon { polygon' with color }
   | Complex complex' -> Complex (List.map (with_color color) complex')
