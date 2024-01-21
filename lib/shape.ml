@@ -19,13 +19,10 @@ let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 (* point -> scalar arithmetic *)
 let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
-let ( *! ) {x; y} scalar = {x = x *. scalar; y = y *. scalar}
+let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
 let point x y = { x; y }
-
-let center = {x= 0.; y = 0.}
-
-let circle ?(c = center) r =
-  Circle { c; radius = r }
+let center = { x = 0.; y = 0. }
+let circle ?(c = center) r = Circle { c; radius = r }
 
 let rectangle ?(c = center) width height =
   let { x; y } = c -! ((width +. height) /. 4.) in
@@ -36,14 +33,9 @@ let rectangle ?(c = center) width height =
       { x = x +. width; y = y +. height };
       { x = x +. width; y };
     ]
-  
 
-let ellipse ?(c = center) rx ry =
-  Ellipse { c; rx; ry }
-
-let line ?(a = center) b =
-  Line { a; b }
-
+let ellipse ?(c = center) rx ry = Ellipse { c; rx; ry }
+let line ?(a = center) b = Line { a; b }
 let polygon lst_points = Polygon lst_points
 
 let complex shapes =
