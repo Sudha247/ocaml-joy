@@ -102,3 +102,8 @@
  (name donut_with_scale)
  (modules donut_with_scale)
  (libraries joy))
+ 
+(executable 
+ (name quadtree)
+ (modules quadtree)
+ (libraries joy))
