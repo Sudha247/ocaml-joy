@@ -25,13 +25,14 @@ let center = { x = 0.; y = 0. }
 let circle ?(c = center) r = Circle { c; radius = r }
 
 let rectangle ?(c = center) width height =
-  let { x; y } = c -! ((width +. height) /. 4.) in
+  let x1 = c.x -. (width /. 2.) in
+  let y1 = c.x -. (height /. 2.) in
   Polygon
     [
-      { x; y };
-      { x; y = y +. height };
-      { x = x +. width; y = y +. height };
-      { x = x +. width; y };
+      { x = x1; y = y1 };
+      { x = x1; y = y1 +. height };
+      { x = x1 +. width; y = y1 +. height };
+      { x = x1 +. width; y = y1 };
     ]
 
 let ellipse ?(c = center) rx ry = Ellipse { c; rx; ry }
