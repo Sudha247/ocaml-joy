@@ -1,6 +1,6 @@
 open Shape
 
-type transform = (shape -> shape)
+type transformation = (shape -> shape)
 
 let rec translate dx dy shape =
   match shape with

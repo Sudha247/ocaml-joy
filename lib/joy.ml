@@ -4,6 +4,8 @@ type point = Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
 
+type transformation = Transform.transformation
+
 let point = Shape.point
 let circle = Shape.circle
 let rectangle = Shape.rectangle

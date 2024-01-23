@@ -1,6 +1,6 @@
-type transform = (Shape.shape -> Shape.shape)
-val translate : float -> float -> transform
-val scale : float -> transform
-val rotate : int -> transform
-val compose : transform -> transform -> transform
-val repeat : int -> transform -> transform
+type transformation = (Shape.shape -> Shape.shape)
+val translate : float -> float -> transformation
+val scale : float -> transformation
+val rotate : int -> transformation
+val compose : transformation -> transformation -> transformation
+val repeat : int -> transformation -> transformation
