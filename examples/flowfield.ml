@@ -17,16 +17,13 @@ let shuffle xs =
   List.map snd sond
 
 let palette =
-  List.map
-    (fun (r, g, b) -> (r /. 255., g /. 255., b /. 255.))
-    [
-      (74., 58., 59.);
-      (152., 65., 54.);
-      (194., 106., 122.);
-      (236., 192., 161.);
-      (240., 240., 228.);
-    ]
-  |> shuffle
+  shuffle [
+    (74, 58, 59);
+    (152, 65, 54);
+    (194, 106, 122);
+    (236, 192, 161);
+    (240, 240, 228);
+  ]
 
 let clamp = function
   | n when n > size - 1 -> size - 1
@@ -59,7 +56,7 @@ let grid divison =
 let uni_to_bi (x, y) =
   let x = x - (size / 2) in
   let y = y - (size / 2) in
-  (float_of_int x, float_of_int y)
+  (x, y)
 
 (* Create a 2D vector from an angle *)
 let vector_of_angle angle =
@@ -99,14 +96,14 @@ let render_with_color flowfield line (x, y) =
 
 let () =
   init ();
-  background (1., 1., 1., 1.);
-  set_line_width 0.0005;
+  background (255, 255, 255, 255);
+  set_line_width 5;
   let flowfield = flowfield () in
   let interval = size / grid_divisor in
   let indices = grid interval in
   let lines, points = Array.map (make_line flowfield) indices |> Array.split in
   let centered =
-    Array.map (translate (float_of_int interval) (float_of_int interval)) lines
+    Array.map (translate interval interval) lines
   in
   Array.iter2 (render_with_color flowfield) centered points;
   write ~filename:"flowfield.png" ()
