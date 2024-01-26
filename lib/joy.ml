@@ -1,6 +1,6 @@
 let context = Context.context
 
-type point = Shape.point
+type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
 
@@ -22,8 +22,8 @@ let set_color = Context.set_color
 let background = Context.background
 let set_line_width = Context.set_line_width
 
-let init ?(line_width = 0.002) ?(size = (800., 800.)) ?(axes = false) () =
-  Context.init_context line_width size axes
+let init ?(line_width = 2) ?(size = (800, 800)) ?(axes = false) () =
+  Context.init_context (float_of_int line_width /. 1000.) size axes
 
 let write ?(filename = "joy.png") () =
   match !Context.context with

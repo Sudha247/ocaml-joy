@@ -1,29 +1,26 @@
-type point = Shape.point
+type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
 
 type transformation = Transform.transformation
 
-val point : float -> float -> point
-val circle : ?c:point -> float -> shape
-val rectangle : ?c:point -> float -> float -> shape
-val ellipse : ?c:point -> float -> float -> shape
-val line : ?a:point -> point -> shape
-val polygon : point list -> shape
+val point : int -> int -> float point
+val circle : ?c:float point -> int -> shape
+val rectangle : ?c:float point -> int -> int -> shape
+val ellipse : ?c:float point -> int -> int -> shape
+val line : ?a:float point -> float point -> shape
+val polygon : float point list -> shape
 val complex : shapes -> shape
 val rotate : int -> transformation
-val translate : float -> float -> transformation
+val translate : int -> int -> transformation
 val scale : float -> transformation
-val compose : transformation -> transformation -> transformation
+val compose : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
 val repeat : int -> transformation -> transformation
 val context : Context.context option ref
-val set_color : float * float * float -> unit
-val background : float * float * float * float -> unit
-val set_line_width : float -> unit
-
-val init :
-  ?line_width:float -> ?size:float * float -> ?axes:bool -> unit -> unit
-
+val set_color : int * int * int -> unit
+val background : int * int * int * int -> unit
+val set_line_width : int -> unit
+val init : ?line_width:int -> ?size:int * int -> ?axes:bool -> unit -> unit
 val render : shape -> unit
 val show : shapes -> unit
 val write : ?filename:string -> unit -> unit
