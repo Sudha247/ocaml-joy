@@ -1,26 +1,25 @@
 open Shape
 open Context
 
-let denormalize point =
-  let x, y = Context.resolution () in
-  let canvas_mid = { x; y } /! 2. in
-  { x = point.x +. canvas_mid.x; y = point.y +. canvas_mid.y }
+let tmap f (x, y) = (f x, f y)
 
-(* Scales points from 0-image size to 0-1 on both axes *)
-let scale_point size point =
-  let { x; y } = denormalize point in
-  let x, y = (x /. fst size, y /. snd size) in
-  (x, y)
+let denormalize point =
+  let x, y = Context.resolution () |> tmap float_of_int in
+  let canvas_mid = { x; y } /! 2. in
+  ((point.x +. canvas_mid.x) /. x, (point.y +. canvas_mid.y) /. y)
+
+let euclid_norm (x, y) = sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.
 
 let draw_circle ctx ({ c; radius } : circle) =
-  let x, y = scale_point ctx.size c in
-  let radius = radius /. min (fst ctx.size) (snd ctx.size) in
+  let size = tmap float_of_int ctx.size in
+  let x, y = denormalize c in
+  let radius = radius /. euclid_norm size in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let size = resolution () in
-  let x, y = scale_point size c in
+  let size = resolution () |> tmap float_of_int in
+  let x, y = denormalize c in
   let half_height = ry /. snd size in
   let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in
   ( { x; y = y -. half_height },
@@ -50,8 +49,8 @@ let draw_ellipse ctx ellipse =
 
 let draw_line ctx line =
   save ();
-  let x1, y1 = scale_point ctx.size line.a in
-  let x2, y2 = scale_point ctx.size line.b in
+  let x1, y1 = denormalize line.a in
+  let x2, y2 = denormalize line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
   Cairo.stroke ctx.ctx;
@@ -82,7 +81,7 @@ let draw_polygon ctx polygon =
   let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
   List.iter
     (fun pair ->
-      let pair = List.map (scale_point ctx.size) pair in
+      let pair = List.map denormalize pair in
       let (x1, y1), (x2, y2) = (List.nth pair 0, List.nth pair 1) in
       Cairo.move_to ctx.ctx x1 y1;
       Cairo.line_to ctx.ctx x2 y2)
@@ -90,8 +89,7 @@ let draw_polygon ctx polygon =
   Cairo.move_to ctx.ctx 0. 0.;
   Cairo.stroke ctx.ctx
 
-let rec render_shape ctx shape =
-  match shape with
+let rec render_shape ctx = function
   | Circle circle -> draw_circle ctx circle
   | Ellipse ellipse -> draw_ellipse ctx ellipse
   | Line line -> draw_line ctx line
@@ -110,10 +108,10 @@ let show shapes =
 let render_axes () =
   print_endline "rendering axes!";
   save ();
-  let x, y = Context.resolution () in
+  let x, y = Context.resolution () |> tmap float_of_int in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~a:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
   let y_axis = line ~a:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
-  set_color (0., 0., 0.);
+  set_color (0, 0, 0);
   show [ x_axis; y_axis ];
   restore ()
