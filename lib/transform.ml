@@ -1,19 +1,25 @@
 open Shape
 
+type transformation = (shape -> shape)
+
 let rec translate dx dy shape =
   match shape with
   | Circle circle ->
+      let dx, dy = (float_of_int dx, float_of_int dy) in
       Circle { circle with c = { x = circle.c.x +. dx; y = circle.c.y +. dy } }
   | Ellipse ellipse ->
+      let dx, dy = (float_of_int dx, float_of_int dy) in
       Ellipse
         { ellipse with c = { x = ellipse.c.x +. dx; y = ellipse.c.y +. dy } }
   | Line line ->
+      let dx, dy = (float_of_int dx, float_of_int dy) in
       Line
         {
           a = { x = line.a.x +. dx; y = line.a.y +. dy };
           b = { x = line.b.x +. dx; y = line.b.y +. dy };
         }
   | Polygon polygon' ->
+      let dx, dy = (float_of_int dx, float_of_int dy) in
       polygon (List.map (fun { x; y } -> { x = x +. dx; y = y +. dy }) polygon')
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
