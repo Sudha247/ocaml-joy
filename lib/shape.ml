@@ -20,7 +20,6 @@ let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
 let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
-
 let pmap f { x; y } = { x = f x; y = f y }
 
 let point x y =
@@ -29,7 +28,6 @@ let point x y =
 
 let center = { x = 0.; y = 0. }
 let circle ?(c = center) r = Circle { c; radius = float_of_int r }
-
 
 let rectangle ?(c = center) width height =
   let width, height = (float_of_int width, float_of_int height) in
