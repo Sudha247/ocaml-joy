@@ -30,14 +30,15 @@ let center = { x = 0.; y = 0. }
 let circle ?(c = center) r = Circle { c; radius = float_of_int r }
 
 let rectangle ?(c = center) width height =
-  let width, height = (float_of_int width, float_of_int height) in
-  let { x; y } = c -! ((width +. height) /. 4.) in
+  let w, h = (float_of_int width, float_of_int height) in
+  let x1 = c.x -. (w /. 2.) in
+  let y1 = c.x -. (h /. 2.) in
   Polygon
     [
-      { x; y };
-      { x; y = y +. height };
-      { x = x +. width; y = y +. height };
-      { x = x +. width; y };
+      { x = x1; y = y1 };
+      { x = x1; y = y1 +. h };
+      { x = x1 +. w; y = y1 +. h };
+      { x = x1 +. w; y = y1 };
     ]
 
 let ellipse ?(c = center) rx ry =

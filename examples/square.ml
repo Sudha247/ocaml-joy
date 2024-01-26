@@ -3,7 +3,8 @@ open Joy
 let () =
   init ();
   background (255, 255, 255, 255);
+  let square = rectangle 100 100 in
   set_color (0, 0, 0);
-  let r = rectangle 100 200 in
-  show [r];
-  write ~filename:"rectangle.png" ()
+  show [square];
+  write ~filename:"square.png" ()
+

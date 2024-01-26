@@ -84,6 +84,11 @@
  (libraries joy))
 
 (executable
+ (name square)
+ (modules square)
+ (libraries joy))
+
+(executable
  (name star)
  (modules star)
  (libraries joy))
