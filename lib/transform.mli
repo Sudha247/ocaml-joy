@@ -1,4 +1,4 @@
-val translate : float -> float -> Shape.shape -> Shape.shape
+val translate : int -> int -> Shape.shape -> Shape.shape
 val scale : float -> Shape.shape -> Shape.shape
 val rotate : int -> Shape.shape -> Shape.shape
 
