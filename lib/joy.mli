@@ -14,7 +14,7 @@ val complex : shapes -> shape
 val rotate : int -> transformation
 val translate : int -> int -> transformation
 val scale : float -> transformation
-val compose : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
+val compose : transformation -> transformation -> transformation
 val repeat : int -> transformation -> transformation
 val context : Context.context option ref
 val set_color : int * int * int -> unit
