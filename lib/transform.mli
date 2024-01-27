@@ -5,4 +5,4 @@ val scale : float -> transformation
 val rotate : int -> transformation
 val compose : transformation -> transformation -> transformation
 val repeat : int -> transformation -> transformation
-val map_color : (Color.color -> Color.color) -> transformation
+val map_colors : (Color.color -> Color.color) -> transformation

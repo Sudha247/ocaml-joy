@@ -21,14 +21,13 @@ val context : Context.context option ref
 val set_color : int * int * int -> unit
 val background : int * int * int * int -> unit
 val set_line_width : int -> unit
-
-val black : color 
-val white : color 
-val red : color 
-val green : color 
-val blue : color 
-val yellow : color 
-val transparent : int * int * int * int 
+val black : color
+val white : color
+val red : color
+val green : color
+val blue : color
+val yellow : color
+val transparent : int * int * int * int
 val opaque : color -> int * int * int * int
 
 val init :

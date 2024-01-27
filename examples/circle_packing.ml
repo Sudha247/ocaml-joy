@@ -39,8 +39,7 @@ let distance (x1, y1) (x2, y2) =
   sqrt ((dx *. dx) +. (dy *. dy))
 
 (* creates a random point within screen bounds *)
-let rand_point () =
-  (Random.float w -. (w /. 2.), Random.float h -. (h /. 2.))
+let rand_point () = (Random.float w -. (w /. 2.), Random.float h -. (h /. 2.))
 
 (* creates a circle with a random center point and radius *)
 let rand_circle () =
@@ -96,7 +95,10 @@ let () =
   let circles =
     List.map
       (fun ((x, y), radius) ->
-        circle ~c:(point (int_of_float x) (int_of_float y)) (int_of_float radius) |> with_stroke (rand_nth palette))
+        circle
+          ~c:(point (int_of_float x) (int_of_float y))
+          (int_of_float radius)
+        |> with_stroke (rand_nth palette))
       concentric
   in
   show circles;

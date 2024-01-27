@@ -24,7 +24,8 @@ let rec translate dx dy = function
           polygon' with
           vertices =
             List.map
-              (fun { x; y } -> { x = x +. float_of_int dx; y = y +. float_of_int dy })
+              (fun { x; y } ->
+                { x = x +. float_of_int dx; y = y +. float_of_int dy })
               polygon'.vertices;
         }
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
@@ -97,9 +98,48 @@ let repeat n op shape =
 
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)
-let rec map_color f = function
-  | Circle circle' -> Circle { circle' with color = f circle'.color }
-  | Ellipse ellipse' -> Ellipse { ellipse' with color = f ellipse'.color }
-  | Line line' -> Line { line' with color = f line'.color }
-  | Polygon polygon' -> Polygon { polygon' with color = f polygon'.color }
-  | Complex complex' -> Complex (List.map (map_color f) complex')
+let rec map_colors f = function
+  | Circle circle' ->
+      Circle
+        {
+          circle' with
+          stroke = Option.map f circle'.stroke;
+          fill = Option.map f circle'.fill;
+        }
+  | Ellipse ellipse' ->
+      Ellipse
+        {
+          ellipse' with
+          stroke = Option.map f ellipse'.stroke;
+          fill = Option.map f ellipse'.fill;
+        }
+  | Line line' -> Line { line' with stroke = f line'.stroke }
+  | Polygon polygon' ->
+      Polygon
+        {
+          polygon' with
+          stroke = Option.map f polygon'.stroke;
+          fill = Option.map f polygon'.fill;
+        }
+  | Complex complex' -> Complex (List.map (map_colors f) complex')
+
+let rec map_stroke f = function
+  | Circle circle' ->
+      Circle { circle' with stroke = Option.map f circle'.stroke }
+  | Ellipse ellipse' ->
+      Ellipse { ellipse' with stroke = Option.map f ellipse'.stroke }
+  | Line line' -> Line { line' with stroke = f line'.stroke }
+  | Polygon polygon' ->
+      Polygon { polygon' with stroke = Option.map f polygon'.stroke }
+  | Complex complex' -> Complex (List.map (map_stroke f) complex')
+
+let rec map_fill f = function
+  | Circle circle' -> Circle { circle' with fill = Option.map f circle'.fill }
+  | Ellipse ellipse' ->
+      Ellipse { ellipse' with fill = Option.map f ellipse'.fill }
+  | Polygon polygon' ->
+      Polygon { polygon' with fill = Option.map f polygon'.fill }
+  | Complex complex' -> Complex (List.map (map_stroke f) complex')
+  | _ as line' ->
+      print_endline "Lines do not have a fill field!";
+      line'
