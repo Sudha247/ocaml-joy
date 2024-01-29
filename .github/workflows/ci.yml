@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest]
 
     steps:
       - name: Checkout code
@@ -23,13 +23,10 @@ jobs:
         with:
           opam-pin: false
           opam-depext: false
-          ocaml-compiler: ocaml.5.0.0,ocaml-option-mingw
+          ocaml-compiler: ocaml.5.1.0
           opam-repositories: |
-            dra27: https://github.com/dra27/opam-repository.git#windows-5.0
-            default: https://github.com/ocaml-opam/opam-repository-mingw.git#sunset
             upstream: https://github.com/ocaml/opam-repository.git
-          cache-prefix: ${{ steps.multicore_hash.outputs.commit }}
-
+          
       - run: opam install . --deps-only --with-test
 
       - run: opam exec -- dune build
