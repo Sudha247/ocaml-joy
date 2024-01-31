@@ -34,13 +34,16 @@ let ellipse = Shape.ellipse
 let line = Shape.line
 let complex = Shape.complex
 let with_stroke = Shape.with_stroke
+let with_fill = Shape.with_fill
 let rotate = Transform.rotate
 let scale = Transform.scale
 let translate = Transform.translate
 let compose = Transform.compose
 let repeat = Transform.repeat
-let set_color = Context.set_color
-let background = Context.background
+let map_color = Transform.map_color 
+let map_fill = Transform.map_fill
+let map_stroke = Transform.map_stroke
+
 let set_line_width = Context.set_line_width
 
 let init ?(background = Color.white) ?(line_width = 2) ?(size = (500, 500))

@@ -98,7 +98,7 @@ let repeat n op shape =
 
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)
-let rec map_colors f = function
+let rec map_color f = function
   | Circle circle' ->
       Circle
         {
@@ -121,7 +121,7 @@ let rec map_colors f = function
           stroke = Option.map f polygon'.stroke;
           fill = Option.map f polygon'.fill;
         }
-  | Complex complex' -> Complex (List.map (map_colors f) complex')
+  | Complex complex' -> Complex (List.map (map_color f) complex')
 
 let rec map_stroke f = function
   | Circle circle' ->
@@ -139,7 +139,7 @@ let rec map_fill f = function
       Ellipse { ellipse' with fill = Option.map f ellipse'.fill }
   | Polygon polygon' ->
       Polygon { polygon' with fill = Option.map f polygon'.fill }
-  | Complex complex' -> Complex (List.map (map_stroke f) complex')
+  | Complex complex' -> Complex (List.map (map_fill f) complex')
   | _ as line' ->
       print_endline "Lines do not have a fill field!";
       line'

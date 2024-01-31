@@ -103,7 +103,7 @@ let save () =
 let restore () =
   match !context with Some ctx -> Cairo.restore ctx.ctx | None -> fail ()
 
-let init_context background_color line_width ((x, y) : int * int) axes =
+let init_context background_color line_width (x, y) axes =
   (* Fail if context has already been instantiated *)
   if Option.is_some !context then
     raise (Context "Cannot initialize context twice");

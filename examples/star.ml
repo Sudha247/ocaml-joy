@@ -18,6 +18,5 @@ let () =
   init ();
   set_line_width 3;
   let star = List.init points star_section |> List.flatten |> polygon in
-  set_color (0, 0, 0);
   render star;
   write ~filename:"star.png" ()

@@ -1,5 +1,4 @@
 open Joy
-module Rand = Random
 
 (* global constants // RNG initialization *)
 let w, h = (900., 900.)
@@ -8,7 +7,7 @@ let max_radius = 150.
 let num_circles = 5_000
 let max_attempts = 100_000
 let shrink_factor = 0.85
-let _ = Rand.self_init ()
+let _ = Random.self_init ()
 
 let palette =
   [
@@ -30,7 +29,7 @@ let palette =
 
 (* utility Functions *)
 
-let rand_nth coll = List.length coll |> Rand.full_int |> List.nth coll
+let rand_nth coll = List.length coll |> Random.full_int |> List.nth coll
 
 (* distance between two points *)
 let distance (x1, y1) (x2, y2) =
@@ -44,7 +43,7 @@ let rand_point () = (Random.float w -. (w /. 2.), Random.float h -. (h /. 2.))
 (* creates a circle with a random center point and radius *)
 let rand_circle () =
   let point = rand_point () in
-  (point, min_radius +. Rand.float (max_radius -. min_radius))
+  (point, min_radius +. Random.float (max_radius -. min_radius))
 
 (* creates a lis of packed circles *)
 let pack_circles () =
@@ -96,7 +95,7 @@ let () =
     List.map
       (fun ((x, y), radius) ->
         circle
-          ~c:(point (int_of_float x) (int_of_float y))
+          ~c:{x; y}
           (int_of_float radius)
         |> with_stroke (rand_nth palette))
       concentric
