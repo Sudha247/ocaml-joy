@@ -1,6 +1,4 @@
-open Joy
-
-type point = Joy.point
+type point = float Joy.point
 
 (* Constants *)
 let size = 800.
@@ -12,20 +10,20 @@ let clusters = 32
 let _ = Random.self_init ()
 
 (* Point utils *)
-let splat n = point n n
+let splat n : point = { x = n; y = n }
 
-let pmap2 f ({ x = x1; y = y1 } : point) ({ x = x2; y = y2 } : point) =
-  point (f x1 x2) (f y1 y2)
+let pmap2 f ({ x = x1; y = y1 } : point) ({ x = x2; y = y2 } : point) : point =
+  { x = f x1 x2; y = f y1 y2 }
 
 let ( +~ ) (p1 : point) (p2 : point) : point =
-  point (p1.x +. p2.x) (p1.y +. p2.y)
+  { x = p1.x +. p2.x; y = p1.y +. p2.y }
 
 let ( /! ) ({ x; y } : point) scalar : point =
   { x = x /. scalar; y = y /. scalar }
 
 (* Random utils for creating random clustered points *)
-let rand_point () =
-  point (Random.float size -. half_size) (Random.float size -. half_size)
+let rand_point () : point =
+  { x = Random.float size -. half_size; y = Random.float size -. half_size }
 
 let centered_point (center : point) _ : point =
   let offset () = Random.float 100. -. 50. in
@@ -92,9 +90,11 @@ let build () =
 
 let to_flat_shapes tree =
   let rect_of_bb bb =
-    rectangle ~c:(midpoint bb) (bb.max.x -. bb.min.x) (bb.max.y -. bb.min.y)
+    Joy.rectangle ~c:(midpoint bb)
+      (int_of_float (bb.max.x -. bb.min.x))
+      (int_of_float (bb.max.y -. bb.min.y))
   in
-  let circle_of_point pt = circle ~c:pt 1. in
+  let circle_of_point pt = Joy.circle ~c:pt 1 in
   let rec convert xs = function
     | Node children -> List.flatten (List.map (convert xs) children)
     | Leaf (aabb, es) ->
@@ -106,19 +106,21 @@ let to_flat_shapes tree =
 (* With color handling system this function won't be necessary as color can be
    decided at construction *)
 let render_color shape =
+  let open Joy in
   match shape with
   | Shape.Circle _ ->
-      set_color (1., 1. /. 255., 1. /. 255.);
+      set_color (255, 1, 1);
       render shape
   | _ ->
-      set_color (0., 0., 0.);
+      set_color (0, 0, 0);
       render shape
 
 let () =
+  let open Joy in
   init ();
-  background (1., 1., 1., 1.);
+  background (255, 255, 255, 255);
   let tree = build () in
   let to_shapes = to_flat_shapes tree in
-  set_color (0., 0., 0.);
+  set_color (0, 0, 0);
   List.iter render_color to_shapes;
   write ~filename:"quadtree.png" ()

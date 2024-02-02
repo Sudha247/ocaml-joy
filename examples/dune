@@ -99,14 +99,11 @@
  (libraries joy))
 
 (executable
-<<<<<<< HEAD
  (name donut_with_scale)
  (modules donut_with_scale)
  (libraries joy))
- 
-(executable 
-=======
->>>>>>> 00f077b (refactoring for clustering behavior + fmt)
+
+(executable
  (name quadtree)
  (modules quadtree)
  (libraries joy))
