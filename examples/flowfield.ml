@@ -1,30 +1,27 @@
-open Joy
-
 (* Constants *)
 let size = 1200
 let tau = 2. *. Float.pi
-let num_steps = 12
-let grid_divisor = 256
+let num_steps = 6
+let grid_divisor = 128
 let _ = Random.self_init ()
 let octaves = 4
 let noise_scale = 2. +. Random.float 3.
 
 (* Utilities & color palette *)
 
+(* Randomly shuffles a list *)
 let shuffle xs =
-  let nd = List.map (fun c -> (Random.bits (), c)) xs in
-  let sond = List.sort compare nd in
-  List.map snd sond
+  let pairs = List.map (fun c -> (Random.bits (), c)) xs in
+  let sorted = List.sort compare pairs in
+  List.map snd sorted
 
 let palette =
-  List.map
-    (fun (r, g, b) -> (r /. 255., g /. 255., b /. 255.))
     [
-      (74., 58., 59.);
-      (152., 65., 54.);
-      (194., 106., 122.);
-      (236., 192., 161.);
-      (240., 240., 228.);
+      (74, 58, 59);
+      (152, 65, 54);
+      (194, 106, 122);
+      (236, 192, 161);
+      (240, 240, 228);
     ]
   |> shuffle
 
@@ -84,7 +81,7 @@ let make_line flowfield (x, y) =
   let final = step num_steps next flowfield in
   let ax, ay = uni_to_bi (x, y) in
   let bx, by = uni_to_bi final in
-  (line ~a:(point ax ay) (point bx by), (cx, cy))
+  (Joy.line ~a:{x = ax;y = ay} {x = bx; y = by}, (cx, cy))
 
 (* Renders line with color based on its angle *)
 let render_with_color flowfield line (x, y) =
@@ -94,19 +91,20 @@ let render_with_color flowfield line (x, y) =
     |> int_of_float
   in
   let color = List.nth palette color_idx in
-  set_color color;
-  render line
+  Joy.set_color color;
+  Joy.render line
 
 let () =
+  let open Joy in
   init ();
-  background (1., 1., 1., 1.);
-  set_line_width 0.0005;
+  background (255, 255, 255, 255);
+  set_line_width 3;
   let flowfield = flowfield () in
   let interval = size / grid_divisor in
   let indices = grid interval in
   let lines, points = Array.map (make_line flowfield) indices |> Array.split in
   let centered =
-    Array.map (translate (float_of_int interval) (float_of_int interval)) lines
+    Array.map (translate interval interval) lines
   in
   Array.iter2 (render_with_color flowfield) centered points;
   write ~filename:"flowfield.png" ()
