@@ -30,10 +30,10 @@ let init_context line_width (w, h) axes =
   let surface = Cairo.Image.create Cairo.Image.ARGB32 ~w ~h in
   let ctx = Cairo.create surface in
   Cairo.set_line_width ctx line_width;
+  Cairo.translate ctx (w / 2 |> float_of_int) (h / 2 |> float_of_int);
   context := Some { ctx; surface; size = (w, h); axes }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
-let tmap f (a, b) = (f a, f b)
 let tmap3 f (a, b, c) = (f a, f b, f c)
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
 let ( >> ) f g x = g (f x)
@@ -50,11 +50,10 @@ let set_color color =
 (* sets background color *)
 let background color =
   match !context with
-  | Some ({ ctx; _ } as context) ->
-      let r, g, b, a = tmap4 scale_color_channel color in
-      let w, h = tmap float_of_int context.size in
-      Cairo.set_source_rgba ctx r g b a;
-      Cairo.rectangle ctx 0. 0. ~w ~h;
+  | Some { ctx; _ }->
+      let r, g, b, alpha = tmap4 scale_color_channel color in
+      Cairo.set_source_rgb ctx r g b;
+      Cairo.paint ctx ~alpha;
       Cairo.fill ctx
   | None -> fail ()
 

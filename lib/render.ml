@@ -3,18 +3,13 @@ open Context
 
 let tmap f (x, y) = (f x, f y)
 
-let denormalize point =
-  let x, y = Context.resolution () |> tmap float_of_int in
-  let canvas_mid = { x; y } /! 2. in
-  (point.x +. canvas_mid.x, point.y +. canvas_mid.y)
-
 let draw_circle ctx ({ c; radius } : circle) =
-  let x, y = denormalize c in
+  let {x; y }= c in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let x, y = denormalize c in
+  let {x; y }= c in
   let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) *. 2. in
   ( { x; y = y -. half_height },
@@ -41,8 +36,8 @@ let draw_ellipse ctx ellipse =
   Cairo.stroke ctx.ctx
 
 let draw_line ctx line =
-  let x1, y1 = denormalize line.a in
-  let x2, y2 = denormalize line.b in
+  let {x = x1; y = y1} = line.a in
+  let { x = x2; y = y2} = line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
   Cairo.stroke ctx.ctx
@@ -72,8 +67,7 @@ let draw_polygon ctx polygon =
   let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
   List.iter
     (fun pair ->
-      let pair = List.map denormalize pair in
-      let (x1, y1), (x2, y2) = (List.nth pair 0, List.nth pair 1) in
+      let {x = x1; y = y1}, {x = x2; y = y2 } = (List.nth pair 0, List.nth pair 1) in
       Cairo.move_to ctx.ctx x1 y1;
       Cairo.line_to ctx.ctx x2 y2)
     points;
