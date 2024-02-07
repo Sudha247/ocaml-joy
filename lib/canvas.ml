@@ -19,7 +19,7 @@ module Canvas : Modules.Backend = struct
     axes : bool;
   }
 
-  let context : context option ref = ref None
+  let context = ref None
 
   exception Context of string
 
@@ -179,7 +179,7 @@ module Canvas : Modules.Backend = struct
     begin_path ctx;
     List.iter
       (fun pair ->
-        let Shape.{ x = x1; y = y1 }, Shape.{ x = x2; y = y2 } =
+        let { x = x1; y = y1 }, { x = x2; y = y2 } =
           (List.nth pair 0, List.nth pair 1)
         in
         ctx##moveTo x1 y1;
@@ -205,11 +205,11 @@ module Canvas : Modules.Backend = struct
 
   let show shapes =
     let rec render' context = function
-      | Shape.Circle circle' -> draw_circle context circle'
-      | Shape.Ellipse ellipse' -> draw_ellipse context ellipse'
-      | Shape.Line line' -> draw_line context line'
-      | Shape.Polygon polygon' -> draw_polygon context polygon'
-      | Shape.Complex complex' -> List.iter (render' context) complex'
+      | Circle circle' -> draw_circle context circle'
+      | Ellipse ellipse' -> draw_ellipse context ellipse'
+      | Line line' -> draw_line context line'
+      | Polygon polygon' -> draw_polygon context polygon'
+      | Complex complex' -> List.iter (render' context) complex'
     in
     match !context with
     | Some ctx -> List.iter (render' ctx.context) shapes

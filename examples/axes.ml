@@ -9,6 +9,6 @@ let _ =
   background (255, 255, 255, 255);
   let c = circle 50 in
   set_color (0, 0, 0);
-  show [c];
+  show [ c ];
   (* Write to PNG! *)
   write ~filename:"axes.png" ()

@@ -102,3 +102,9 @@
  (name donut_with_scale)
  (modules donut_with_scale)
  (libraries joy))
+
+(executable
+ (name canvas)
+ (modes js)
+ (modules canvas)
+ (libraries joy))
