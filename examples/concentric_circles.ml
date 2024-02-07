@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 let () =
   init ();
@@ -15,5 +15,5 @@ let () =
   in
   let circles = complex (make_concentric [] 21) in
   set_color (0, 0, 0);
-  render circles;
+  show [ circles ];
   write ~filename:"concentric_circles.png" ()

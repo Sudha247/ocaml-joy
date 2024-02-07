@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 let () =
   init ();

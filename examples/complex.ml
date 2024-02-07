@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 (*
    Complex shapes can also be created from lists of shapes.

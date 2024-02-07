@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 let () =
   init ();
@@ -7,5 +7,5 @@ let () =
   let e = ellipse 100 75 in
   (* render it *)
   set_color (0, 0, 0);
-  render e;
+  show [ e ];
   write ~filename:"ellipse.png" ()

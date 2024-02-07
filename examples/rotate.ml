@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 let max = 32.
 let rec range a b = if a > b then [] else a :: range (a +. 1.) b

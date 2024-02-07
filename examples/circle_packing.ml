@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 (* global constants // RNG initialization *)
 let w, h = (900., 900.)
@@ -79,7 +79,7 @@ let pack_circles () =
 let draw_with_color circle =
   let idx = Stdlib.Random.full_int (List.length palette - 1) in
   set_color (List.nth palette idx);
-  render circle
+  show [ circle ]
 
 (* turns a circle into a list of concentric circles *)
 let make_concentric circle =
