@@ -31,20 +31,19 @@ let init_context line_width (w, h) axes =
   context := Some { ctx; surface; size = (w, h); axes }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
-let tmap3 f (a, b, c) = (f a, f b, f c)
-let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
-let ( >> ) f g x = g (f x)
+
 let scale_color_channel x = x /. 256.
 
 let set_color color =
   match !context with
   | Some ctx ->
-      let r, g, b = tmap3 (float_of_int >> scale_color_channel) color in
+      let r, g, b = let open Utils in tmap3 (float_of_int >> scale_color_channel) color in
       Cairo.set_source_rgba ctx.ctx r g b 1.
   | None -> fail ()
 
 (* sets background color *)
 let background color =
+  let open Utils in
   match !context with
   | Some ctx ->
       let r, g, b, a = tmap4 (float_of_int >> scale_color_channel) color in

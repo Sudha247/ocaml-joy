@@ -1,24 +1,22 @@
 open Shape
 open Context
 
-let tmap f (x, y) = (f x, f y)
-
 let denormalize point =
-  let x, y = Context.resolution () |> tmap float_of_int in
+  let x, y = Context.resolution () |> Utils.tmap float_of_int in
   let canvas_mid = { x; y } /! 2. in
   ((point.x +. canvas_mid.x) /. x, (point.y +. canvas_mid.y) /. y)
 
 let euclid_norm (x, y) = sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.
 
 let draw_circle ctx ({ c; radius } : circle) =
-  let size = tmap float_of_int ctx.size in
+  let size = Utils.tmap float_of_int ctx.size in
   let x, y = denormalize c in
   let radius = radius /. euclid_norm size in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let size = resolution () |> tmap float_of_int in
+  let size = resolution () |> Utils.tmap float_of_int in
   let x, y = denormalize c in
   let half_height = ry /. snd size in
   let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in
@@ -56,29 +54,8 @@ let draw_line ctx line =
   Cairo.stroke ctx.ctx;
   restore ()
 
-let rec take n lst =
-  match (n, lst) with
-  | 0, _ -> ([], lst)
-  | _, [] -> ([], [])
-  | n, x :: xs ->
-      let taken, rest = take (n - 1) xs in
-      (x :: taken, rest)
-
-let rec partition n ?step lst =
-  match lst with
-  | [] -> []
-  | _ ->
-      let taken, _ = take n lst in
-      if List.length taken = n then
-        taken
-        ::
-        (match step with
-        | Some s -> partition n ~step:s (List.tl lst)
-        | None -> partition n ~step:0 (List.tl lst))
-      else []
-
 let draw_polygon ctx polygon =
-  let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
+  let points = Utils.partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
   List.iter
     (fun pair ->
       let pair = List.map denormalize pair in
@@ -108,7 +85,7 @@ let show shapes =
 let render_axes () =
   print_endline "rendering axes!";
   save ();
-  let x, y = Context.resolution () |> tmap float_of_int in
+  let x, y = Context.resolution () |> Utils.tmap float_of_int in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~a:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
   let y_axis = line ~a:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
