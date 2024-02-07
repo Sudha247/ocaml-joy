@@ -7,7 +7,10 @@ type context = {
 }
 
 (* Renders context to PNG *)
-let write ctx filename = Cairo.PNG.write ctx.surface filename
+let write ctx filename = 
+  Cairo.PNG.write ctx.surface filename; 
+  Cairo.Surface.finish ctx.surface
+
 let context = ref None
 
 exception Context of string
@@ -26,30 +29,33 @@ let init_context line_width (w, h) axes =
 
   let surface = Cairo.Image.create Cairo.Image.ARGB32 ~w ~h in
   let ctx = Cairo.create surface in
-  Cairo.scale ctx (float_of_int w) (float_of_int h);
   Cairo.set_line_width ctx line_width;
   context := Some { ctx; surface; size = (w, h); axes }
 
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
+let tmap f (a, b) = (f a, f b)
 let tmap3 f (a, b, c) = (f a, f b, f c)
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
 let ( >> ) f g x = g (f x)
 let scale_color_channel x = x /. 256.
+let scale_color_channel = float_of_int >> scale_color_channel
 
 let set_color color =
   match !context with
   | Some ctx ->
-      let r, g, b = tmap3 (float_of_int >> scale_color_channel) color in
-      Cairo.set_source_rgba ctx.ctx r g b 1.
+      let r, g, b = tmap3 scale_color_channel color in
+      Cairo.set_source_rgb ctx.ctx r g b
   | None -> fail ()
 
 (* sets background color *)
 let background color =
   match !context with
-  | Some ctx ->
-      let r, g, b, a = tmap4 (float_of_int >> scale_color_channel) color in
-      Cairo.set_source_rgba ctx.ctx r g b a;
-      Cairo.paint ctx.ctx
+  | Some ({ ctx; _ } as context) ->
+      let r, g, b, a = tmap4 scale_color_channel color in
+      let w, h = tmap float_of_int context.size in
+      Cairo.set_source_rgba ctx r g b a;
+      Cairo.rectangle ctx 0. 0. ~w ~h;
+      Cairo.fill ctx
   | None -> fail ()
 
 (** Sets the width of lines for both stroke of shapes and line primitives. 
@@ -57,7 +63,7 @@ let background color =
     default is 2 *)
 let set_line_width line_width =
   match !context with
-  | Some ctx -> Cairo.set_line_width ctx.ctx (float_of_int line_width /. 1000.)
+  | Some ctx -> Cairo.set_line_width ctx.ctx (float_of_int line_width)
   | None -> fail ()
 
 let save () =

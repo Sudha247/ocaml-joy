@@ -6,22 +6,17 @@ let tmap f (x, y) = (f x, f y)
 let denormalize point =
   let x, y = Context.resolution () |> tmap float_of_int in
   let canvas_mid = { x; y } /! 2. in
-  ((point.x +. canvas_mid.x) /. x, (point.y +. canvas_mid.y) /. y)
-
-let euclid_norm (x, y) = sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.
+  ((point.x +. canvas_mid.x), (point.y +. canvas_mid.y))
 
 let draw_circle ctx ({ c; radius } : circle) =
-  let size = tmap float_of_int ctx.size in
   let x, y = denormalize c in
-  let radius = radius /. euclid_norm size in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let size = resolution () |> tmap float_of_int in
   let x, y = denormalize c in
-  let half_height = ry /. snd size in
-  let width_two_thirds = rx /. fst size *. (2. /. 3.) *. 2. in
+  let half_height = ry /. 2. in
+  let width_two_thirds = rx *. (2. /. 3.) *. 2. in
   ( { x; y = y -. half_height },
     ( x +. width_two_thirds,
       y -. half_height,
@@ -38,23 +33,19 @@ let create_control_points { c; rx; ry } =
 
 let draw_ellipse ctx ellipse =
   let start, curve_one, curve_two = create_control_points ellipse in
-  Cairo.save ctx.ctx;
   Cairo.move_to ctx.ctx start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
   Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
   let x1, y1, x2, y2, x3, y3 = curve_two in
   Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
-  Cairo.stroke ctx.ctx;
-  Cairo.restore ctx.ctx
+  Cairo.stroke ctx.ctx
 
 let draw_line ctx line =
-  save ();
   let x1, y1 = denormalize line.a in
   let x2, y2 = denormalize line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
-  Cairo.stroke ctx.ctx;
-  restore ()
+  Cairo.stroke ctx.ctx
 
 let rec take n lst =
   match (n, lst) with
@@ -86,7 +77,6 @@ let draw_polygon ctx polygon =
       Cairo.move_to ctx.ctx x1 y1;
       Cairo.line_to ctx.ctx x2 y2)
     points;
-  Cairo.move_to ctx.ctx 0. 0.;
   Cairo.stroke ctx.ctx
 
 let rec render_shape ctx = function
@@ -106,7 +96,6 @@ let show shapes =
   | None -> fail ()
 
 let render_axes () =
-  print_endline "rendering axes!";
   save ();
   let x, y = Context.resolution () |> tmap float_of_int in
   let half_x, half_y = (x /. 2., y /. 2.) in
