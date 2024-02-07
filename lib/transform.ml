@@ -73,11 +73,10 @@ let rec rotate degrees shape =
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
-let range n = List.init n Fun.id
 
 let repeat n op shape =
   let match_list l =
     match l with [] -> [ op shape ] | last :: _ -> op last :: l
   in
-  let shapes = List.fold_right (fun _ acc -> match_list acc) (range n) [] in
+  let shapes = List.fold_right (fun _ acc -> match_list acc) (Utils.range n) [] in
   complex shapes

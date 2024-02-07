@@ -8,10 +8,12 @@ let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
 let pmap f { x; y } = { x = f x; y = f y }
 
-(* Tuple/Vector mapping *)
+(* Tuple/Vector ops *)
 let tmap f (x, y) = (f x, f y)
 let tmap3 f (a, b, c) = (f a, f b, f c)
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
+
+let euclid_norm (x, y) = sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.
 
 (** Function composition *)
 let ( >> ) f g x = g (f x)
@@ -37,3 +39,6 @@ let rec partition n ?step lst =
         | Some s -> partition n ~step:s (List.tl lst)
         | None -> partition n ~step:0 (List.tl lst))
       else []
+
+(* Misc *)
+let range n = List.init n Fun.id

@@ -6,12 +6,10 @@ let denormalize point =
   let canvas_mid = { x; y } /! 2. in
   ((point.x +. canvas_mid.x) /. x, (point.y +. canvas_mid.y) /. y)
 
-let euclid_norm (x, y) = sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.
-
 let draw_circle ctx ({ c; radius } : circle) =
   let size = Utils.tmap float_of_int ctx.size in
   let x, y = denormalize c in
-  let radius = radius /. euclid_norm size in
+  let radius = radius /. Utils.euclid_norm size in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
