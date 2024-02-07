@@ -6,7 +6,7 @@ let tmap f (x, y) = (f x, f y)
 let denormalize point =
   let x, y = Context.resolution () |> tmap float_of_int in
   let canvas_mid = { x; y } /! 2. in
-  ((point.x +. canvas_mid.x), (point.y +. canvas_mid.y))
+  (point.x +. canvas_mid.x, point.y +. canvas_mid.y)
 
 let draw_circle ctx ({ c; radius } : circle) =
   let x, y = denormalize c in

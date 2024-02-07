@@ -7,8 +7,8 @@ type context = {
 }
 
 (* Renders context to PNG *)
-let write ctx filename = 
-  Cairo.PNG.write ctx.surface filename; 
+let write ctx filename =
+  Cairo.PNG.write ctx.surface filename;
   Cairo.Surface.finish ctx.surface
 
 let context = ref None

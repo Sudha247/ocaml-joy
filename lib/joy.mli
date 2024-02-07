@@ -1,7 +1,6 @@
 type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
-
 type transformation = Transform.transformation
 
 val point : int -> int -> float point

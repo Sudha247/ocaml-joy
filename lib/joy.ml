@@ -3,7 +3,6 @@ let context = Context.context
 type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
-
 type transformation = Transform.transformation
 
 let point = Shape.point
