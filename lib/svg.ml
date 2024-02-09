@@ -1,4 +1,4 @@
-module Svg : Modules.Backend = struct
+module S : Modules.Backend = struct
   (* Global rendering context singleton definition and instantiation *)
   type context = {
     ctx : Cairo.context;
@@ -28,7 +28,7 @@ module Svg : Modules.Backend = struct
     let surface = Cairo.Image.create Cairo.Image.ARGB32 ~w ~h in
     let ctx = Cairo.create surface in
     Cairo.scale ctx (float_of_int w) (float_of_int h);
-    Cairo.set_line_width ctx line_width;
+    Cairo.set_line_width ctx (line_width /. 1000.);
     context := Some { ctx; surface; size = (w, h); axes }
 
   let axes ctx = ctx.axes
@@ -183,3 +183,5 @@ module Svg : Modules.Backend = struct
     show [ x_axis; y_axis ];
     restore ()
 end
+
+module Backend = Modules.Make(S)

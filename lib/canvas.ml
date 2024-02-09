@@ -12,7 +12,7 @@ let doc = Html.document
 (* Needed for 'write'/image save*)
 let _window = Html.window
 
-module Canvas : Modules.Backend = struct
+module C : Modules.Backend = struct
   type context = {
     context : Html.canvasRenderingContext2D Js.t;
     size : int * int;
@@ -40,11 +40,13 @@ module Canvas : Modules.Backend = struct
   let init_context line_width size axes =
     let canvas = create_canvas size in
     if Option.is_some !context then
-      raise (Context "cannot iniitialize context twice")
+      raise (Context "context already initialized")
     else (
       Dom.appendChild doc##.body canvas;
       let ctx = canvas##getContext Html._2d_ in
+      ctx##translate (fst size / 2 |> float_of_int) (snd size / 2 |> float_of_int);
       ctx##.lineWidth := line_width;
+      
       context := Some { context = ctx; axes; size })
 
   (* Sets global color *)
@@ -71,7 +73,8 @@ module Canvas : Modules.Backend = struct
         let w, h = ctx.size in
         begin_path context;
         context##.fillStyle := col;
-        context##fillRect 0. 0. (float_of_int w) (float_of_int h)
+        context##fillRect 0. 0. (float_of_int w) (float_of_int h);
+        close_path context
     | None -> fail ()
 
   (* Accessor functions for 'context' *)
@@ -85,7 +88,7 @@ module Canvas : Modules.Backend = struct
 
   let set_line_width lw =
     match !context with
-    | Some { context = ctx; _ } -> ctx##.lineWidth := float_of_int lw /. 1000.
+    | Some { context; _ } -> context##.lineWidth := float_of_int lw
     | None -> fail ()
 
   (** TODO: writ this fn, blob API + coercion in JSOO is tough, not sure where 
@@ -101,12 +104,12 @@ module Canvas : Modules.Backend = struct
 
   let save () =
     match !context with
-    | Some { context = ctx; _ } -> ctx##save
+    | Some { context; _ } -> context##save
     | None -> fail ()
 
   let restore () =
     match !context with
-    | Some { context = ctx; _ } -> ctx##restore
+    | Some { context; _ } -> context##restore
     | None -> fail ()
 
   open Shape
@@ -215,3 +218,5 @@ module Canvas : Modules.Backend = struct
     | Some ctx -> List.iter (render' ctx.context) shapes
     | None -> fail ()
 end
+
+module Backend = Modules.Make(C)

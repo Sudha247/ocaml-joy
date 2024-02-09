@@ -23,7 +23,7 @@ module type Backend = sig
   val show : Shape.shapes -> unit
 end
 
-module Joy (B : Backend) = struct
+module Make (B : Backend) = struct
   let context = B.context
 
   type 'a point = 'a Shape.point
@@ -49,7 +49,7 @@ module Joy (B : Backend) = struct
   let resolution = B.resolution
 
   let init ?(line_width = 2) ?(size = (800, 800)) ?(axes = false) () =
-    B.init_context (float_of_int line_width /. 1000.) size axes
+    B.init_context (float_of_int line_width) size axes
 
   let write ?(filename = "joy.png") () =
     match !B.context with
