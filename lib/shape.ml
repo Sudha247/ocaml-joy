@@ -32,7 +32,7 @@ let circle ?(c = center) r = Circle { c; radius = float_of_int r }
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
   let x1 = c.x -. (w /. 2.) in
-  let y1 = c.x -. (h /. 2.) in
+  let y1 = c.y -. (h /. 2.) in
   Polygon
     [
       { x = x1; y = y1 };
