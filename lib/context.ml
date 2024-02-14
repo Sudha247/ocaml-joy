@@ -50,7 +50,7 @@ let set_color color =
 (* sets background color *)
 let background color =
   match !context with
-  | Some { ctx; _ }->
+  | Some { ctx; _ } ->
       let r, g, b, alpha = tmap4 scale_color_channel color in
       Cairo.set_source_rgb ctx r g b;
       Cairo.paint ctx ~alpha;

@@ -4,12 +4,12 @@ open Context
 let tmap f (x, y) = (f x, f y)
 
 let draw_circle ctx ({ c; radius } : circle) =
-  let {x; y }= c in
+  let { x; y } = c in
   Cairo.arc ctx.ctx x y ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   Cairo.stroke ctx.ctx
 
 let create_control_points { c; rx; ry } =
-  let {x; y }= c in
+  let { x; y } = c in
   let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) *. 2. in
   ( { x; y = y -. half_height },
@@ -36,8 +36,8 @@ let draw_ellipse ctx ellipse =
   Cairo.stroke ctx.ctx
 
 let draw_line ctx line =
-  let {x = x1; y = y1} = line.a in
-  let { x = x2; y = y2} = line.b in
+  let { x = x1; y = y1 } = line.a in
+  let { x = x2; y = y2 } = line.b in
   Cairo.move_to ctx.ctx x1 y1;
   Cairo.line_to ctx.ctx x2 y2;
   Cairo.stroke ctx.ctx
@@ -67,7 +67,9 @@ let draw_polygon ctx polygon =
   let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
   List.iter
     (fun pair ->
-      let {x = x1; y = y1}, {x = x2; y = y2 } = (List.nth pair 0, List.nth pair 1) in
+      let { x = x1; y = y1 }, { x = x2; y = y2 } =
+        (List.nth pair 0, List.nth pair 1)
+      in
       Cairo.move_to ctx.ctx x1 y1;
       Cairo.line_to ctx.ctx x2 y2)
     points;
@@ -90,11 +92,9 @@ let show shapes =
   | None -> fail ()
 
 let render_axes () =
-  save ();
   let x, y = Context.resolution () |> tmap float_of_int in
   let half_x, half_y = (x /. 2., y /. 2.) in
   let x_axis = line ~a:{ x = 0.; y = -.half_y } { x = 0.; y = half_y } in
   let y_axis = line ~a:{ x = -.half_x; y = 0. } { x = half_x; y = 0. } in
   set_color (0, 0, 0);
-  show [ x_axis; y_axis ];
-  restore ()
+  show [ x_axis; y_axis ]
