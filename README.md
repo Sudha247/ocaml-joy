@@ -103,13 +103,15 @@ There is an added benefit to this...
 ## Complex shapes
 
 `repeat` returns a single shape, when you might expect an operation like that to 
-return a list of shapes. It actually sort of does both. In addition to the usual
-geometric primitives, Joy also has a `Complex` type. This is a list of shapes 
-that act like a single shape. This means that transformations applied to a 
-complex shape are applied uniformly to every shape contained in a complex shape.
-This is useful because it allows you to create more visually complex shapes and
-treat the the same as you would primitives, transforming and composing them. In
-addition to `repeat`, a complex shape can alos be created like so:
+return a list of shapes. It actually *sort* of does both, let me explain. 
+
+In addition to the usual geometric primitives, Joy also has a `Complex` type. 
+This is a list of shapes that act like a single shape. This means that 
+transformations applied to a complex shape are applied uniformly to every shape 
+contained in a complex shape. This is useful because it allows you to create 
+more visually complex shapes and treat the the same as you would primitives, 
+transforming and composing them. In addition to `repeat`, a complex shape can 
+also be created like so:
 
 ```ocaml
 let circle' = circle 100 in 
@@ -118,3 +120,10 @@ let ellipse' = ellipse 100 70 in
 let line' = line (point (-250) 250) in 
 let complex' = complex [ circle', rectangle', ellipse', line' ]
 ```
+
+# Going further
+
+This documentation is a work in progress and additional tutorials and package 
+docs will be released soon to cover topics such as rendering polygons, working 
+with colors, classic generative art algorithms, `.svg` file rendering, and the
+HTML canvas backend.
