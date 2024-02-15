@@ -36,6 +36,10 @@ let () =
     write ()
 ```
 
+and renders this:
+
+![circle](/tutorial-circle.png)
+
 Let's break this down. `init` does all the behind-the-scenes render magic that 
 allows our shape to be drawn to an image file. `circle 100` creates a circle at 
 position `0,0`, the default for shape constructor functions when a position is 
@@ -43,6 +47,8 @@ not passed, with radius 100. You could draw the circle 100 units above center
 like this:
 
 `let c = circle ~c:(point 0 100) 100`
+
+![offset-circle](/tutorial-circle-offset.png)
 
 Notice the call to `show`, the circle is placed within a list. This is how we 
 render shapes in Joy. Placing our shape arguments in a list allows us to draw 
@@ -67,6 +73,8 @@ let () =
     write ()
 ```
 
+![rotate](/tutorial-rotate.png)
+
 Transformations can also be composed together:
 
 ```ocaml
@@ -74,15 +82,17 @@ let rotate_and_shrink = compose (rotate 45) (scale 0.9)
 ```
 
 This means that the result of the first transformation will be fed into the next.
-Through this wecan build up complex custo transforations that behave just like 
+Through this we can build up complex custo transforations that behave just like 
 the ones included in the library. 
 
 And finally, transformations can be iterated: 
 
 ```ocaml
-let rect = rectangle 100 in 
+let rect = rectangle 100 100 in 
 let spiral = repeat 16 (rotate 45) rect
 ```
+
+![spiral](/tutorial-spiral.png)
 
 This is how we build more complex shapes out of the simple primitives and 
 transformations in the library. It may look a little intimidating if you are new
@@ -118,8 +128,10 @@ let circle' = circle 100 in
 let rectangle' = rectangle 100 100 in 
 let ellipse' = ellipse 100 70 in
 let line' = line (point (-250) 250) in 
-let complex' = complex [ circle', rectangle', ellipse', line' ]
+let complex' = complex [ circle'; rectangle'; ellipse'; line' ]
 ```
+
+![complex](/tutorial-complex.png)
 
 # Going further
 
