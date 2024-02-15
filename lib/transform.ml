@@ -68,16 +68,17 @@ let rec rotate degrees shape =
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
-  | Line line' -> Line { line' with b = rotate_point degrees line'.b } 
+  | Line line' -> Line { line' with b = rotate_point degrees line'.b }
   | Polygon polygon' -> polygon (List.map (rotate_point degrees) polygon')
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
-let range n = List.init n Fun.id
 
 let repeat n op shape =
-  let match_list l =
-    match l with [] -> [ op shape ] | last :: _ -> op last :: l
+  let rec repeat' = function
+    | 0, shapes -> shapes
+    | n, [] -> repeat' (n - 1, [ shape ])
+    | n, (transformed :: _ as shapes) ->
+        repeat' (n - 1, op transformed :: shapes)
   in
-  let shapes = List.fold_right (fun _ acc -> match_list acc) (range n) [] in
-  complex shapes
+  Complex (repeat' (n, []))
