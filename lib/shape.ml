@@ -48,5 +48,10 @@ let ellipse ?(c = center) rx ry =
 let line ?(a = center) b = Line { a; b }
 let polygon lst_points = Polygon lst_points
 
+let ( <> ) shape complex =
+  match (shape, complex) with
+  | shape', Complex complex' -> Complex (shape' :: complex')
+  | a, b -> Complex [ a; b ]
+
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
