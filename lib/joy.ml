@@ -5,13 +5,8 @@ type shape = Shape.shape
 type shapes = Shape.shapes
 type transformation = Transform.transformation
 
-type color = Color.color
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
 (** Three-tuple representing a 24-bit RGB color *)
->>>>>>> 40ac680 (added stroke and fill fields, 'with' fns to add them to shapes, and map fns for applying fns to those fields)
+type color = Color.color
 
 let black = Color.black
 let white = Color.white
@@ -21,11 +16,7 @@ let blue = Color.blue
 let yellow = Color.yellow
 let transparent = Color.transparent
 let opaque = Color.opaque
-<<<<<<< HEAD
->>>>>>> b1a2518 (merging w/ main branch)
 
-=======
->>>>>>> 40ac680 (added stroke and fill fields, 'with' fns to add them to shapes, and map fns for applying fns to those fields)
 let point = Shape.point
 let circle = Shape.circle
 let rectangle = Shape.rectangle
