@@ -124,11 +124,11 @@ transforming and composing them. In addition to `repeat`, a complex shape can
 also be created like so:
 
 ```ocaml
-let circle' = circle 100 in 
-let rectangle' = rectangle 100 100 in 
-let ellipse' = ellipse 100 70 in
-let line' = line (point (-250) 250) in 
-let complex' = complex [ circle'; rectangle'; ellipse'; line' ]
+let c = circle 100 in 
+let r = rectangle 100 100 in 
+let e = ellipse 100 70 in
+let l = line (point (-250) 250) in 
+let bunch = complex [ c; r; e; l ]
 ```
 
 ![complex](/tutorial-complex.png)
