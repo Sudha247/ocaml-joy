@@ -29,6 +29,7 @@ let () =
          (fun (x, y) -> circle ~c:(point (x * radius) (y * radius)) radius)
          coords)
   in
+  let complex_shape = circle 50 :: complex_shape in
   (* translating that complex shape by radius / 2 *)
   let complex_transformed = translate half_radius half_radius complex_shape in
   set_color (0, 0, 0);
