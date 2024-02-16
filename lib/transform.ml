@@ -68,7 +68,7 @@ let rec rotate degrees shape =
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
-  | Line _line -> failwith "Not Implemented"
+  | Line line' -> Line { line' with b = rotate_point degrees line'.b } 
   | Polygon polygon' -> polygon (List.map (rotate_point degrees) polygon')
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
