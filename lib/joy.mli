@@ -18,7 +18,6 @@ val translate : int -> int -> transformation
 val scale : float -> transformation
 val compose : transformation -> transformation -> transformation
 val repeat : int -> transformation -> transformation
-val map_color : (color -> color) -> shape -> shape 
 val map_stroke : (color -> color) -> shape -> shape 
 val map_fill : (color -> color) -> shape -> shape
 

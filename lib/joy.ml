@@ -40,7 +40,6 @@ let scale = Transform.scale
 let translate = Transform.translate
 let compose = Transform.compose
 let repeat = Transform.repeat
-let map_color = Transform.map_color 
 let map_fill = Transform.map_fill
 let map_stroke = Transform.map_stroke
 
