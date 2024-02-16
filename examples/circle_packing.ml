@@ -7,7 +7,7 @@ let max_radius = 150.
 let num_circles = 5_000
 let max_attempts = 100_000
 let shrink_factor = 0.85
-let _ = Stdlib.Random.self_init ()
+let _ = Random.self_init ()
 
 let palette =
   [
@@ -29,6 +29,8 @@ let palette =
 
 (* utility Functions *)
 
+let rand_nth coll = List.length coll |> Random.full_int |> List.nth coll
+
 (* distance between two points *)
 let distance (x1, y1) (x2, y2) =
   let dx = x2 -. x1 in
@@ -36,13 +38,12 @@ let distance (x1, y1) (x2, y2) =
   sqrt ((dx *. dx) +. (dy *. dy))
 
 (* creates a random point within screen bounds *)
-let rand_point () =
-  (Stdlib.Random.float w -. (w /. 2.), Stdlib.Random.float h -. (h /. 2.))
+let rand_point () = (Random.float w -. (w /. 2.), Random.float h -. (h /. 2.))
 
 (* creates a circle with a random center point and radius *)
 let rand_circle () =
   let point = rand_point () in
-  (point, min_radius +. Stdlib.Random.float (max_radius -. min_radius))
+  (point, min_radius +. Random.float (max_radius -. min_radius))
 
 (* creates a lis of packed circles *)
 let pack_circles () =
@@ -73,14 +74,6 @@ let pack_circles () =
   let lst = [ rand_circle () ] in
   pack lst attempts
 
-(* pulls a random color from the 'palette' list
-   sets draw color with it
-   then draws circle *)
-let draw_with_color circle =
-  let idx = Stdlib.Random.full_int (List.length palette - 1) in
-  set_color (List.nth palette idx);
-  render circle
-
 (* turns a circle into a list of concentric circles *)
 let make_concentric circle =
   let rec shrink lst =
@@ -95,15 +88,17 @@ let make_concentric circle =
 (* main fn *)
 let () =
   init ~size:(int_of_float w, int_of_float h) ();
-  background (255, 255, 255, 255);
   set_line_width 1;
-  let circles = pack_circles () in
-  let circles = List.flatten (List.map make_concentric circles) in
-  List.iter
-    (fun ((x, y), radius) ->
-      draw_with_color
-        (circle
-           ~c:(point (int_of_float x) (int_of_float y))
-           (int_of_float radius)))
-    circles;
+  let circle_params = pack_circles () in
+  let concentric = List.flatten (List.map make_concentric circle_params) in
+  let circles =
+    List.map
+      (fun ((x, y), radius) ->
+        circle
+          ~c:{x; y}
+          (int_of_float radius)
+        |> with_stroke (rand_nth palette))
+      concentric
+  in
+  show circles;
   write ~filename:"Circle packing.png" ()
