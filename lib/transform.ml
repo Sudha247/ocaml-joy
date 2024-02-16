@@ -98,31 +98,6 @@ let repeat n op shape =
 
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)
-let rec map_color f = function
-  | Circle circle' ->
-      Circle
-        {
-          circle' with
-          stroke = Option.map f circle'.stroke;
-          fill = Option.map f circle'.fill;
-        }
-  | Ellipse ellipse' ->
-      Ellipse
-        {
-          ellipse' with
-          stroke = Option.map f ellipse'.stroke;
-          fill = Option.map f ellipse'.fill;
-        }
-  | Line line' -> Line { line' with stroke = f line'.stroke }
-  | Polygon polygon' ->
-      Polygon
-        {
-          polygon' with
-          stroke = Option.map f polygon'.stroke;
-          fill = Option.map f polygon'.fill;
-        }
-  | Complex complex' -> Complex (List.map (map_color f) complex')
-
 let rec map_stroke f = function
   | Circle circle' ->
       Circle { circle' with stroke = Option.map f circle'.stroke }
