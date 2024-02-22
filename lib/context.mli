@@ -10,7 +10,7 @@ val fail : unit -> unit
 
 exception Context of string
 
-val init_context : float -> int * int -> bool -> unit
+val init_context : int * int * int * int -> float -> int * int -> bool -> unit
 val resolution : unit -> int * int
 val set_color : int * int * int -> unit
 val background : int * int * int * int -> unit
