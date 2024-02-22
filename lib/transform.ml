@@ -2,8 +2,7 @@ open Shape
 
 type transformation = shape -> shape
 
-let rec translate dx dy shape =
-  match shape with
+let rec translate dx dy = function
   | Circle circle ->
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Circle { circle with c = { x = circle.c.x +. dx; y = circle.c.y +. dy } }
@@ -11,41 +10,52 @@ let rec translate dx dy shape =
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Ellipse
         { ellipse with c = { x = ellipse.c.x +. dx; y = ellipse.c.y +. dy } }
-  | Line line ->
+  | Line line' ->
       let dx, dy = (float_of_int dx, float_of_int dy) in
       Line
         {
-          a = { x = line.a.x +. dx; y = line.a.y +. dy };
-          b = { x = line.b.x +. dx; y = line.b.y +. dy };
+          line' with
+          a = { x = line'.a.x +. dx; y = line'.a.y +. dy };
+          b = { x = line'.b.x +. dx; y = line'.b.y +. dy };
         }
   | Polygon polygon' ->
-      let dx, dy = (float_of_int dx, float_of_int dy) in
-      polygon (List.map (fun { x; y } -> { x = x +. dx; y = y +. dy }) polygon')
+      Polygon
+        {
+          polygon' with
+          vertices =
+            List.map
+              (fun { x; y } ->
+                { x = x +. float_of_int dx; y = y +. float_of_int dy })
+              polygon'.vertices;
+        }
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
-let rec scale factor s =
-  let scale_length fact len = len *. fact in
-  let scale_point fact pt = pt *! fact in
-  match s with
+let scale_length fact len = len *. fact
+let pmap f { x; y } = { x = f x; y = f y }
+
+let rec scale factor = function
   | Circle circle' ->
       Circle
         {
-          c = scale_point factor circle'.c;
+          circle' with
+          c = pmap (scale_length factor) circle'.c;
           radius = scale_length factor circle'.radius;
         }
   | Ellipse ellipse' ->
       Ellipse
         {
-          c = scale_point factor ellipse'.c;
+          ellipse' with
+          c = pmap (scale_length factor) ellipse'.c;
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
         }
   | Line _line' -> failwith "Not Implemented"
   | Polygon polygon' ->
-      let scale_point factor { x; y } =
-        { x = scale_length factor x; y = scale_length factor y }
-      in
-      polygon (List.map (scale_point factor) polygon')
+      Polygon
+        {
+          polygon' with
+          vertices = List.map (pmap (scale_length factor)) polygon'.vertices;
+        }
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
 let to_radians degrees = float_of_int degrees *. Stdlib.Float.pi /. 180.
@@ -63,13 +73,17 @@ let rotate_point degrees point =
   let r, theta = to_polar point in
   from_polar (r, theta +. radians)
 
-let rec rotate degrees shape =
-  match shape with
+let rec rotate degrees = function
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
   | Line line' -> Line { line' with b = rotate_point degrees line'.b }
-  | Polygon polygon' -> polygon (List.map (rotate_point degrees) polygon')
+  | Polygon polygon' ->
+      Polygon
+        {
+          polygon' with
+          vertices = List.map (rotate_point degrees) polygon'.vertices;
+        }
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
@@ -82,3 +96,26 @@ let repeat n op shape =
         repeat' (n - 1, op transformed :: shapes)
   in
   Complex (repeat' (n, []))
+
+(** Takes a function and a shape and returns a new shape with the 
+    function applied to the original's color *)
+let rec map_stroke f = function
+  | Circle circle' ->
+      Circle { circle' with stroke = Option.map f circle'.stroke }
+  | Ellipse ellipse' ->
+      Ellipse { ellipse' with stroke = Option.map f ellipse'.stroke }
+  | Line line' -> Line { line' with stroke = f line'.stroke }
+  | Polygon polygon' ->
+      Polygon { polygon' with stroke = Option.map f polygon'.stroke }
+  | Complex complex' -> Complex (List.map (map_stroke f) complex')
+
+let rec map_fill f = function
+  | Circle circle' -> Circle { circle' with fill = Option.map f circle'.fill }
+  | Ellipse ellipse' ->
+      Ellipse { ellipse' with fill = Option.map f ellipse'.fill }
+  | Polygon polygon' ->
+      Polygon { polygon' with fill = Option.map f polygon'.fill }
+  | Complex complex' -> Complex (List.map (map_fill f) complex')
+  | _ as line' ->
+      print_endline "Lines do not have a fill field!";
+      line'
