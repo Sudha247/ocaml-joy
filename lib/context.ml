@@ -21,12 +21,11 @@ let () =
       match e with Context err -> Some ("Context: " ^ err) | _ -> None)
 
 let fail () = raise (Context "not initialized")
-
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
 let tmap3 f (a, b, c) = (f a, f b, f c)
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
-let (>>) f g x = g (f x)
-let scale_channel n =  n /. 255.
+let ( >> ) f g x = g (f x)
+let scale_channel n = n /. 255.
 let scale_color_channel = float_of_int >> scale_channel
 
 let set_color color =
@@ -39,12 +38,12 @@ let set_color color =
 (* sets background color *)
 let background color =
   match !context with
-    | Some { ctx; _ } ->
+  | Some { ctx; _ } ->
       let r, g, b, alpha = tmap4 scale_color_channel color in
       Cairo.set_source_rgb ctx r g b;
       Cairo.paint ctx ~alpha;
       Cairo.fill ctx
-    | None -> fail ()
+  | None -> fail ()
 
 (** Sets the width of lines for both stroke of shapes and line primitives. 
     Can be any positive integer, with larger numbers producing thicker lines. 
