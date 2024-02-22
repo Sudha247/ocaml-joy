@@ -127,10 +127,6 @@ let rec render_shape ctx = function
   | Polygon polygon -> draw_polygon ctx polygon
   | Complex complex -> List.iter (render_shape ctx) complex
 
-(* Validates context before rendering *)
-let render shape =
-  match !context with Some ctx -> render_shape ctx shape | None -> fail ()
-
 let show shapes =
   match !context with
   | Some ctx -> List.iter (render_shape ctx) shapes
