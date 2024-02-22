@@ -1,3 +1,5 @@
+include Random
+
 let context = Context.context
 
 type 'a point = 'a Shape.point
@@ -51,3 +53,5 @@ let write ?(filename = "joy.png") () =
 
 let render shape = Render.render shape
 let show shapes = Render.show shapes
+
+

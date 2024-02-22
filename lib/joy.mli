@@ -21,6 +21,11 @@ val repeat : int -> transformation -> transformation
 val map_stroke : (color -> color) -> shape -> shape 
 val map_fill : (color -> color) -> shape -> shape
 
+val random : ?min:int -> int -> int 
+val frandom : ?min:float -> float -> float 
+val noise : float list -> float 
+val fractal_noise : ?octaves:int -> float list -> float
+
 val context : Context.context option ref
 val set_line_width : int -> unit
 val black : color

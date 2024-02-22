@@ -7,7 +7,6 @@ let max_radius = 150.
 let num_circles = 5_000
 let max_attempts = 100_000
 let shrink_factor = 0.85
-let _ = Random.self_init ()
 
 let palette =
   [
@@ -29,7 +28,7 @@ let palette =
 
 (* utility Functions *)
 
-let rand_nth coll = List.length coll |> Random.full_int |> List.nth coll
+let rand_nth coll = List.length coll |> random |> List.nth coll
 
 (* distance between two points *)
 let distance (x1, y1) (x2, y2) =
@@ -38,12 +37,12 @@ let distance (x1, y1) (x2, y2) =
   sqrt ((dx *. dx) +. (dy *. dy))
 
 (* creates a random point within screen bounds *)
-let rand_point () = (Random.float w -. (w /. 2.), Random.float h -. (h /. 2.))
+let rand_point () = (frandom w -. (w /. 2.), frandom h -. (h /. 2.))
 
 (* creates a circle with a random center point and radius *)
 let rand_circle () =
   let point = rand_point () in
-  (point, min_radius +. Random.float (max_radius -. min_radius))
+  (point, min_radius +. frandom (max_radius -. min_radius))
 
 (* creates a lis of packed circles *)
 let pack_circles () =
