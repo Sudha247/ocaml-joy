@@ -56,7 +56,7 @@ let polygon vertices =
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
   let x1 = c.x -. (w /. 2.) in
-  let y1 = c.x -. (h /. 2.) in
+  let y1 = c.y -. (h /. 2.) in
   polygon
     [
       { x = x1; y = y1 };
