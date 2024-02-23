@@ -2,19 +2,18 @@ open Joy
 
 (* global constants // RNG initialization *)
 let size = (800, 800)
-let min_radius = 10.
-let max_radius = 200.
-let pareto_scale = 0.99
-let pareto_alpha = 0.1
+let min_radius = 5.
+let max_radius = 150.
+let pareto_scale = 1.
+let pareto_alpha = 0.25
 
 (* Maximum number of circles *)
-let num_circles = 5000
+let num_circles = 10000
 
 (* Maximum attempts at finding new non-overlapping circles *)
-let max_attempts = 10_000
+let max_attempts = 100_000
 
 (* Factor circles are scaled by *)
-let shrink_factor = 0.85
 let _ = Random.self_init ()
 
 let palette =
@@ -89,15 +88,6 @@ let pack_circles () =
   in
   pack 0 []
 
-(* converts a circle into a list of concentric circles *)
-let shrink c =
-  let rec shrink' = function
-    | (x, y, r) :: _ as lst when r > 2. ->
-        shrink' ((x, y, r *. shrink_factor) :: lst)
-    | lst -> lst
-  in
-  shrink' [ c ]
-
 (* Creates a Joy circle from the tuple representation used in the packing fn *)
 let circle_from_repr (x, y, r) = circle ~c:{ x; y } (int_of_float r)
 
@@ -107,14 +97,10 @@ let () =
   init ~size ();
   (* Create packed circles *)
   pack_circles ()
-  (* Convert them to lists of concentric circles *)
-  |> List.map shrink
-  (* Flatten the list of circle lists *)
-  |> List.flatten
   (* Convert from our tuple representation to the Joy representation *)
   |> List.map circle_from_repr
   (* Add a stroke color *)
-  |> List.map (fun c -> with_stroke (rand_nth palette) c)
+  |> List.map (fun c -> with_fill (rand_nth palette) c)
   (* Render them! *)
   |> show;
   (* Write to PNG *)
