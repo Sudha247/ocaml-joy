@@ -5,8 +5,8 @@ type shape = Shape.shape
 type shapes = Shape.shapes
 type transformation = Transform.transformation
 
-(** Three-tuple representing a 24-bit RGB color *)
 type color = Color.color
+(** Three-tuple representing a 24-bit RGB color *)
 
 let black = Color.black
 let white = Color.white
@@ -16,7 +16,6 @@ let blue = Color.blue
 let yellow = Color.yellow
 let transparent = Color.transparent
 let opaque = Color.opaque
-
 let point = Shape.point
 let circle = Shape.circle
 let rectangle = Shape.rectangle
@@ -33,7 +32,6 @@ let compose = Transform.compose
 let repeat = Transform.repeat
 let map_fill = Transform.map_fill
 let map_stroke = Transform.map_stroke
-
 let set_line_width = Context.set_line_width
 
 let init ?(background = Color.white) ?(line_width = 2) ?(size = (500, 500))
