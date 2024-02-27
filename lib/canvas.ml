@@ -12,7 +12,7 @@ let doc = Html.document
 (* Needed for 'write'/image save*)
 let _window = Html.window
 
-module C : Modules.Backend = struct
+module C : Modules.Impl = struct
   type context = {
     context : Html.canvasRenderingContext2D Js.t;
     size : int * int;
@@ -37,47 +37,20 @@ module C : Modules.Backend = struct
     canvas##.height := h;
     canvas
 
-  let init_context line_width size axes =
-    let canvas = create_canvas size in
-    if Option.is_some !context then
-      raise (Context "context already initialized")
-    else (
-      Dom.appendChild doc##.body canvas;
-      let ctx = canvas##getContext Html._2d_ in
-      ctx##translate (fst size / 2 |> float_of_int) (snd size / 2 |> float_of_int);
-      ctx##.lineWidth := line_width;
-      
-      context := Some { context = ctx; axes; size })
-
-  (* Sets global color *)
-  let set_color color =
-    match !context with
-    | Some { context; _ } ->
-        let r, g, b = color in
-        let color_string = Printf.sprintf "rgb(%d, %d, %d)" r g b |> str in
-        context##.fillStyle := color_string;
-        context##.strokeStyle := color_string
-    | None -> fail ()
-
   let begin_path ctx = ctx##beginPath
   let close_path ctx = ctx##closePath
 
   (* sets background color *)
-  let background color =
+  let background { context; size; _ } color =
     let rgba (r, g, b, a) =
       str (Printf.sprintf "rgba(%d, %d, %d, %d)" r g b a)
     in
-    match !context with
-    | Some ({ context; _ } as ctx) ->
-        let col = rgba color in
-        let w, h = ctx.size in
-        begin_path context;
-        context##.fillStyle := col;
-        context##fillRect 0. 0. (float_of_int w) (float_of_int h);
-        close_path context
-    | None -> fail ()
-
-  (* Accessor functions for 'context' *)
+    let col = rgba color in
+    let w, h = size in
+    begin_path context;
+    context##.fillStyle := col;
+    context##fillRect 0. 0. (float_of_int w) (float_of_int h);
+    close_path context
 
   (** Returns 'axes' field of context *)
   let axes ctx = ctx.axes
@@ -91,7 +64,7 @@ module C : Modules.Backend = struct
     | Some { context; _ } -> context##.lineWidth := float_of_int lw
     | None -> fail ()
 
-  (** TODO: writ this fn, blob API + coercion in JSOO is tough, not sure where 
+  (* TODO: writ this fn, blob API + coercion in JSOO is tough, not sure where
       all the methods etc I need are *)
   let write _ctx _filename =
     let _save_image _filename _blob =
@@ -103,35 +76,57 @@ module C : Modules.Backend = struct
     ()
 
   let save () =
-    match !context with
-    | Some { context; _ } -> context##save
-    | None -> fail ()
+    match !context with Some { context; _ } -> context##save | None -> fail ()
 
   let restore () =
     match !context with
     | Some { context; _ } -> context##restore
     | None -> fail ()
 
+  let init_context background_color line_width ((w, h) as size) axes =
+    if Option.is_some !context then
+      raise (Context "context already initialized")
+    else
+      let canvas = create_canvas size in
+      Dom.appendChild doc##.body canvas;
+      let ctx = canvas##getContext Html._2d_ in
+      ctx##translate (w / 2 |> float_of_int) (h / 2 |> float_of_int);
+      ctx##.lineWidth := float_of_int line_width;
+      let temp = { context = ctx; size; axes } in
+      background temp background_color;
+      context := Some temp
+
   open Shape
 
-  let draw_circle ctx { c; radius } =
+  let stroke' ctx (r, g, b) =
+    let clr_str = Printf.sprintf "rgb(%d, %d, %d)" r g b |> str in
+    ctx##.strokeStyle := clr_str;
+    ctx##stroke
+
+  let fill' ctx (r, g, b) =
+    let clr_str = Printf.sprintf "rgb(%d, %d, %d)" r g b |> str in
+    ctx##.fillStyle := clr_str;
+    ctx##fill
+
+  let draw_circle ctx { c; radius; stroke; fill } =
     let { x; y } = c in
     begin_path ctx;
     ctx##arc x y radius 0. (2. *. Float.pi) (bl false);
-    ctx##stroke;
+    Option.iter (stroke' ctx) stroke;
+    Option.iter (fill' ctx) fill;
     close_path ctx
 
-  let draw_line ctx { a = { x = x1; y = y1 }; b = { x = x2; y = y2 } } =
+  let draw_line ctx { a = { x = x1; y = y1 }; b = { x = x2; y = y2 }; stroke } =
     begin_path ctx;
     ctx##moveTo x1 y1;
     ctx##lineTo x2 y2;
-    ctx##stroke;
+    stroke' ctx stroke;
     ctx##moveTo 0. 0.;
     close_path ctx
 
   type curve = float * float * float * float * float * float
 
-  let create_control_points { c; rx; ry } : float point * curve * curve =
+  let create_control_points (c, rx, ry) : float point * curve * curve =
     let { x; y } = c in
     let half_height = ry /. 2. in
     let width_two_thirds = rx *. (2. /. 3.) in
@@ -149,16 +144,16 @@ module C : Modules.Backend = struct
         x,
         y -. half_height ) )
 
-  let draw_ellipse ctx ellipse =
+  let draw_ellipse ctx { c; rx; ry; stroke; fill } =
     begin_path ctx;
-    let start, curve_one, curve_two = create_control_points ellipse in
+    let start, curve_one, curve_two = create_control_points (c, rx, ry) in
     ctx##moveTo start.x start.y;
     let x1, y1, x2, y2, x3, y3 = curve_one in
     ctx##bezierCurveTo x1 y1 x2 y2 x3 y3;
     let x1, y1, x2, y2, x3, y3 = curve_two in
     ctx##bezierCurveTo x1 y1 x2 y2 x3 y3;
-    ctx##stroke;
-    ctx##moveTo 0. 0.;
+    Option.iter (stroke' ctx) stroke;
+    Option.iter (fill' ctx) fill;
     close_path ctx
 
   let rec split_at n lst =
@@ -177,8 +172,8 @@ module C : Modules.Backend = struct
         if List.length taken = n then taken :: partition n ~step (List.tl lst)
         else []
 
-  let draw_polygon ctx polygon =
-    let points = partition 2 ~step:1 (polygon @ [ List.hd polygon ]) in
+  let draw_polygon ctx { vertices; stroke; fill } =
+    let points = partition 2 ~step:1 (vertices @ [ List.hd vertices ]) in
     begin_path ctx;
     List.iter
       (fun pair ->
@@ -188,7 +183,8 @@ module C : Modules.Backend = struct
         ctx##moveTo x1 y1;
         ctx##lineTo x2 y2)
       points;
-    ctx##stroke;
+    Option.iter (stroke' ctx) stroke;
+    Option.iter (fill' ctx) fill;
     close_path ctx
 
   let render_axes () =
@@ -219,4 +215,4 @@ module C : Modules.Backend = struct
     | None -> fail ()
 end
 
-module Backend = Modules.Make(C)
+module Backend = Modules.Make (C)

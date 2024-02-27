@@ -108,3 +108,8 @@
  (modes js)
  (modules canvas)
  (libraries joy))
+
+(executable
+ (name color)
+ (modules color)
+ (libraries joy))
