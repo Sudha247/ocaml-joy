@@ -113,6 +113,7 @@ let rec render_shape ctx = function
 let render shape =
   match !context with Some ctx -> render_shape ctx shape | None -> fail ()
 
+(** Renders a list of shapes *)
 let show shapes =
   match !context with
   | Some ctx -> List.iter (render_shape ctx) shapes

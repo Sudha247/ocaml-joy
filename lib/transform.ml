@@ -1,7 +1,9 @@
 open Shape
 
+(** Represents a function that takes a shape, and returns that shape transformed in some way *)
 type transformation = shape -> shape
 
+(** Translation - takes an int for each axis and adds those values to the shape's position *)
 let rec translate dx dy = function
   | Circle circle ->
       let dx, dy = (float_of_int dx, float_of_int dy) in
@@ -33,6 +35,8 @@ let rec translate dx dy = function
 let scale_length fact len = len *. fact
 let pmap f { x; y } = { x = f x; y = f y }
 
+(** Multipllies a shape's size paramters (i.e. a circle's radius) 
+    by the factor argument *)
 let rec scale factor = function
   | Circle circle' ->
       Circle
@@ -73,6 +77,7 @@ let rotate_point degrees point =
   let r, theta = to_polar point in
   from_polar (r, theta +. radians)
 
+(** Rotates a shape by 0-360 degrees *)
 let rec rotate degrees = function
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
@@ -86,9 +91,13 @@ let rec rotate degrees = function
         }
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
+(** Composes two `transformation`s, creating a function that feeds the 
+    result of the first into the second *)
 let compose f g x = g (f x)
 let range n = List.init n Fun.id
 
+(** Iterative transformation - takes a number, an operation, and a shape and folds over `range n` feeding 
+    the result of the last transformation into the next *)
 let repeat n op shape =
   let match_list l =
     match l with [] -> [ op shape ] | last :: _ -> op last :: l
@@ -96,8 +105,8 @@ let repeat n op shape =
   let shapes = List.fold_right (fun _ acc -> match_list acc) (range n) [] in
   complex shapes
 
-(** Takes a function and a shape and returns a new shape with the 
-    function applied to the original's color *)
+(** Takes a function and a shape, returns a new shape with the 
+    function applied to the original's `stroke` *)
 let rec map_stroke f = function
   | Circle circle' ->
       Circle { circle' with stroke = Option.map f circle'.stroke }
@@ -108,6 +117,8 @@ let rec map_stroke f = function
       Polygon { polygon' with stroke = Option.map f polygon'.stroke }
   | Complex complex' -> Complex (List.map (map_stroke f) complex')
 
+(** Takes a function and a shape, returns a new shape with the 
+    function applied to the original's `fill` *)
 let rec map_fill f = function
   | Circle circle' -> Circle { circle' with fill = Option.map f circle'.fill }
   | Ellipse ellipse' ->

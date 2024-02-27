@@ -34,12 +34,16 @@ let map_fill = Transform.map_fill
 let map_stroke = Transform.map_stroke
 let set_line_width = Context.set_line_width
 
+(** Initializes drawing context, takes optional arguments to set background color,
+    line width, and resolution(`size`) *)
 let init ?(background = Color.white) ?(line_width = 2) ?(size = (500, 500))
     ?(axes = false) () =
   Context.init_context (Color.opaque background)
     (float_of_int line_width)
     size axes
 
+(** Writes the current digital canvas to a PNG file, takes a filename 
+    as an optonal argument *)
 let write ?(filename = "joy.png") () =
   match !Context.context with
   | Some ctx ->
