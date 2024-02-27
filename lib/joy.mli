@@ -12,13 +12,13 @@ val line : ?a:float point -> float point -> shape
 val polygon : float point list -> shape
 val complex : shapes -> shape
 val with_stroke : color -> shape -> shape
-val with_fill : color -> shape-> shape
+val with_fill : color -> shape -> shape
 val rotate : int -> transformation
 val translate : int -> int -> transformation
 val scale : float -> transformation
 val compose : transformation -> transformation -> transformation
 val repeat : int -> transformation -> transformation
-val map_stroke : (color -> color) -> shape -> shape 
+val map_stroke : (color -> color) -> shape -> shape
 val map_fill : (color -> color) -> shape -> shape
 
 val random : ?min:int -> int -> int 
