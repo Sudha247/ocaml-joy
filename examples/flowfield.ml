@@ -49,7 +49,7 @@ let flowfield () =
 let grid divison =
   let grid_size = size / divison in
   let spacing = size / grid_size in
-  Array.init (grid_size * grid_size) (fun i ->
+  List.init (grid_size * grid_size) (fun i ->
       (i / grid_size * spacing, i mod grid_size * spacing))
 
 (* scale 0-n coordinates to [-n/2..n/2] *)
@@ -83,28 +83,27 @@ let make_line flowfield (x, y) =
   let bx, by = uni_to_bi final in
   (Joy.line ~a:{x = ax;y = ay} {x = bx; y = by}, (cx, cy))
 
-(* Renders line with color based on its angle *)
-let render_with_color flowfield line (x, y) =
-  let color_idx =
-    Bigarray.Array2.get flowfield x y /. tau
+(* Adds color to line, based on its angle *)
+let add_color flowfield line (x, y) = 
+  let color = 
+    Bigarray.Array2.get flowfield x y /. tau 
     |> ( *. ) (float_of_int (List.length palette))
     |> int_of_float
+    |> List.nth palette 
   in
-  let color = List.nth palette color_idx in
-  Joy.set_color color;
-  Joy.render line
+  line |> Joy.with_stroke color 
 
 let () =
   let open Joy in
   init ();
-  background (255, 255, 255, 255);
   set_line_width 3;
   let flowfield = flowfield () in
   let interval = size / grid_divisor in
   let indices = grid interval in
-  let lines, points = Array.map (make_line flowfield) indices |> Array.split in
+  let lines, points = List.map (make_line flowfield) indices |> List.split in
   let centered =
-    Array.map (translate interval interval) lines
+    List.map (translate interval interval) lines
   in
-  Array.iter2 (render_with_color flowfield) centered points;
+  let lines = List.map2 (add_color flowfield) centered points in 
+  show lines;
   write ~filename:"flowfield.png" ()
