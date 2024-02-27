@@ -8,5 +8,4 @@ val doc : Html.document Js_of_ocaml.Js.t
 val _window : Html.window Js_of_ocaml.Js.t
 
 module C : Modules.Impl
-
 module Backend : Modules.Backend

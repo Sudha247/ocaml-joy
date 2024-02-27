@@ -19,6 +19,7 @@ end
 
 module type Backend = sig
   type context
+
   val context : context option ref
 
   type 'a point = 'a Shape.point
@@ -41,12 +42,11 @@ module type Backend = sig
   val with_fill : color -> shape -> shape
   val map_stroke : (color -> color) -> shape -> shape
   val map_fill : (color -> color) -> shape -> shape
-
-  val white : color 
-  val black : color 
-  val red : color 
-  val blue : color 
-  val green : color 
+  val white : color
+  val black : color
+  val red : color
+  val blue : color
+  val green : color
   val yellow : color
 
   val compose :
