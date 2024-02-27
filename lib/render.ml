@@ -17,7 +17,7 @@ let draw_circle ctx ({ c; radius; stroke; fill } : circle) =
   Option.iter fill_circle fill;
   Cairo.Path.clear ctx.ctx
 
-let create_control_points ({x; y}, rx, ry) =
+let create_control_points ({ x; y }, rx, ry) =
   let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) *. 2. in
   ( { x; y = y -. half_height },
@@ -74,10 +74,7 @@ let rec partition n ?(step = 0) lst =
   | [] -> []
   | _ ->
       let taken, _ = take n lst in
-      if List.length taken = n then
-        taken
-        ::
-        partition n ~step (List.tl lst)
+      if List.length taken = n then taken :: partition n ~step (List.tl lst)
       else []
 
 let draw_polygon ctx { vertices = points; stroke; fill } =

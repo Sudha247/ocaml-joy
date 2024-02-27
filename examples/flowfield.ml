@@ -16,13 +16,13 @@ let shuffle xs =
   List.map snd sorted
 
 let palette =
-    [
-      (74, 58, 59);
-      (152, 65, 54);
-      (194, 106, 122);
-      (236, 192, 161);
-      (240, 240, 228);
-    ]
+  [
+    (74, 58, 59);
+    (152, 65, 54);
+    (194, 106, 122);
+    (236, 192, 161);
+    (240, 240, 228);
+  ]
   |> shuffle
 
 let clamp = function
@@ -81,17 +81,16 @@ let make_line flowfield (x, y) =
   let final = step num_steps next flowfield in
   let ax, ay = uni_to_bi (x, y) in
   let bx, by = uni_to_bi final in
-  (Joy.line ~a:{x = ax;y = ay} {x = bx; y = by}, (cx, cy))
+  (Joy.line ~a:{ x = ax; y = ay } { x = bx; y = by }, (cx, cy))
 
 (* Adds color to line, based on its angle *)
-let add_color flowfield line (x, y) = 
-  let color = 
-    Bigarray.Array2.get flowfield x y /. tau 
+let add_color flowfield line (x, y) =
+  let color =
+    Bigarray.Array2.get flowfield x y /. tau
     |> ( *. ) (float_of_int (List.length palette))
-    |> int_of_float
-    |> List.nth palette 
+    |> int_of_float |> List.nth palette
   in
-  line |> Joy.with_stroke color 
+  line |> Joy.with_stroke color
 
 let () =
   let open Joy in
@@ -101,9 +100,7 @@ let () =
   let interval = size / grid_divisor in
   let indices = grid interval in
   let lines, points = List.map (make_line flowfield) indices |> List.split in
-  let centered =
-    List.map (translate interval interval) lines
-  in
-  let lines = List.map2 (add_color flowfield) centered points in 
+  let centered = List.map (translate interval interval) lines in
+  let lines = List.map2 (add_color flowfield) centered points in
   show lines;
   write ~filename:"flowfield.png" ()

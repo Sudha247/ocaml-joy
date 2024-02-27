@@ -103,7 +103,7 @@
  (modules donut_with_scale)
  (libraries joy))
 
-(executable 
+(executable
  (name flowfield)
  (modules flowfield noise)
  (libraries joy base))
