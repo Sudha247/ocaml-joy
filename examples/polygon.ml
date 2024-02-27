@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 let size = 100.
 
@@ -8,5 +8,5 @@ let () =
     polygon
       [ { x = -.size; y = 0. }; { x = 0.; y = size }; { x = size; y = 0. } ]
   in
-  render poly;
+  show [ poly ];
   write ~filename:"polygon.png" ()

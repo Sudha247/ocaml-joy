@@ -1,5 +1,7 @@
 (library
  (name joy)
  (public_name joy)
- (libraries cairo2)
+ (libraries cairo2 js_of_ocaml)
+ (preprocess
+  (pps js_of_ocaml-ppx))
  (wrapped false))

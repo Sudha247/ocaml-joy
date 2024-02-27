@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 (* global constants // RNG initialization *)
 let w, h = (900., 900.)
@@ -94,9 +94,7 @@ let () =
   let circles =
     List.map
       (fun ((x, y), radius) ->
-        circle
-          ~c:{x; y}
-          (int_of_float radius)
+        circle ~c:{ x; y } (int_of_float radius)
         |> with_stroke (rand_nth palette))
       concentric
   in

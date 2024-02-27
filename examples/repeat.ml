@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 (*
     demonstration of the repeat function
@@ -12,5 +12,5 @@ let () =
   init ();
   let circle = circle ~c:(point (-100) 0) 50 in
   let shapes = repeat 10 (translate 10 0) circle in
-  render shapes;
+  show [ shapes ];
   write ~filename:"repeat.png" ()

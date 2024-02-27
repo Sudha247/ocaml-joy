@@ -1,4 +1,4 @@
-open Joy
+open Joy.Svg
 
 let outer_radius = 200.
 let inner_radius = 80.
@@ -18,5 +18,5 @@ let () =
   init ();
   set_line_width 3;
   let star = List.init points star_section |> List.flatten |> polygon in
-  render star;
+  show [ star ];
   write ~filename:"star.png" ()
