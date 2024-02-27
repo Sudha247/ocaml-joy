@@ -107,3 +107,8 @@
  (name quadtree)
  (modules quadtree)
  (libraries joy))
+
+((executable
+ (name color)
+ (modules color)
+ (libraries joy)))
