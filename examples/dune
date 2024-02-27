@@ -108,7 +108,7 @@
  (modules quadtree)
  (libraries joy))
 
-((executable
+(executable
  (name color)
  (modules color)
- (libraries joy)))
+ (libraries joy))
