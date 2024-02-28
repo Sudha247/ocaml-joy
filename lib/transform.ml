@@ -96,8 +96,6 @@ let repeat n op shape =
   let shapes = List.fold_right (fun _ acc -> match_list acc) (range n) [] in
   complex shapes
 
-(** Takes a function and a shape and returns a new shape with the 
-    function applied to the original's color *)
 let rec map_stroke f = function
   | Circle circle' ->
       Circle { circle' with stroke = Option.map f circle'.stroke }

@@ -1,4 +1,6 @@
 type 'a point = { x : 'a; y : 'a }
+(** A point in 2d space *)
+
 type color = Color.color
 type line = { a : float point; b : float point; stroke : color }
 
