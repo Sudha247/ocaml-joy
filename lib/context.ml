@@ -6,7 +6,6 @@ type context = {
   axes : bool;
 }
 
-(* Renders context to PNG *)
 let write ctx filename =
   Cairo.PNG.write ctx.surface filename;
   Cairo.Surface.finish ctx.surface
@@ -45,9 +44,6 @@ let background color =
       Cairo.fill ctx
   | None -> fail ()
 
-(** Sets the width of lines for both stroke of shapes and line primitives. 
-    Can be any positive integer, with larger numbers producing thicker lines. 
-    default is 2 *)
 let set_line_width line_width =
   match !context with
   | Some ctx -> Cairo.set_line_width ctx.ctx (float_of_int line_width)

@@ -1,3 +1,5 @@
+(** Color handling & color constants *)
+
 type color = int * int * int
 
 val black : color

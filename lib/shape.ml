@@ -1,4 +1,6 @@
 type 'a point = { x : 'a; y : 'a }
+(** A point in 2d space *)
+
 type color = Color.color
 type line = { a : float point; b : float point; stroke : color }
 
@@ -23,7 +25,6 @@ type polygon = {
   fill : color option;
 }
 
-(** Shape variant type *)
 type shape =
   | Circle of circle
   | Ellipse of ellipse
@@ -31,7 +32,6 @@ type shape =
   | Polygon of polygon
   | Complex of shape list
 
-(** List of shapes *)
 type shapes = shape list
 
 (* point -> point arithmetic *)
@@ -43,22 +43,18 @@ let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
 let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
 let pmap f { x; y } = { x = f x; y = f y }
 
-(** Point constructor function *)
 let point x y =
   let x, y = (float_of_int x, float_of_int y) in
   { x; y }
 
 let center = { x = 0.; y = 0. }
 
-(** Circle constructor function *)
 let circle ?(c = center) r =
   Circle { c; radius = float_of_int r; stroke = Some Color.black; fill = None }
 
-(** Polygon constructor function *)
 let polygon vertices =
   Polygon { vertices; stroke = Some Color.black; fill = None }
 
-(** Rectangle constructor function *)
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
   let x1 = c.x -. (w /. 2.) in
@@ -71,19 +67,15 @@ let rectangle ?(c = center) width height =
       { x = x1 +. w; y = y1 };
     ]
 
-(** Ellipse constructor function *)
 let ellipse ?(c = center) rx ry =
   let rx, ry = (float_of_int rx, float_of_int ry) in
   Ellipse { c; rx; ry; stroke = Some Color.black; fill = None }
 
-(** Line constructor function *)
 let line ?(a = center) b = Line { a; b; stroke = Color.black }
 
-(** Complex shape constructor function *)
 let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
 
-(** Takes a color and a shape, and returns a new shape with its stroke set to that color *)
 let rec with_stroke stroke = function
   | Circle circle' -> Circle { circle' with stroke = Some stroke }
   | Ellipse ellipse' -> Ellipse { ellipse' with stroke = Some stroke }
@@ -91,7 +83,6 @@ let rec with_stroke stroke = function
   | Polygon polygon' -> Polygon { polygon' with stroke = Some stroke }
   | Complex complex' -> Complex (List.map (with_stroke stroke) complex')
 
-(** Takes a color and a shape, and returns a new shape with its fill set to that color *)
 let rec with_fill fill = function
   | Circle circle' -> Circle { circle' with fill = Some fill }
   | Ellipse ellipse' -> Ellipse { ellipse' with fill = Some fill }
