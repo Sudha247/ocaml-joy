@@ -75,7 +75,7 @@ let rec rotate degrees = function
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
-  | Line _line -> failwith "Not Implemented"
+  | Line line' -> Line { line' with b = rotate_point degrees line'.b }
   | Polygon polygon' ->
       Polygon
         {
@@ -87,11 +87,14 @@ let rec rotate degrees = function
 let compose f g x = g (f x)
 
 let repeat n op shape =
-  let match_list l =
-    match l with [] -> [ op shape ] | last :: _ -> op last :: l
+  let rec repeat' = function
+    | 0, shapes -> shapes
+    | n, [] -> repeat' (n - 1, [ shape ])
+    | n, (transformed :: _ as shapes) ->
+        repeat' (n - 1, op transformed :: shapes)
   in
-  let shapes = List.fold_right (fun _ acc -> match_list acc) (Util.range n) [] in
-  complex shapes
+  Complex (repeat' (n, []))
+
 
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)
