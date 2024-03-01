@@ -1,3 +1,5 @@
+  open Util
+
 (* Global rendering context singleton definition and instantiation *)
 type context = {
   ctx : Cairo.context;
@@ -37,13 +39,12 @@ let scale_color_channel x = x /. 256.
 let set_color color =
   match !context with
   | Some ctx ->
-      let r, g, b = let open Utils in tmap3 (float_of_int >> scale_color_channel) color in
+      let r, g, b = tmap3 (float_of_int >> scale_color_channel) color in
       Cairo.set_source_rgba ctx.ctx r g b 1.
   | None -> fail ()
 
 (* sets background color *)
 let background color =
-  let open Utils in
   match !context with
   | Some ctx ->
       let r, g, b, a = tmap4 (float_of_int >> scale_color_channel) color in
