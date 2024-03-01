@@ -13,9 +13,6 @@ let num_circles = 10000
 (* Maximum attempts at finding new non-overlapping circles *)
 let max_attempts = 100_000
 
-(* Factor circles are scaled by *)
-let _ = Random.self_init ()
-
 let palette =
   [
     (* purple *)
@@ -35,12 +32,12 @@ let palette =
   ]
 
 (* utility Functions *)
+let rand_nth coll = List.length coll |> random |> List.nth coll
 let tmap f (a, b) = (f a, f b)
-let rand_nth coll = List.length coll |> Random.full_int |> List.nth coll
 
 (* Pareto distribution float random for radii *)
 let pareto scl alpha =
-  let x = Random.float (1. -. Float.epsilon) +. Float.epsilon in
+  let x = frandom (1. -. Float.epsilon) +. Float.epsilon in
   scl *. ((1. -. x) ** (-1. /. alpha))
 
 (* Clamp floats to [min..max] *)
@@ -63,7 +60,7 @@ let overlaps (x1, y1, r1) (x2, y2, r2) =
 (* Creates a random point within screen bounds *)
 let rand_point () =
   let w, h = tmap float_of_int size in
-  (Random.float w -. (w /. 2.), Random.float h -. (h /. 2.))
+  (frandom w -. (w /. 2.), frandom h -. (h /. 2.))
 
 (* Creates a circle with a random center point and radius *)
 let rand_circle () =

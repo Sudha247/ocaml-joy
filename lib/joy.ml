@@ -1,3 +1,4 @@
+include Random
 include Shape
 include Transform
 include Color
@@ -19,3 +20,5 @@ let write ?(filename = "joy.png") () =
   | None -> Context.fail ()
 
 let show shapes = Render.show shapes
+
+

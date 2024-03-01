@@ -10,9 +10,6 @@ let point_size  = 1
 let box_color = (0, 0, 0)
 let point_color = (255, 1, 1)
 
-(* Init rng *)
-let _ = Random.self_init ()
-
 (* Point utils *)
 let splat n : point = { x = n; y = n }
 
@@ -27,17 +24,17 @@ let ( /! ) ({ x; y } : point) scalar : point =
 
 (* Random utils for creating random clustered points *)
 let rand_point () : point =
-  { x = Random.float size -. half_size; y = Random.float size -. half_size }
+  { x = Joy.frandom size -. half_size; y = Joy.frandom size -. half_size }
 
 (* Creates a point within 50 units of a center *)
 let centered_point (center : point) _: point =
-  let offset () = Random.float 100. -. 50. in
+  let offset () = Joy.frandom 100. -. 50. in
   center +~ { x = offset (); y = offset () }
 
 (* Creates a list of random points clustered around a center point *)
 let cluster _ =
   let center = rand_point () in
-  List.init (8 + Random.int 24) (centered_point center)
+  List.init (8 + Joy.random 24) (centered_point center)
 
 (* Box and utils *)
 

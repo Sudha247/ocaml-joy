@@ -1,4 +1,6 @@
-open Base
+(* Internal module for noise *)
+module Noise = struct 
+  open Base
 
 (* borrowed from
    https://gist.githubusercontent.com/tjammer/509981fed4d50683cdb800da5bf16ab1/raw/da2b8cc86718ef7e93e2e2c707dcfe443809d7cc/simplex.ml *)
@@ -122,3 +124,47 @@ let fractal2 octaves x y =
         (amp +. amplitude) (i - 1)
   in
   loop 0.0 0.0 octaves
+end
+
+(* Library exposed to users *)
+
+let initialized = ref false
+
+let initialize () = Stdlib.Random.self_init (); initialized := true
+
+(** Ranged integer random, produces a random int in range 0/min to max *)
+let random ?(min = 0) max = 
+  if not !initialized then initialize (); 
+  min + Stdlib.Random.int (max - min)
+
+(** Ranged float random, produces a random float in range 0./min to max *)
+let frandom ?(min = 0.) max = 
+  if not !initialized then initialize ();
+  min +. Stdlib.Random.float (max -. min)
+
+(** Simplex noise, output in range -1..1 *)
+let noise = function
+  | [] -> 
+    print_endline "Noise noise requires 1-2 elements in arg list"; 
+    0.
+  | [ x ] -> 
+    Noise.snoise1 x
+  | x :: y :: _  -> 
+    Noise.snoise2 x y
+
+(** Layered 'fractal' noise, output in range -1..1 *)
+let fractal_noise ?(octaves = 5) = function
+| [] -> 
+  print_endline "Fractal noise requires 1-2 elements in arg list"; 
+  0.
+| [ x ] -> 
+  Noise.fractal1 octaves x
+| x :: y :: _  -> 
+  Noise.fractal2 octaves x y
+
+(** Sets ref parameters of fractal noise, adjuting the visual character of the noise *)
+let set_fractal_params ?frequency ?amplitude ?lacunarity ?persistence () = 
+  Option.iter (fun n -> Noise.frequency := n) frequency;
+  Option.iter (fun n -> Noise.amplitude := n) amplitude;
+  Option.iter (fun n -> Noise.lacunarity := n) lacunarity;
+  Option.iter (fun n -> Noise.persistence := n) persistence
