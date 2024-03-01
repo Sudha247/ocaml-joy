@@ -42,7 +42,9 @@ let draw_ellipse ctx { c; rx; ry; stroke; fill } =
     set_color fill;
     Cairo.fill_preserve ctx.ctx
   in
-  let start, curve_one, curve_two = create_control_points (c, rx, Float.neg ry) in
+  let start, curve_one, curve_two =
+    create_control_points (c, rx, Float.neg ry)
+  in
   Cairo.move_to ctx.ctx start.x start.y;
   let x1, y1, x2, y2, x3, y3 = curve_one in
   Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
@@ -81,7 +83,6 @@ let draw_polygon ctx { vertices; stroke; fill } =
   Option.iter stroke_rect stroke;
   Option.iter fill_rect fill;
   Cairo.Path.clear ctx.ctx
-
 
 (* Validates context before rendering *)
 let show shapes =

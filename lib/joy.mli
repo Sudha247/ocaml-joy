@@ -13,7 +13,7 @@ val polygon : float point list -> shape
 val complex : shapes -> shape
 val with_stroke : color -> shape -> shape
 val with_fill : color -> shape -> shape
-val no_stroke : shape -> shape 
+val no_stroke : shape -> shape
 val no_fill : shape -> shape
 val rotate : int -> transformation
 val translate : int -> int -> transformation

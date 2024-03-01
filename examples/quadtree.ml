@@ -5,8 +5,7 @@ let size = 800.
 let half_size = size /. 2.
 let max_leaf_points = 4
 let clusters = 32
-let point_size  = 1
-
+let point_size = 1
 let box_color = (0, 0, 0)
 let point_color = (255, 1, 1)
 
@@ -30,7 +29,7 @@ let rand_point () : point =
   { x = Random.float size -. half_size; y = Random.float size -. half_size }
 
 (* Creates a point within 50 units of a center *)
-let centered_point (center : point) _: point =
+let centered_point (center : point) _ : point =
   let offset () = Random.float 100. -. 50. in
   center +~ { x = offset (); y = offset () }
 
@@ -43,7 +42,6 @@ let cluster _ =
 
 (* Axis aligned bounding box *)
 type box = { min : point; max : point }
-
 
 let box min max = { min; max }
 
@@ -60,14 +58,13 @@ let quarters ({ min; max } as box) =
   (lu, ru, rd, ld)
 
 (* Checks whether point is within bounds of box *)
-let contains { min; max }  ({ x; y }: point) =
+let contains { min; max } ({ x; y } : point) =
   x > min.x && x < max.x && y > min.y && y < max.y
 
 (* Quadtree and utils *)
 
 (* 2-tuple of bounding box * 'a list of elts whose positions are within that box *)
 type 'a leaf = box * 'a list
-
 type 'a tree = Leaf of 'a leaf | Node of 'a tree list
 
 (* Constructs tree from root *)
@@ -99,7 +96,7 @@ let build () =
 
 (* Converts our constructed tree into a flat list of shapes for rendering *)
 let to_flat_shapes tree =
-  let open Joy in 
+  let open Joy in
   (* Converts box into rectangle *)
   let rect_of_bb bb =
     rectangle ~c:(midpoint bb)
