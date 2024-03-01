@@ -89,3 +89,21 @@ let rec with_fill fill = function
   | _ as line' ->
       print_endline "lines do not have a fill field!";
       line'
+
+let rec no_stroke = function 
+    | Circle circle' -> Circle { circle' with stroke = None }
+    | Ellipse ellipse' -> Ellipse { ellipse' with stroke = None }
+    | Polygon polygon' -> Polygon { polygon' with stroke = None }
+    | Complex complex' -> Complex (List.map no_stroke complex')
+    | _ as line' -> 
+      print_endline "Cannot remove stroke from lines";
+      line'
+
+let rec no_fill = function 
+      | Circle circle' -> Circle { circle' with fill = None }
+      | Ellipse ellipse' -> Ellipse { ellipse' with fill = None }
+      | Polygon polygon' -> Polygon { polygon' with fill = None }
+      | Complex complex' -> Complex (List.map no_fill complex')
+      | _ as line' -> 
+        print_endline "Lines do not have a fill field!";
+        line'

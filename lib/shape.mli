@@ -47,3 +47,5 @@ val line : ?a:float point -> float point -> shape
 val polygon : float point list -> shape
 val with_stroke : color -> shape -> shape
 val with_fill : color -> shape -> shape
+val no_stroke : shape -> shape
+val no_fill : shape -> shape
