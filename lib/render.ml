@@ -17,7 +17,7 @@ let draw_circle ctx ({ c; radius; stroke; fill } : circle) =
   Option.iter fill_circle fill;
   Cairo.Path.clear ctx.ctx
 
-let create_control_points ({x; y}, rx, ry) =
+let create_control_points ({ x; y }, rx, ry) =
   let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) *. 2. in
   ( { x; y = y -. half_height },
@@ -74,10 +74,7 @@ let rec partition n ?(step = 0) lst =
   | [] -> []
   | _ ->
       let taken, _ = take n lst in
-      if List.length taken = n then
-        taken
-        ::
-        partition n ~step (List.tl lst)
+      if List.length taken = n then taken :: partition n ~step (List.tl lst)
       else []
 
 let draw_polygon ctx { vertices = points; stroke; fill } =
@@ -102,20 +99,17 @@ let draw_polygon ctx { vertices = points; stroke; fill } =
   Option.iter fill_rect fill;
   Cairo.Path.clear ctx.ctx
 
-let rec render_shape ctx = function
-  | Circle circle -> draw_circle ctx circle
-  | Ellipse ellipse -> draw_ellipse ctx ellipse
-  | Line line -> draw_line ctx line
-  | Polygon polygon -> draw_polygon ctx polygon
-  | Complex complex -> List.iter (render_shape ctx) complex
-
 (* Validates context before rendering *)
-let render shape =
-  match !context with Some ctx -> render_shape ctx shape | None -> fail ()
-
 let show shapes =
+  let rec render ctx = function
+    | Circle circle -> draw_circle ctx circle
+    | Ellipse ellipse -> draw_ellipse ctx ellipse
+    | Line line -> draw_line ctx line
+    | Polygon polygon -> draw_polygon ctx polygon
+    | Complex complex -> List.iter (render ctx) complex
+  in
   match !context with
-  | Some ctx -> List.iter (render_shape ctx) shapes
+  | Some ctx -> List.iter (render ctx) shapes
   | None -> fail ()
 
 let render_axes () =
