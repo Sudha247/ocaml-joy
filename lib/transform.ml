@@ -31,21 +31,19 @@ let rec translate dx dy = function
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
 let scale_length fact len = len *. fact
-let pmap f { x; y } = { x = f x; y = f y }
-
 let rec scale factor = function
   | Circle circle' ->
       Circle
         {
           circle' with
-          c = pmap (scale_length factor) circle'.c;
+          c = Util.pmap (scale_length factor) circle'.c;
           radius = scale_length factor circle'.radius;
         }
   | Ellipse ellipse' ->
       Ellipse
         {
           ellipse' with
-          c = pmap (scale_length factor) ellipse'.c;
+          c = Util.pmap (scale_length factor) ellipse'.c;
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
         }
@@ -54,7 +52,7 @@ let rec scale factor = function
       Polygon
         {
           polygon' with
-          vertices = List.map (pmap (scale_length factor)) polygon'.vertices;
+          vertices = List.map (Util.pmap (scale_length factor)) polygon'.vertices;
         }
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
@@ -77,7 +75,7 @@ let rec rotate degrees = function
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
       Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
-  | Line _line -> failwith "Not Implemented"
+  | Line line' -> Line { line' with b = rotate_point degrees line'.b }
   | Polygon polygon' ->
       Polygon
         {
@@ -87,14 +85,16 @@ let rec rotate degrees = function
   | Complex shapes -> Complex (List.map (rotate degrees) shapes)
 
 let compose f g x = g (f x)
-let range n = List.init n Fun.id
 
 let repeat n op shape =
-  let match_list l =
-    match l with [] -> [ op shape ] | last :: _ -> op last :: l
+  let rec repeat' = function
+    | 0, shapes -> shapes
+    | n, [] -> repeat' (n - 1, [ shape ])
+    | n, (transformed :: _ as shapes) ->
+        repeat' (n - 1, op transformed :: shapes)
   in
-  let shapes = List.fold_right (fun _ acc -> match_list acc) (range n) [] in
-  complex shapes
+  Complex (repeat' (n, []))
+
 
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)
