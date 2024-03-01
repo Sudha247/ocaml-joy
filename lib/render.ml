@@ -58,9 +58,10 @@ let draw_line ctx { a; b; stroke } =
   Cairo.move_to ctx.ctx x y;
   let { x; y } = b in
   Cairo.line_to ctx.ctx x y;
-  Cairo.stroke ctx.ctx
+  Cairo.stroke ctx.ctx;
+  Cairo.Path.clear ctx.ctx
 
-let draw_polygon ctx { vertices = points; stroke; fill } =
+let draw_polygon ctx { vertices; stroke; fill } =
   let stroke_rect stroke =
     set_color stroke;
     Cairo.stroke_preserve ctx.ctx
@@ -69,7 +70,7 @@ let draw_polygon ctx { vertices = points; stroke; fill } =
     set_color fill;
     Cairo.fill_preserve ctx.ctx
   in
-  let points = partition 2 ~step:1 (points @ [ List.hd points ]) in
+  let points = partition 2 ~step:1 (vertices @ [ List.hd vertices ]) in
   List.iter
     (fun pair ->
       let { x = x1; y = y1 }, { x = x2; y = y2 } =

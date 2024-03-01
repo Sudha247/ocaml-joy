@@ -32,15 +32,6 @@ type shape =
 
 type shapes = shape list
 
-(* point -> point arithmetic *)
-let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
-
-(* point -> scalar arithmetic *)
-let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
-let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
-let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
-let pmap f { x; y } = { x = f x; y = f y }
-
 let point x y =
   let x, y = (float_of_int x, float_of_int y) in
   { x; y }
@@ -55,14 +46,14 @@ let polygon vertices =
 
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
-  let x1 = c.x -. (w /. 2.) in
-  let y1 = c.y -. (h /. 2.) in
+  let x = c.x -. (w /. 2.) in
+  let y = c.y -. (h /. 2.) in
   polygon
     [
-      { x = x1; y = y1 };
-      { x = x1; y = y1 +. h };
-      { x = x1 +. w; y = y1 +. h };
-      { x = x1 +. w; y = y1 };
+      { x; y };
+      { x; y = y +. h };
+      { x = x +. w; y = y +. h };
+      { x = x +. w; y };
     ]
 
 let ellipse ?(c = center) rx ry =

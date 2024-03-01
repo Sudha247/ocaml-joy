@@ -13,8 +13,6 @@ let tmap f (x, y) = (f x, f y)
 let tmap3 f (a, b, c) = (f a, f b, f c)
 let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
 
-let euclid_norm (x, y) = sqrt (Float.pow x 2. +. Float.pow y 2.) /. 2.
-
 (** Function composition *)
 let ( >> ) f g x = g (f x)
 
@@ -27,17 +25,15 @@ let rec take n lst =
       let taken, rest = take (n - 1) xs in
       (x :: taken, rest)
 
-let rec partition n ?step lst =
+let rec partition n ?(step = 0) lst =
   match lst with
   | [] -> []
-  | _ ->
+  | lst' ->
       let taken, _ = take n lst in
       if List.length taken = n then
         taken
         ::
-        (match step with
-        | Some s -> partition n ~step:s (List.tl lst)
-        | None -> partition n ~step:0 (List.tl lst))
+       partition n ~step (List.tl lst')
       else []
 
 (* Misc *)
