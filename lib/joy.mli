@@ -13,6 +13,8 @@ val polygon : float point list -> shape
 val complex : shapes -> shape
 val with_stroke : color -> shape -> shape
 val with_fill : color -> shape -> shape
+val no_stroke : shape -> shape 
+val no_fill : shape -> shape
 val rotate : int -> transformation
 val translate : int -> int -> transformation
 val scale : float -> transformation
@@ -39,6 +41,5 @@ val init :
   unit ->
   unit
 
-val render : shape -> unit
 val show : shapes -> unit
 val write : ?filename:string -> unit -> unit
