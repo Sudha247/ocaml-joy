@@ -3,15 +3,14 @@ let size = 1200
 let tau = 2. *. Float.pi
 let num_steps = 6
 let grid_divisor = 128
-let _ = Random.self_init ()
 let octaves = 4
-let noise_scale = 2. +. Random.float 3.
+let noise_scale = 2. +. Joy.frandom  3.
 
 (* Utilities & color palette *)
 
 (* Randomly shuffles a list *)
 let shuffle xs =
-  let pairs = List.map (fun c -> (Random.bits (), c)) xs in
+  let pairs = List.map (fun c -> (Joy.random 0xFFFF, c)) xs in
   let sorted = List.sort compare pairs in
   List.map snd sorted
 
@@ -35,12 +34,12 @@ let fclamp max = function f when f > max -> max | f when f < 0. -> 0. | f -> f
 (* Initialize flowfield, a large 2D array containing angles determined by
    seeded simplex noise sampled at each coordinate *)
 let flowfield () =
-  let seed = Random.float 100. in
+  let seed = Joy.frandom 100. in
   Bigarray.Array2.init Bigarray.Float32 Bigarray.c_layout size size (fun x y ->
       let noise =
-        Noise.fractal2 octaves
-          ((float_of_int x /. float_of_int size *. noise_scale) +. seed)
-          ((float_of_int y /. float_of_int size *. noise_scale) +. seed)
+        Joy.fractal_noise ~octaves
+[((float_of_int x /. float_of_int size *. noise_scale) +. seed);
+          ((float_of_int y /. float_of_int size *. noise_scale) +. seed)]
       in
       let uni = (noise *. 0.5) +. 0.5 in
       fclamp tau uni *. tau)

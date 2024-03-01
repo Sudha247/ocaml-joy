@@ -110,8 +110,8 @@
 
 (executable
  (name flowfield)
- (modules flowfield noise)
- (libraries joy base))
+ (modules flowfield)
+ (libraries joy))
 
 (executable
  (name color)
