@@ -39,6 +39,5 @@ val init :
   unit ->
   unit
 
-val render : shape -> unit
 val show : shapes -> unit
 val write : ?filename:string -> unit -> unit
