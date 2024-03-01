@@ -34,11 +34,6 @@ type shape =
 type shapes = shape list
 
 val point : int -> int -> float point
-val ( /~ ) : float point -> float point -> float point
-val ( -! ) : float point -> float -> float point
-val ( /! ) : float point -> float -> float point
-val ( *! ) : float point -> float -> float point
-val pmap : ('a -> 'b) -> 'a point -> 'b point
 val circle : ?c:float point -> int -> shape
 val rectangle : ?c:float point -> int -> int -> shape
 val ellipse : ?c:float point -> int -> int -> shape

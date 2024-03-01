@@ -1,3 +1,5 @@
+open Util
+
 (* Global rendering context singleton definition and instantiation *)
 type context = {
   ctx : Cairo.context;
@@ -22,9 +24,6 @@ let () =
 
 let fail () = raise (Context "not initialized")
 let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
-let tmap3 f (a, b, c) = (f a, f b, f c)
-let tmap4 f (a, b, c, d) = (f a, f b, f c, f d)
-let ( >> ) f g x = g (f x)
 let scale_channel n = n /. 255.
 let scale_color_channel = float_of_int >> scale_channel
 
