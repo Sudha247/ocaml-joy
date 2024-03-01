@@ -58,8 +58,7 @@ let draw_line ctx { a; b; stroke } =
   Cairo.move_to ctx.ctx x y;
   let { x; y } = b in
   Cairo.line_to ctx.ctx x y;
-  Cairo.stroke ctx.ctx;
-  Cairo.Path.clear ctx.ctx
+  Cairo.stroke ctx.ctx
 
 let draw_polygon ctx { vertices; stroke; fill } =
   let stroke_rect stroke =
