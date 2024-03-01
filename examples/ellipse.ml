@@ -5,5 +5,5 @@ let () =
   (* create an ellipse *)
   let e = ellipse 100 75 in
   (* render it *)
-  render e;
+  show [ e ];
   write ~filename:"ellipse.png" ()

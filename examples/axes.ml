@@ -6,6 +6,6 @@ let _ =
   init ~axes:true ();
   (* set background to opaque white *)
   let c = circle 50 in
-  render c;
+  show [ c ];
   (* Write to PNG! *)
   write ~filename:"axes.png" ()
