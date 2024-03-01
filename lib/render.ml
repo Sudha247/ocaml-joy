@@ -83,6 +83,7 @@ let draw_polygon ctx { vertices; stroke; fill } =
   Option.iter fill_rect fill;
   Cairo.Path.clear ctx.ctx
 
+
 (* Validates context before rendering *)
 let show shapes =
   let rec render ctx = function
