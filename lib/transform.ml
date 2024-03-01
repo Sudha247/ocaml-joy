@@ -31,6 +31,7 @@ let rec translate dx dy = function
   | Complex shapes -> Complex (List.map (translate dx dy) shapes)
 
 let scale_length fact len = len *. fact
+
 let rec scale factor = function
   | Circle circle' ->
       Circle
@@ -52,7 +53,8 @@ let rec scale factor = function
       Polygon
         {
           polygon' with
-          vertices = List.map (Util.pmap (scale_length factor)) polygon'.vertices;
+          vertices =
+            List.map (Util.pmap (scale_length factor)) polygon'.vertices;
         }
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
@@ -94,7 +96,6 @@ let repeat n op shape =
         repeat' (n - 1, op transformed :: shapes)
   in
   Complex (repeat' (n, []))
-
 
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)

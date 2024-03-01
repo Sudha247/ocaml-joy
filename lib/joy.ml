@@ -4,7 +4,6 @@ include Transform
 include Color
 
 let context = Context.context
-
 let set_line_width = Context.set_line_width
 
 let init ?(background = Color.white) ?(line_width = 2) ?(size = (500, 500))

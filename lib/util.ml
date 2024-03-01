@@ -1,5 +1,6 @@
 (* point -> point arithmetic *)
 open Shape
+
 let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
 
 (* point -> scalar arithmetic *)
@@ -30,10 +31,7 @@ let rec partition n ?(step = 0) lst =
   | [] -> []
   | lst' ->
       let taken, _ = take n lst in
-      if List.length taken = n then
-        taken
-        ::
-       partition n ~step (List.tl lst')
+      if List.length taken = n then taken :: partition n ~step (List.tl lst')
       else []
 
 (* Misc *)
