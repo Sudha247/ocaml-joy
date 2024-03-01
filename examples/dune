@@ -104,6 +104,11 @@
  (libraries joy))
 
 (executable
+ (name quadtree)
+ (modules quadtree)
+ (libraries joy))
+
+(executable
  (name flowfield)
  (modules flowfield noise)
  (libraries joy base))
