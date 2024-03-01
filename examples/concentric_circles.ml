@@ -2,8 +2,6 @@ open Joy
 
 let () =
   init ();
-  background (255, 255, 255, 255);
-
   let init_circle = circle 200 in
   let interval = 1. -. (1. /. 20.) in
   let rec make_concentric (arr : shape list) (i : int) : shape list =
@@ -14,6 +12,5 @@ let () =
     | _, _ -> arr
   in
   let circles = complex (make_concentric [] 21) in
-  set_color (0, 0, 0);
-  render circles;
+  show [ circles ];
   write ~filename:"concentric_circles.png" ()

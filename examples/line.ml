@@ -9,7 +9,6 @@ let inc x = x + 1
 let _ =
   init ~size:(size, size) ();
   let half_size = size / 2 in
-  background (255, 255, 255, 255);
   let lines =
     List.map
       (fun i ->
@@ -19,6 +18,5 @@ let _ =
           (point (newx - half_size) half_size))
       (range 0 interval)
   in
-  set_color (0, 0, 0);
   show lines;
   write ~filename:"line.png" ()
