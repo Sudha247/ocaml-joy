@@ -12,5 +12,5 @@ let () =
     | _, _ -> arr
   in
   let circles = complex (make_concentric [] 21) in
-  render circles;
+  show [ circles ];
   write ~filename:"concentric_circles.png" ()

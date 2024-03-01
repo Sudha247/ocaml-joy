@@ -32,15 +32,6 @@ type shape =
 
 type shapes = shape list
 
-(* point -> point arithmetic *)
-let ( /~ ) p1 p2 = { x = p1.x /. p2.x; y = p1.x /. p2.x }
-
-(* point -> scalar arithmetic *)
-let ( -! ) { x; y } scalar = { x = x -. scalar; y = y -. scalar }
-let ( /! ) { x; y } scalar = { x = x /. scalar; y = y /. scalar }
-let ( *! ) { x; y } scalar = { x = x *. scalar; y = y *. scalar }
-let pmap f { x; y } = { x = f x; y = f y }
-
 let point x y =
   let x, y = (float_of_int x, float_of_int y) in
   { x; y }
@@ -55,14 +46,14 @@ let polygon vertices =
 
 let rectangle ?(c = center) width height =
   let w, h = (float_of_int width, float_of_int height) in
-  let x1 = c.x -. (w /. 2.) in
-  let y1 = c.x -. (h /. 2.) in
+  let x = c.x -. (w /. 2.) in
+  let y = c.y -. (h /. 2.) in
   polygon
     [
-      { x = x1; y = y1 };
-      { x = x1; y = y1 +. h };
-      { x = x1 +. w; y = y1 +. h };
-      { x = x1 +. w; y = y1 };
+      { x; y };
+      { x; y = y +. h };
+      { x = x +. w; y = y +. h };
+      { x = x +. w; y };
     ]
 
 let ellipse ?(c = center) rx ry =
@@ -89,3 +80,21 @@ let rec with_fill fill = function
   | _ as line' ->
       print_endline "lines do not have a fill field!";
       line'
+
+let rec no_stroke = function 
+    | Circle circle' -> Circle { circle' with stroke = None }
+    | Ellipse ellipse' -> Ellipse { ellipse' with stroke = None }
+    | Polygon polygon' -> Polygon { polygon' with stroke = None }
+    | Complex complex' -> Complex (List.map no_stroke complex')
+    | _ as line' -> 
+      print_endline "Cannot remove stroke from lines";
+      line'
+
+let rec no_fill = function 
+      | Circle circle' -> Circle { circle' with fill = None }
+      | Ellipse ellipse' -> Ellipse { ellipse' with fill = None }
+      | Polygon polygon' -> Polygon { polygon' with fill = None }
+      | Complex complex' -> Complex (List.map no_fill complex')
+      | _ as line' -> 
+        print_endline "Lines do not have a fill field!";
+        line'
