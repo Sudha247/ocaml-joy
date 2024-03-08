@@ -71,15 +71,10 @@ let draw_polygon ctx { vertices; stroke; fill } =
     set_color fill;
     Cairo.fill_preserve ctx.ctx
   in
-  let points = partition 2 ~step:1 (vertices @ [ List.hd vertices ]) in
-  List.iter
-    (fun pair ->
-      let { x = x1; y = y1 }, { x = x2; y = y2 } =
-        (List.nth pair 0, List.nth pair 1)
-      in
-      Cairo.move_to ctx.ctx x1 (Float.neg y1);
-      Cairo.line_to ctx.ctx x2 (Float.neg y2))
-    points;
+  let { x; y }, t = (List.hd vertices, List.tl vertices) in 
+  Cairo.move_to ctx.ctx x y;
+  List.iter (fun { x = x'; y = y' } -> Cairo.line_to ctx.ctx x' y') t; 
+  Cairo.Path.close ctx.ctx;
   Option.iter stroke_rect stroke;
   Option.iter fill_rect fill;
   Cairo.Path.clear ctx.ctx
