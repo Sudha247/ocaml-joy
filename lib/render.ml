@@ -62,8 +62,10 @@ let draw_polygon ctx { vertices; stroke; fill } =
     Cairo.fill_preserve ctx.ctx
   in
   let { x; y }, t = (List.hd vertices, List.tl vertices) in
-  Cairo.move_to ctx.ctx x y;
-  List.iter (fun { x = x'; y = y' } -> Cairo.line_to ctx.ctx x' y') t;
+  Cairo.move_to ctx.ctx x (Float.neg y);
+  List.iter
+    (fun { x = x'; y = y' } -> Cairo.line_to ctx.ctx x' (Float.neg y'))
+    t;
   Cairo.Path.close ctx.ctx;
   Option.iter stroke_rect stroke;
   Option.iter fill_rect fill;
