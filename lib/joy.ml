@@ -19,5 +19,3 @@ let write ?(filename = "joy.png") () =
   | None -> Context.fail ()
 
 let show shapes = Render.show shapes
-
-

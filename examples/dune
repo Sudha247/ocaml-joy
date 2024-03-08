@@ -118,7 +118,7 @@
  (modules color)
  (libraries joy))
 
-(executable 
+(executable
  (name fill_rect)
  (modules fill_rect)
  (libraries joy))

@@ -17,21 +17,11 @@ let draw_circle ctx ({ c; radius; stroke; fill } : circle) =
   Cairo.Path.clear ctx.ctx
 
 let create_control_points ({ x; y }, rx, ry) =
-  let half_height = ry /. 2. in
   let width_two_thirds = rx *. (2. /. 3.) *. 2. in
-  ( { x; y = y -. half_height },
-    ( x +. width_two_thirds,
-      y -. half_height,
-      x +. width_two_thirds,
-      y +. half_height,
-      x,
-      y +. half_height ),
-    ( x -. width_two_thirds,
-      y +. half_height,
-      x -. width_two_thirds,
-      y -. half_height,
-      x,
-      y -. half_height ) )
+  ( { x; y = y -. ry },
+    (x +. width_two_thirds, y -. ry, x +. width_two_thirds, y +. ry, x, y +. ry),
+    (x -. width_two_thirds, y +. ry, x -. width_two_thirds, y -. ry, x, y -. ry)
+  )
 
 let draw_ellipse ctx { c; rx; ry; stroke; fill } =
   let stroke_ellipse stroke =
@@ -71,9 +61,9 @@ let draw_polygon ctx { vertices; stroke; fill } =
     set_color fill;
     Cairo.fill_preserve ctx.ctx
   in
-  let { x; y }, t = (List.hd vertices, List.tl vertices) in 
+  let { x; y }, t = (List.hd vertices, List.tl vertices) in
   Cairo.move_to ctx.ctx x y;
-  List.iter (fun { x = x'; y = y' } -> Cairo.line_to ctx.ctx x' y') t; 
+  List.iter (fun { x = x'; y = y' } -> Cairo.line_to ctx.ctx x' y') t;
   Cairo.Path.close ctx.ctx;
   Option.iter stroke_rect stroke;
   Option.iter fill_rect fill;

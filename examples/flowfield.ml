@@ -4,7 +4,7 @@ let tau = 2. *. Float.pi
 let num_steps = 6
 let grid_divisor = 128
 let octaves = 4
-let noise_scale = 2. +. Joy.frandom  3.
+let noise_scale = 2. +. Joy.frandom 3.
 
 (* Utilities & color palette *)
 
@@ -38,8 +38,10 @@ let flowfield () =
   Bigarray.Array2.init Bigarray.Float32 Bigarray.c_layout size size (fun x y ->
       let noise =
         Joy.fractal_noise ~octaves
-[((float_of_int x /. float_of_int size *. noise_scale) +. seed);
-          ((float_of_int y /. float_of_int size *. noise_scale) +. seed)]
+          [
+            (float_of_int x /. float_of_int size *. noise_scale) +. seed;
+            (float_of_int y /. float_of_int size *. noise_scale) +. seed;
+          ]
       in
       let uni = (noise *. 0.5) +. 0.5 in
       fclamp tau uni *. tau)

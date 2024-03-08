@@ -26,7 +26,7 @@ let rand_point () : point =
   { x = Joy.frandom size -. half_size; y = Joy.frandom size -. half_size }
 
 (* Creates a point within 50 units of a center *)
-let centered_point (center : point) _: point =
+let centered_point (center : point) _ : point =
   let offset () = Joy.frandom 100. -. 50. in
   center +~ { x = offset (); y = offset () }
 
