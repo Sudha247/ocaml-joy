@@ -36,3 +36,4 @@ let rec partition n ?(step = 0) lst =
 
 (* Misc *)
 let range n = List.init n Fun.id
+let to_radians degrees = degrees *. Stdlib.Float.pi /. 180.

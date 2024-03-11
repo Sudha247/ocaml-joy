@@ -16,7 +16,7 @@ let draw_circle ctx ({ c; radius; stroke; fill } : circle) =
   Option.iter fill_circle fill;
   Cairo.Path.clear ctx.ctx
 
-let draw_ellipse ctx { c; rx; ry; stroke; fill } =
+let draw_ellipse ctx { c; rx; ry; stroke; fill; rotation } =
   let stroke_ellipse stroke =
     set_color stroke;
     Cairo.stroke_preserve ctx.ctx
@@ -31,6 +31,7 @@ let draw_ellipse ctx { c; rx; ry; stroke; fill } =
 
   (* Translate and scale to create an ellipse from a circle *)
   Cairo.translate ctx.ctx c.x (Float.neg c.y);
+  Cairo.rotate ctx.ctx rotation;
   Cairo.scale ctx.ctx rx ry;
   Cairo.arc ctx.ctx 0. 0. ~r:1. ~a1:0. ~a2:(2. *. Float.pi);
 
