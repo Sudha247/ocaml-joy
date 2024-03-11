@@ -16,13 +16,6 @@ let draw_circle ctx ({ c; radius; stroke; fill } : circle) =
   Option.iter fill_circle fill;
   Cairo.Path.clear ctx.ctx
 
-let create_control_points ({ x; y }, rx, ry) =
-  let width_two_thirds = rx *. (2. /. 3.) *. 2. in
-  ( { x; y = y -. ry },
-    (x +. width_two_thirds, y -. ry, x +. width_two_thirds, y +. ry, x, y +. ry),
-    (x -. width_two_thirds, y +. ry, x -. width_two_thirds, y -. ry, x, y -. ry)
-  )
-
 let draw_ellipse ctx { c; rx; ry; stroke; fill } =
   let stroke_ellipse stroke =
     set_color stroke;
@@ -32,14 +25,18 @@ let draw_ellipse ctx { c; rx; ry; stroke; fill } =
     set_color fill;
     Cairo.fill_preserve ctx.ctx
   in
-  let start, curve_one, curve_two =
-    create_control_points (c, rx, Float.neg ry)
-  in
-  Cairo.move_to ctx.ctx start.x start.y;
-  let x1, y1, x2, y2, x3, y3 = curve_one in
-  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
-  let x1, y1, x2, y2, x3, y3 = curve_two in
-  Cairo.curve_to ctx.ctx x1 y1 x2 y2 x3 y3;
+
+  (* Save the current transformation matrix *)
+  let save_matrix = Cairo.get_matrix ctx.ctx in
+
+  (* Translate and scale to create an ellipse from a circle *)
+  Cairo.translate ctx.ctx c.x (Float.neg c.y);
+  Cairo.scale ctx.ctx rx ry;
+  Cairo.arc ctx.ctx 0. 0. ~r:1. ~a1:0. ~a2:(2. *. Float.pi);
+
+  (* Restore the original transformation matrix *)
+  Cairo.set_matrix ctx.ctx save_matrix;
+
   Option.iter stroke_ellipse stroke;
   Option.iter fill_ellipse fill;
   Cairo.Path.clear ctx.ctx
