@@ -122,3 +122,9 @@
  (name fill_rect)
  (modules fill_rect)
  (libraries joy))
+
+(executable
+ (name smile)
+ (modules smile)
+ (libraries joy))
+ 
