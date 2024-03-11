@@ -48,7 +48,13 @@ let rec scale factor = function
           rx = scale_length factor ellipse'.rx;
           ry = scale_length factor ellipse'.ry;
         }
-  | Line _line' -> failwith "Not Implemented"
+  | Line line' ->
+      Line
+      {
+        line' with
+        a = Util.pmap (scale_length factor) line'.a;
+        b = Util.pmap (scale_length factor) line'.b;
+      }
   | Polygon polygon' ->
       Polygon
         {
