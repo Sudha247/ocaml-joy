@@ -1,5 +1,4 @@
 (library
  (name joy)
  (public_name joy)
- (libraries cairo2 base)
- (wrapped false))
+ (libraries cairo2))
