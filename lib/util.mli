@@ -10,4 +10,4 @@ val ( >> ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
 val take : int -> 'a list -> 'a list * 'a list
 val partition : int -> ?step:int -> 'a list -> 'a list list
 val range : int -> int list
-val to_radians : float -> float
+val to_radians : int -> float
