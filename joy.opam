@@ -12,7 +12,6 @@ depends: [
   "dune" {>= "3.10"}
   "graphics"
   "cairo2"
-  "base"
   "odoc" {with-doc}
 ]
 build: [
