@@ -51,11 +51,11 @@ let rec scale factor = function
         }
   | Line line' ->
       Line
-      {
-        line' with
-        a = Util.pmap (scale_length factor) line'.a;
-        b = Util.pmap (scale_length factor) line'.b;
-      }
+        {
+          line' with
+          a = Util.pmap (scale_length factor) line'.a;
+          b = Util.pmap (scale_length factor) line'.b;
+        }
   | Polygon polygon' ->
       Polygon
         {
@@ -85,9 +85,15 @@ let rec rotate degrees = function
         {
           ellipse' with
           c = rotate_point degrees ellipse'.c;
-          rotation = ellipse'.rotation +  degrees;
+          rotation = ellipse'.rotation + degrees;
         }
-  | Line line' -> Line { line' with a = rotate_point degrees line'.a; b = rotate_point degrees line'.b }
+  | Line line' ->
+      Line
+        {
+          line' with
+          a = rotate_point degrees line'.a;
+          b = rotate_point degrees line'.b;
+        }
   | Polygon polygon' ->
       Polygon
         {
@@ -110,21 +116,16 @@ let repeat n op shape =
 (** Takes a function and a shape and returns a new shape with the 
     function applied to the original's color *)
 let rec map_stroke f = function
-  | Circle circle' ->
-      Circle { circle' with stroke = Option.map f circle'.stroke }
-  | Ellipse ellipse' ->
-      Ellipse { ellipse' with stroke = Option.map f ellipse'.stroke }
+  | Circle circle' -> Circle { circle' with stroke = f circle'.stroke }
+  | Ellipse ellipse' -> Ellipse { ellipse' with stroke = f ellipse'.stroke }
   | Line line' -> Line { line' with stroke = f line'.stroke }
-  | Polygon polygon' ->
-      Polygon { polygon' with stroke = Option.map f polygon'.stroke }
+  | Polygon polygon' -> Polygon { polygon' with stroke = f polygon'.stroke }
   | Complex complex' -> Complex (List.map (map_stroke f) complex')
 
 let rec map_fill f = function
-  | Circle circle' -> Circle { circle' with fill = Option.map f circle'.fill }
-  | Ellipse ellipse' ->
-      Ellipse { ellipse' with fill = Option.map f ellipse'.fill }
-  | Polygon polygon' ->
-      Polygon { polygon' with fill = Option.map f polygon'.fill }
+  | Circle circle' -> Circle { circle' with fill = f circle'.fill }
+  | Ellipse ellipse' -> Ellipse { ellipse' with fill = f ellipse'.fill }
+  | Polygon polygon' -> Polygon { polygon' with fill = f polygon'.fill }
   | Complex complex' -> Complex (List.map (map_fill f) complex')
   | _ as line' ->
       print_endline "Lines do not have a fill field!";

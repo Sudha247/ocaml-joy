@@ -59,6 +59,11 @@
  (libraries joy))
 
 (executable
+ (name parallel_lines)
+ (modules parallel_lines)
+ (libraries joy))
+
+(executable
  (name higher_transforms)
  (modules higher_transforms)
  (libraries joy))
@@ -132,3 +137,8 @@
  (name smile)
  (modules smile)
  (libraries joy))
+
+(executable
+  (name simple_rotate_ellipse)
+  (modules simple_rotate_ellipse)
+  (libraries joy))
