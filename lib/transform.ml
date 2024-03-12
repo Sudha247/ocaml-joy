@@ -1,4 +1,5 @@
 open Shape
+open Util
 
 type transformation = shape -> shape
 
@@ -64,8 +65,6 @@ let rec scale factor = function
         }
   | Complex shapes -> Complex (List.map (scale factor) shapes)
 
-let to_radians degrees = float_of_int degrees *. Stdlib.Float.pi /. 180.
-
 let to_polar point =
   let { x; y } = point in
   (sqrt ((x *. x) +. (y *. y)), atan2 y x)
@@ -86,7 +85,7 @@ let rec rotate degrees = function
         {
           ellipse' with
           c = rotate_point degrees ellipse'.c;
-          rotation = ellipse'.rotation +. to_radians degrees;
+          rotation = ellipse'.rotation + degrees;
         }
   | Line line' ->
       Line

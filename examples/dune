@@ -137,3 +137,8 @@
  (name smile)
  (modules smile)
  (libraries joy))
+
+(executable
+  (name simple_rotate_ellipse)
+  (modules simple_rotate_ellipse)
+  (libraries joy))

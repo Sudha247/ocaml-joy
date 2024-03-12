@@ -41,10 +41,15 @@ let draw_ellipse ctx (cx, cy) rx ry rotation stroke fill =
   (* Save the current transformation matrix *)
   let save_matrix = Cairo.get_matrix ctx.cairo_ctx in
 
+  (* Apply rotation *)
+  let radians = Util.to_radians rotation in
+  Cairo.rotate ctx.cairo_ctx radians;
+
   (* Translate and scale to create an ellipse from a circle *)
   Cairo.translate ctx.cairo_ctx cx (Float.neg cy);
-  Cairo.rotate ctx.cairo_ctx rotation;
   Cairo.scale ctx.cairo_ctx rx ry;
+
+  (* Arc from 0 to 2pi is a circle *)
   Cairo.arc ctx.cairo_ctx 0. 0. ~r:1. ~a1:0. ~a2:(2. *. Float.pi);
 
   (* Restore the original transformation matrix *)

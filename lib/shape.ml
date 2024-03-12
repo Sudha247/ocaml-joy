@@ -7,7 +7,7 @@ type ellipse = {
   c : float point;
   rx : float;
   ry : float;
-  rotation : float;
+  rotation : int;
   stroke : color;
   fill : color;
 }
@@ -27,7 +27,7 @@ let point x y =
   let x, y = (float_of_int x, float_of_int y) in
   { x; y }
 
-let origin = { x = 0.; y = 0. }
+let origin = point 0 0
 
 let circle ?(c = origin) r =
   Circle
@@ -52,8 +52,7 @@ let rectangle ?(c = origin) width height =
 
 let ellipse ?(c = origin) rx ry =
   let rx, ry = (float_of_int rx, float_of_int ry) in
-  Ellipse
-    { c; rx; ry; stroke = Color.black; fill = Color.transparent; rotation = 0. }
+  Ellipse { c; rx; ry; stroke = Color.black; fill = Color.transparent; rotation = 0 }
 
 let line ?(a = origin) b = Line { a; b; stroke = Color.black }
 
