@@ -1,7 +1,5 @@
 (* Internal module for noise *)
 module Noise = struct
-  open Base
-
   (* borrowed from
      https://gist.githubusercontent.com/tjammer/509981fed4d50683cdb800da5bf16ab1/raw/da2b8cc86718ef7e93e2e2c707dcfe443809d7cc/simplex.ml *)
   let permutation =
@@ -41,7 +39,7 @@ module Noise = struct
     +. if h land 2 <> 0 then -2.0 *. v else 2.0 *. v
 
   let snoise1 x =
-    let i0 = Float.round_down x in
+    let i0 = Float.floor x in
     let i1 = i0 +. 1.0 in
     let x0 = x -. i0 in
     let x1 = x0 -. 1.0 in
@@ -63,26 +61,26 @@ module Noise = struct
     (* skew the input space to determine which simplex cell we're in *)
     let s = (x +. y) *. _F2 in
     let xs, ys = (x +. s, y +. s) in
-    let i, j = Float.(round_down xs, round_down ys) in
+    let i, j = Float.(floor xs, floor ys) in
     (* unskew the cell origin back to (x, y) space *)
     let t = (i +. j) *. _G2 in
     let _X0 = i -. t in
     let _Y0 = j -. t in
     let x0, y0 = (x -. _X0, y -. _Y0) in
     (* determine which simplex we're in *)
-    let i1, j1 = if Poly.(x0 > y0) then (1., 0.) else (0., 1.) in
+    let i1, j1 = if x0 > y0 then (1., 0.) else (0., 1.) in
     (* A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and *)
     (* a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where *)
     (* c = (3-sqrt(3))/6 *)
-    let x1, y1 = Float.(x0 - i1 + _G2, y0 - j1 + _G2) in
-    let x2, y2 = Float.(x0 - 1.0 + (2.0 * _G2), y0 - 1.0 + (2.0 * _G2)) in
+    let x1, y1 = x0 -. i1 +. _G2, y0 -. j1 +. _G2 in
+    let x2, y2 = x0 -. 1.0 +. (2.0 *. _G2), y0 -. 1.0 +. (2.0 *. _G2) in
     (* Work out the hashed gradient indices of the three simplex corners *)
     let gi0 = (j |> hash |> Float.of_int) +. i |> hash in
     let gi1 = (j +. j1 |> hash |> Float.of_int) +. i +. i1 |> hash in
     let gi2 = (j +. 1. |> hash |> Float.of_int) +. i +. 1. |> hash in
     let contrib x y gi =
       let t = 0.5 -. (x *. x) -. (y *. y) in
-      if Float.(t < 0.0) then 0.0
+      if t < 0.0 then 0.0
       else
         let t = t *. t in
         t *. t *. grad2 gi x y
@@ -105,8 +103,8 @@ module Noise = struct
     let rec loop noise amp i =
       if i = 0 then noise /. amp
       else
-        let frequency = !frequency *. Float.int_pow !lacunarity (i - 1) in
-        let amplitude = !amplitude *. Float.int_pow !persistence (i - 1) in
+        let frequency = !frequency *. Float.pow !lacunarity (float_of_int (i - 1)) in
+        let amplitude = !amplitude *. Float.pow !persistence (float_of_int (i - 1)) in
         loop
           (noise +. (amplitude *. snoise1 (x *. frequency)))
           (amp +. amplitude) (i - 1)
@@ -117,8 +115,8 @@ module Noise = struct
     let rec loop noise amp i =
       if i = 0 then noise /. amp
       else
-        let frequency = !frequency *. Float.int_pow !lacunarity (i - 1) in
-        let amplitude = !amplitude *. Float.int_pow !persistence (i - 1) in
+        let frequency = !frequency *. Float.pow !lacunarity (float_of_int (i - 1)) in
+        let amplitude = !amplitude *. Float.pow !persistence (float_of_int (i - 1)) in
         loop
           (noise +. (amplitude *. snoise2 (x *. frequency) (y *. frequency)))
           (amp +. amplitude) (i - 1)

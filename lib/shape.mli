@@ -6,7 +6,7 @@ type ellipse = {
   c : float point;
   rx : float;
   ry : float;
-  rotation : float;
+  rotation : int;
   stroke : color;
   fill : color;
 }
