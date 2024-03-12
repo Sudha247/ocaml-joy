@@ -30,7 +30,6 @@ let set_line_width ctx line_width =
   Cairo.set_line_width ctx.cairo_ctx (float_of_int line_width)
 
 let draw_circle ctx (cx, cy) radius stroke fill =
-  (* TODO: stroke and fill MUST have a value before coming to the renderer *)
   Cairo.arc ctx.cairo_ctx cx (Float.neg cy) ~r:radius ~a1:0. ~a2:(Float.pi *. 2.);
   set_color ctx stroke;
   Cairo.stroke_preserve ctx.cairo_ctx;
