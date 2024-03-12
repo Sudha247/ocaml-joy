@@ -11,7 +11,7 @@ type context = Context.context
 let show = Context.show
 let set_line_width = Context.set_line_width
 
-let init ?(size = (500, 500)) ?(line_width = 2) ?(axes = false) _ =
+let init ?(size = (500, 500)) ?(line_width = 1) ?(axes = false) _ =
   let ctx =
     Backend_cairo.create ~background_color:Color.white ~size ~line_width ~axes
   in

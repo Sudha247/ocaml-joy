@@ -25,8 +25,7 @@ let set_background ctx color =
   Cairo.fill ctx.cairo_ctx
 
 (** Sets the width of lines for both stroke of shapes and line primitives. 
-    Can be any positive integer, with larger numbers producing thicker lines. 
-    default is 2 *)
+    Can be any positive integer, with larger numbers producing thicker lines. *)
 let set_line_width ctx line_width =
   Cairo.set_line_width ctx.cairo_ctx (float_of_int line_width)
 
