@@ -16,19 +16,19 @@ let max_attempts = 100_000
 let palette =
   [
     (* purple *)
-    (107, 108, 163);
+    rgb 107 108 163;
     (* light blue *)
-    (135, 188, 189);
+    rgb 135 188 189;
     (* green *)
-    (111, 153, 84);
+    rgb 111 153 84;
     (* light purple *)
-    (150, 155, 199);
+    rgb 150 155 199;
     (* light green *)
-    (137, 171, 124);
+    rgb 137 171 124;
     (* dark purple *)
-    (67, 68, 117);
+    rgb 67 68 117;
     (* darker purple *)
-    (44, 45, 84);
+    rgb 44 45 84;
   ]
 
 (* utility Functions *)

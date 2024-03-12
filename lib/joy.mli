@@ -1,3 +1,8 @@
+module Backend_cairo = Backend_cairo
+module Backend_svg = Backend_svg
+module Backend_lazy = Backend_lazy
+
+type context = Context.context
 type 'a point = 'a Shape.point
 type shape = Shape.shape
 type shapes = Shape.shapes
@@ -11,39 +16,34 @@ val ellipse : ?c:float point -> int -> int -> shape
 val line : ?a:float point -> float point -> shape
 val polygon : float point list -> shape
 val complex : shapes -> shape
-val with_stroke : color -> shape -> shape
-val with_fill : color -> shape -> shape
-val no_stroke : shape -> shape
-val no_fill : shape -> shape
+
 val rotate : int -> transformation
 val translate : int -> int -> transformation
 val scale : float -> transformation
 val compose : transformation -> transformation -> transformation
 val repeat : int -> transformation -> transformation
-val map_stroke : (color -> color) -> shape -> shape
-val map_fill : (color -> color) -> shape -> shape
+
 val random : ?min:int -> int -> int
 val frandom : ?min:float -> float -> float
 val noise : float list -> float
 val fractal_noise : ?octaves:int -> float list -> float
-val context : Context.context option ref
-val set_line_width : int -> unit
+
+val with_stroke : color -> transformation
+val with_fill : color -> transformation
+val map_stroke : (color -> color) -> transformation
+val map_fill : (color -> color) -> transformation
+
 val black : color
 val white : color
 val red : color
 val green : color
 val blue : color
 val yellow : color
-val transparent : int * int * int * int
-val opaque : color -> int * int * int * int
+val transparent : color
+val rgb : int -> int -> int -> color
 
-val init :
-  ?background:color ->
-  ?line_width:int ->
-  ?size:int * int ->
-  ?axes:bool ->
-  unit ->
-  unit
-
-val show : shapes -> unit
+val init : ?size:(int * int) -> ?line_width:int -> ?axes:bool -> unit -> unit
 val write : ?filename:string -> unit -> unit
+
+val show : ?ctx:context -> shapes -> unit
+val set_line_width : ?ctx:context -> int -> unit

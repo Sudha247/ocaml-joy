@@ -4,22 +4,22 @@ type 'a point = { x : 'a; y : 'a }
 type circle = {
   c : float point;
   radius : float;
-  stroke : color option;
-  fill : color option;
+  stroke : color;
+  fill : color;
 }
 
 type ellipse = {
   c : float point;
   rx : float;
   ry : float;
-  stroke : color option;
-  fill : color option;
+  stroke : color;
+  fill : color;
 }
 
 type polygon = {
   vertices : float point list;
-  stroke : color option;
-  fill : color option;
+  stroke : color;
+  fill : color;
 }
 
 type line = { a : float point; b : float point; stroke : color }
@@ -42,5 +42,3 @@ val line : ?a:float point -> float point -> shape
 val polygon : float point list -> shape
 val with_stroke : color -> shape -> shape
 val with_fill : color -> shape -> shape
-val no_stroke : shape -> shape
-val no_fill : shape -> shape

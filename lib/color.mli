@@ -1,4 +1,6 @@
-type color = int * int * int
+type color = int * int * int * float
+
+val rgb : int -> int -> int -> color
 
 val black : color
 val white : color
@@ -6,5 +8,4 @@ val red : color
 val green : color
 val blue : color
 val yellow : color
-val transparent : int * int * int * int
-val opaque : color -> int * int * int * int
+val transparent : color

@@ -1,71 +1,56 @@
-open Util
+type context =
+    CairoContext of Backend_cairo.context
+  | SVGContext of Backend_svg.context
+  | LazyContext of Backend_lazy.context
 
-(* Global rendering context singleton definition and instantiation *)
-type context = {
-  ctx : Cairo.context;
-  surface : Cairo.Surface.t;
-  size : int * int;
-  axes : bool;
-}
+exception No_context
+exception Unsupported_output_format of string
 
-(* Renders context to PNG *)
-let write ctx filename =
-  Cairo.PNG.write ctx.surface filename;
-  Cairo.Surface.finish ctx.surface
+let default = ref (LazyContext (Backend_lazy.create ()))
 
-let context = ref None
+let get_default _ =
+  !default
 
-exception Context of string
+let set_default ctx =
+  default := ctx
 
-(* Not working, could use help fixing *)
-let () =
-  Printexc.register_printer (fun e ->
-      match e with Context err -> Some ("Context: " ^ err) | _ -> None)
+let show ?ctx shapes =
+  let ctx = match ctx with
+    | Some ctx -> ctx
+    | None -> get_default ()
+  in
+  match ctx with
+  | CairoContext ctx -> Backend_cairo.show ctx shapes
+  | SVGContext ctx -> Backend_svg.show ctx shapes
+  | LazyContext ctx -> Backend_lazy.show ctx shapes
 
-let fail () = raise (Context "not initialized")
-let resolution () = match !context with Some ctx -> ctx.size | None -> fail ()
-let scale_channel n = n /. 255.
-let scale_color_channel = float_of_int >> scale_channel
+let set_line_width ?ctx int =
+  let ctx = match ctx with
+  | Some ctx -> ctx
+  | None -> get_default ()
+  in
+  match ctx with
+  | CairoContext ctx -> Backend_cairo.set_line_width ctx int
+  | SVGContext _ -> failwith "SVG.set_line_width ctx int"
+  | LazyContext _ -> failwith "Backend_lazy.set_line_width ctx int"
 
-let set_color color =
-  match !context with
-  | Some ctx ->
-      let r, g, b = tmap3 scale_color_channel color in
-      Cairo.set_source_rgb ctx.ctx r g b
-  | None -> fail ()
+let writePNG ?ctx filename =
+  let ctx = match ctx with
+    | Some ctx -> ctx
+    | None -> get_default ()
+  in
+  match ctx with
+  | CairoContext ctx -> Backend_cairo.write ctx filename
+  | SVGContext _ -> raise (Unsupported_output_format "SVG context cannot render to PNG")
+  | LazyContext _ -> failwith "Lazy.writePNG ctx filename"
 
-(* sets background color *)
-let background color =
-  match !context with
-  | Some { ctx; _ } ->
-      let r, g, b, alpha = tmap4 scale_color_channel color in
-      Cairo.set_source_rgb ctx r g b;
-      Cairo.paint ctx ~alpha;
-      Cairo.fill ctx
-  | None -> fail ()
+let writeSVG ?ctx =
+  let ctx = match ctx with
+    | Some ctx -> ctx
+    | None -> get_default ()
+  in
+  match ctx with
+  | CairoContext _ -> raise (Unsupported_output_format "Cairo context cannot render to SVG")
+  | SVGContext _ -> failwith "SVG.writeSVG ctx"
+  | LazyContext _ -> failwith "Lazy.writeSVG ctx"
 
-(** Sets the width of lines for both stroke of shapes and line primitives. 
-    Can be any positive integer, with larger numbers producing thicker lines. 
-    default is 2 *)
-let set_line_width line_width =
-  match !context with
-  | Some ctx -> Cairo.set_line_width ctx.ctx (float_of_int line_width)
-  | None -> fail ()
-
-let save () =
-  match !context with Some ctx -> Cairo.save ctx.ctx | None -> fail ()
-
-let restore () =
-  match !context with Some ctx -> Cairo.restore ctx.ctx | None -> fail ()
-
-let init_context background_color line_width (w, h) axes =
-  (* Fail if context has already been instantiated *)
-  if Option.is_some !context then
-    raise (Context "Cannot initialize context twice");
-
-  let surface = Cairo.Image.create Cairo.Image.ARGB32 ~w ~h in
-  let ctx = Cairo.create surface in
-  Cairo.set_line_width ctx line_width;
-  Cairo.translate ctx (w / 2 |> float_of_int) (h / 2 |> float_of_int);
-  context := Some { ctx; surface; size = (w, h); axes };
-  background background_color

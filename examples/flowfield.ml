@@ -91,7 +91,8 @@ let add_color flowfield line (x, y) =
     |> ( *. ) (float_of_int (List.length palette))
     |> int_of_float |> List.nth palette
   in
-  line |> Joy.with_stroke color
+  let r, g, b = color in
+  line |> Joy.with_stroke (Joy.rgb r g b)
 
 let () =
   let open Joy in

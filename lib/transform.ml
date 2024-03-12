@@ -107,20 +107,20 @@ let repeat n op shape =
     function applied to the original's color *)
 let rec map_stroke f = function
   | Circle circle' ->
-      Circle { circle' with stroke = Option.map f circle'.stroke }
+      Circle { circle' with stroke = f circle'.stroke }
   | Ellipse ellipse' ->
-      Ellipse { ellipse' with stroke = Option.map f ellipse'.stroke }
+      Ellipse { ellipse' with stroke = f ellipse'.stroke }
   | Line line' -> Line { line' with stroke = f line'.stroke }
   | Polygon polygon' ->
-      Polygon { polygon' with stroke = Option.map f polygon'.stroke }
+      Polygon { polygon' with stroke = f polygon'.stroke }
   | Complex complex' -> Complex (List.map (map_stroke f) complex')
 
 let rec map_fill f = function
-  | Circle circle' -> Circle { circle' with fill = Option.map f circle'.fill }
+  | Circle circle' -> Circle { circle' with fill = f circle'.fill }
   | Ellipse ellipse' ->
-      Ellipse { ellipse' with fill = Option.map f ellipse'.fill }
+      Ellipse { ellipse' with fill = f ellipse'.fill }
   | Polygon polygon' ->
-      Polygon { polygon' with fill = Option.map f polygon'.fill }
+      Polygon { polygon' with fill = f polygon'.fill }
   | Complex complex' -> Complex (List.map (map_fill f) complex')
   | _ as line' ->
       print_endline "Lines do not have a fill field!";

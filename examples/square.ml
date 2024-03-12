@@ -1,7 +1,7 @@
 open Joy
 
 let () =
-  init ();
+  init ~axes:true ();
   let square = rectangle 100 100 in
   show [ square ];
   write ~filename:"square.png" ()

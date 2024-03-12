@@ -1,20 +1,17 @@
-type context = {
-  ctx : Cairo.context;
-  surface : Cairo.Surface.t;
-  size : int * int;
-  axes : bool;
-}
+type context =
+    CairoContext of Backend_cairo.context
+  | SVGContext of Backend_svg.context
+  | LazyContext of Backend_lazy.context
 
-val context : context option ref
-val fail : unit -> unit
+exception No_context
+exception Unsupported_output_format of string
 
-exception Context of string
+val get_default : unit -> context
+val set_default : context -> unit
 
-val init_context : int * int * int * int -> float -> int * int -> bool -> unit
-val resolution : unit -> int * int
-val set_color : int * int * int -> unit
-val background : int * int * int * int -> unit
-val set_line_width : int -> unit
-val write : context -> string -> unit
-val save : unit -> unit
-val restore : unit -> unit
+val show : ?ctx:context -> Shape.shapes -> unit
+val set_line_width : ?ctx:context -> int -> unit
+
+val writeSVG : ?ctx:context -> string
+val writePNG : ?ctx:context -> string -> unit
+

@@ -6,8 +6,8 @@ let half_size = size /. 2.
 let max_leaf_points = 4
 let clusters = 32
 let point_size = 1
-let box_color = (0, 0, 0)
-let point_color = (255, 1, 1)
+let box_color = Joy.rgb 0 0 0
+let point_color = Joy.rgb 255 1 1
 
 (* Point utils *)
 let splat n : point = { x = n; y = n }
