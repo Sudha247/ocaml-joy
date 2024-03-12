@@ -82,7 +82,12 @@ let rotate_point degrees point =
 let rec rotate degrees = function
   | Circle circle' -> Circle { circle' with c = rotate_point degrees circle'.c }
   | Ellipse ellipse' ->
-      Ellipse { ellipse' with c = rotate_point degrees ellipse'.c }
+      Ellipse
+        {
+          ellipse' with
+          c = rotate_point degrees ellipse'.c;
+          rotation = ellipse'.rotation +. to_radians degrees;
+        }
   | Line line' -> Line { line' with a = rotate_point degrees line'.a; b = rotate_point degrees line'.b }
   | Polygon polygon' ->
       Polygon

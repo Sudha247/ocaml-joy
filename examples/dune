@@ -49,6 +49,11 @@
  (libraries joy))
 
 (executable
+ (name rotate_ellipse)
+ (modules rotate_ellipse)
+ (libraries joy))
+
+(executable
  (name line)
  (modules line)
  (libraries joy))
@@ -127,4 +132,3 @@
  (name smile)
  (modules smile)
  (libraries joy))
- 

@@ -12,6 +12,7 @@ type ellipse = {
   c : float point;
   rx : float;
   ry : float;
+  rotation : float;
   stroke : color option;
   fill : color option;
 }
