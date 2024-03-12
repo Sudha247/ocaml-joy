@@ -10,5 +10,5 @@ val get_default : unit -> context
 val set_default : context -> unit
 val show : ?ctx:context -> Shape.shapes -> unit
 val set_line_width : ?ctx:context -> int -> unit
-val writeSVG : ?ctx:context -> string
+val writeSVG : ?ctx:context -> unit -> string
 val writePNG : ?ctx:context -> string -> unit

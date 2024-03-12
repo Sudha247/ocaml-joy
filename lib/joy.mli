@@ -1,3 +1,4 @@
+module Context = Context
 module Backend_cairo = Backend_cairo
 module Backend_svg = Backend_svg
 module Backend_lazy = Backend_lazy
@@ -38,6 +39,7 @@ val yellow : color
 val transparent : color
 val rgb : int -> int -> int -> color
 val init : ?size:int * int -> ?line_width:int -> ?axes:bool -> unit -> unit
+val init_svg : ?size:int * int -> ?axes:bool -> unit -> unit
 val write : ?filename:string -> unit -> unit
 val show : ?ctx:context -> shapes -> unit
 val set_line_width : ?ctx:context -> int -> unit

@@ -32,10 +32,10 @@ let writePNG ?ctx filename =
       raise (Unsupported_output_format "SVG context cannot render to PNG")
   | LazyContext _ -> failwith "Lazy.writePNG ctx filename"
 
-let writeSVG ?ctx =
+let writeSVG ?ctx _ =
   let ctx = match ctx with Some ctx -> ctx | None -> get_default () in
   match ctx with
   | CairoContext _ ->
       raise (Unsupported_output_format "Cairo context cannot render to SVG")
-  | SVGContext _ -> failwith "SVG.writeSVG ctx"
+  | SVGContext ctx -> Backend_svg.write ctx
   | LazyContext _ -> failwith "Lazy.writeSVG ctx"

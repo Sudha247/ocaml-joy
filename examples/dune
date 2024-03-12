@@ -1,6 +1,8 @@
 (executable
  (name axes)
  (modules axes)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
  (libraries joy))
 
 (executable
@@ -137,3 +139,8 @@
  (name smile)
  (modules smile)
  (libraries joy))
+
+(executable
+  (name svg)
+  (modules svg)
+  (libraries joy))
