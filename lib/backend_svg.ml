@@ -38,7 +38,7 @@ let render_circle ctx ({ c; radius; stroke; fill }: Shape.circle) =
 (* Function to render an ellipse *)
 let render_ellipse ctx ({ c; rx; ry; rotation; stroke; fill }: Shape.ellipse) =
   let cx, cy = svg_coords_of_point ctx.size c in
-  Printf.sprintf "<ellipse cx=\"%f\" cy=\"%f\" rx=\"%f\" ry=\"%f\" transform=\"rotate(%f)\" %s %s />"
+  Printf.sprintf "<ellipse cx=\"%f\" cy=\"%f\" rx=\"%f\" ry=\"%f\" transform=\"rotate(%d)\" %s %s />"
     cx cy rx ry rotation
     (svg_color_attribute "stroke" stroke)
     (svg_color_attribute "fill" fill)
