@@ -1,13 +1,7 @@
 type 'a point = { x : 'a; y : 'a }
 type color = Color.color
 type line = { a : float point; b : float point; stroke : color }
-
-type circle = {
-  c : float point;
-  radius : float;
-  stroke : color;
-  fill : color;
-}
+type circle = { c : float point; radius : float; stroke : color; fill : color }
 
 type ellipse = {
   c : float point;
@@ -17,11 +11,7 @@ type ellipse = {
   fill : color;
 }
 
-type polygon = {
-  vertices : float point list;
-  stroke : color;
-  fill : color;
-}
+type polygon = { vertices : float point list; stroke : color; fill : color }
 
 type shape =
   | Circle of circle
@@ -39,7 +29,13 @@ let point x y =
 let origin = { x = 0.; y = 0. }
 
 let circle ?(c = origin) r =
-  Circle { c; radius = float_of_int r; stroke = Color.black; fill = Color.transparent }
+  Circle
+    {
+      c;
+      radius = float_of_int r;
+      stroke = Color.black;
+      fill = Color.transparent;
+    }
 
 let polygon vertices =
   Polygon { vertices; stroke = Color.black; fill = Color.transparent }
@@ -63,10 +59,10 @@ let complex shapes =
   match shapes with _ :: _ -> Complex shapes | [] -> Complex []
 
 let rec with_stroke stroke = function
-  | Circle circle' -> Circle { circle' with stroke = stroke }
-  | Ellipse ellipse' -> Ellipse { ellipse' with stroke = stroke }
+  | Circle circle' -> Circle { circle' with stroke }
+  | Ellipse ellipse' -> Ellipse { ellipse' with stroke }
   | Line line' -> Line { line' with stroke }
-  | Polygon polygon' -> Polygon { polygon' with stroke = stroke }
+  | Polygon polygon' -> Polygon { polygon' with stroke }
   | Complex complex' -> Complex (List.map (with_stroke stroke) complex')
 
 let rec with_fill fill = function
@@ -77,4 +73,3 @@ let rec with_fill fill = function
   | _ as line' ->
       print_endline "lines do not have a fill field!";
       line'
-

@@ -2,7 +2,6 @@ type color = int * int * int * float
 
 val rgb : int -> int -> int -> color
 val color : ?a:float -> int -> int -> int -> color
-
 val black : color
 val white : color
 val red : color

@@ -1,12 +1,6 @@
 type color = Color.color
 type 'a point = { x : 'a; y : 'a }
-
-type circle = {
-  c : float point;
-  radius : float;
-  stroke : color;
-  fill : color;
-}
+type circle = { c : float point; radius : float; stroke : color; fill : color }
 
 type ellipse = {
   c : float point;
@@ -16,12 +10,7 @@ type ellipse = {
   fill : color;
 }
 
-type polygon = {
-  vertices : float point list;
-  stroke : color;
-  fill : color;
-}
-
+type polygon = { vertices : float point list; stroke : color; fill : color }
 type line = { a : float point; b : float point; stroke : color }
 
 type shape =

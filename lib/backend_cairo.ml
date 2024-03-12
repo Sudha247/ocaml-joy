@@ -2,8 +2,8 @@ type context = {
   cairo_ctx : Cairo.context;
   surface : Cairo.Surface.t;
   size : int * int;
-  background_color: int * int * int * float;
-  axes: bool;
+  background_color : int * int * int * float;
+  axes : bool;
 }
 
 let write ctx filename =
@@ -11,14 +11,14 @@ let write ctx filename =
   Cairo.Surface.finish ctx.surface
 
 let set_color ctx color =
-  let to_float i = (float_of_int i) /. 255. in
+  let to_float i = float_of_int i /. 255. in
   let r, g, b, a = color in
   let r, g, b = Util.tmap3 to_float (r, g, b) in
   Cairo.set_source_rgba ctx.cairo_ctx r g b a
 
 let set_background ctx color =
   let r, g, b, a = color in
-  let to_float i = (float_of_int i) /. 255. in
+  let to_float i = float_of_int i /. 255. in
   let r, g, b = Util.tmap3 to_float (r, g, b) in
   Cairo.set_source_rgba ctx.cairo_ctx r g b a;
   Cairo.paint ctx.cairo_ctx ~alpha:a;
@@ -68,9 +68,7 @@ let draw_polygon ctx vertices stroke fill =
   let x, y = List.hd vertices in
   let t = List.tl vertices in
   Cairo.move_to ctx.cairo_ctx x (Float.neg y);
-  List.iter
-    (fun (x', y') -> Cairo.line_to ctx.cairo_ctx x' (Float.neg y'))
-    t;
+  List.iter (fun (x', y') -> Cairo.line_to ctx.cairo_ctx x' (Float.neg y')) t;
   Cairo.Path.close ctx.cairo_ctx;
   set_color ctx stroke;
   Cairo.stroke_preserve ctx.cairo_ctx;
@@ -79,15 +77,19 @@ let draw_polygon ctx vertices stroke fill =
 
 let show ctx shapes =
   let rec render = function
-    | Shape.Circle circle -> (
-      draw_circle ctx (circle.c.x, circle.c.y) circle.radius circle.stroke circle.fill
-    )
-    | Shape.Ellipse ellipse -> draw_ellipse ctx (ellipse.c.x, ellipse.c.y) ellipse.rx ellipse.ry ellipse.stroke ellipse.fill
-    | Shape.Line line -> draw_line ctx (line.a.x, line.a.y) (line.b.x, line.b.y) line.stroke
-    | Shape.Polygon polygon -> (
-      let to_tuple (point: float Shape.point) = (point.x, point.y) in
-      draw_polygon ctx (List.map to_tuple polygon.vertices) polygon.stroke polygon.fill
-    )
+    | Shape.Circle circle ->
+        draw_circle ctx (circle.c.x, circle.c.y) circle.radius circle.stroke
+          circle.fill
+    | Shape.Ellipse ellipse ->
+        draw_ellipse ctx (ellipse.c.x, ellipse.c.y) ellipse.rx ellipse.ry
+          ellipse.stroke ellipse.fill
+    | Shape.Line line ->
+        draw_line ctx (line.a.x, line.a.y) (line.b.x, line.b.y) line.stroke
+    | Shape.Polygon polygon ->
+        let to_tuple (point : float Shape.point) = (point.x, point.y) in
+        draw_polygon ctx
+          (List.map to_tuple polygon.vertices)
+          polygon.stroke polygon.fill
     | Shape.Complex complex -> List.iter render complex
   in
   List.iter render shapes
@@ -101,4 +103,3 @@ let create ~background_color ~line_width ~size ~axes =
   set_background ctx background_color;
   set_line_width ctx line_width;
   ctx
-
