@@ -7,6 +7,8 @@ let transparent = (0, 0, 0, 0.0)
     For use w/ `Context.background` *)
 let rgb r g b = (r, g, b, 1.0)
 
+let color ?(a = 1.0) r g b = (r, g, b, a)
+
 (** RGB code for black *)
 let black = rgb 0 0 0
 
