@@ -38,7 +38,7 @@ let () =
 
 and renders this:
 
-![circle](/tutorial-circle.png)
+![circle](/tutorial/tutorial-circle.png)
 
 Let's break this down. `init` does all the behind-the-scenes render magic that 
 allows our shape to be drawn to an image file. `circle 100` creates a circle at 
@@ -48,7 +48,7 @@ like this:
 
 `let c = circle ~c:(point 0 100) 100`
 
-![offset-circle](/tutorial-circle-offset.png)
+![offset-circle](/tutorial/tutorial-circle-offset.png)
 
 Notice the call to `show`, the circle is placed within a list. This is how we 
 render shapes in Joy. Placing our shape arguments in a list allows us to draw 
@@ -73,7 +73,7 @@ let () =
     write ()
 ```
 
-![rotate](/tutorial-rotate.png)
+![rotate](/tutorial/tutorial-rotate.png)
 
 Transformations can also be composed together:
 
@@ -92,7 +92,7 @@ let rect = rectangle 100 100 in
 let spiral = repeat 16 (rotate 45) rect
 ```
 
-![spiral](/tutorial-spiral.png)
+![spiral](/tutorial/tutorial-spiral.png)
 
 This is how we build more complex shapes out of the simple primitives and 
 transformations in the library. It may look a little intimidating if you are new
@@ -131,7 +131,7 @@ let l = line (point (-250) 250) in
 let bunch = complex [ c; r; e; l ]
 ```
 
-![complex](/tutorial-complex.png)
+![complex](/tutorial/tutorial-complex.png)
 
 # Going further
 
