@@ -1,6 +1,8 @@
 (executable
  (name axes)
  (modules axes)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
  (libraries joy))
 
 (executable

@@ -1,3 +1,4 @@
+module Context = Context
 module Backend_cairo = Backend_cairo
 module Backend_svg = Backend_svg
 module Backend_lazy = Backend_lazy
@@ -21,10 +22,6 @@ val translate : int -> int -> transformation
 val scale : float -> transformation
 val compose : transformation -> transformation -> transformation
 val repeat : int -> transformation -> transformation
-val random : ?min:int -> int -> int
-val frandom : ?min:float -> float -> float
-val noise : float list -> float
-val fractal_noise : ?octaves:int -> float list -> float
 val with_stroke : color -> transformation
 val with_fill : color -> transformation
 val map_stroke : (color -> color) -> transformation
@@ -37,7 +34,14 @@ val blue : color
 val yellow : color
 val transparent : color
 val rgb : int -> int -> int -> color
+val color : ?a:float -> int -> int -> int -> color
 val init : ?size:int * int -> ?line_width:int -> ?axes:bool -> unit -> unit
+val init_svg : ?size:int * int -> ?axes:bool -> string -> unit
 val write : ?filename:string -> unit -> unit
 val show : ?ctx:context -> shapes -> unit
+val clear : ?ctx:context -> unit -> unit
 val set_line_width : ?ctx:context -> int -> unit
+
+val random : ?min:int -> int -> int
+val frandom : ?min:float -> float -> float
+val fractal_noise : ?octaves:int -> float list -> float
