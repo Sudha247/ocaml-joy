@@ -1,17 +1,26 @@
+open Js_of_ocaml
+
 type context = {
   shapes: Shape.shape list ref;
   size: int * int;
   axes: bool;
+  elt: Dom_html.divElement Js.t;
 }
 
-let show ctx shapes =
-  ignore (ctx.shapes := !(ctx.shapes) @ shapes)
-
-let create ~size ~axes = {
-  shapes = ref [];
-  size;
-  axes;
-}
+let create ~size ~axes ~eltId =
+  let elt =
+    Js.Opt.get
+      (Js.Opt.bind
+        (Dom_html.document##getElementById (Js.string eltId))
+        Dom_html.CoerceTo.div)
+      (fun _ -> failwith "Could not find element with id")
+  in
+  {
+    shapes = ref [];
+    size;
+    axes;
+    elt;
+  }
 
 let string_of_color (r, g, b, a) =
   Printf.sprintf "rgba(%d, %d, %d, %f)" r g b a
@@ -71,10 +80,23 @@ let rec render_shape ctx s =
   | Shape.Polygon p -> render_polygon ctx p
   | Shape.Complex shapes -> String.concat "" (List.map (render_shape ctx) shapes)
 
-let write ctx =
+let make_svg ctx =
   let shapes = !(ctx.shapes) in
   let svg = String.concat "" (List.map (render_shape ctx) shapes) in
   let (width, height) = ctx.size in
   let svg = Printf.sprintf "<svg width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\">%s</svg>" width height svg in
   svg
+
+let write ctx =
+  let svg = make_svg ctx in
+  let elt = ctx.elt in
+  elt##.innerHTML := Js.string svg
+
+let show ctx shapes =
+  ctx.shapes := !(ctx.shapes) @ shapes;
+  write ctx
+
+let clear ctx =
+  ctx.shapes := [];
+  write ctx
 

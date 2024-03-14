@@ -10,12 +10,19 @@ let default = ref (LazyContext (Backend_lazy.create ()))
 let get_default _ = !default
 let set_default ctx = default := ctx
 
-let show ?ctx shapes =
+let show ?ctx (shapes: Shape.shape list) =
   let ctx = match ctx with Some ctx -> ctx | None -> get_default () in
   match ctx with
   | CairoContext ctx -> Backend_cairo.show ctx shapes
   | SVGContext ctx -> Backend_svg.show ctx shapes
   | LazyContext ctx -> Backend_lazy.show ctx shapes
+
+let clear ?ctx _ =
+  let ctx = match ctx with Some ctx -> ctx | None -> get_default () in
+  match ctx with
+  | CairoContext ctx -> Backend_cairo.clear ctx
+  | SVGContext ctx -> Backend_svg.clear ctx
+  | LazyContext ctx -> Backend_lazy.clear ctx
 
 let set_line_width ?ctx int =
   let ctx = match ctx with Some ctx -> ctx | None -> get_default () in
@@ -32,10 +39,18 @@ let writePNG ?ctx filename =
       raise (Unsupported_output_format "SVG context cannot render to PNG")
   | LazyContext _ -> failwith "Lazy.writePNG ctx filename"
 
-let writeSVG ?ctx _ =
+(* let writeSVG ?ctx _ =
   let ctx = match ctx with Some ctx -> ctx | None -> get_default () in
   match ctx with
   | CairoContext _ ->
       raise (Unsupported_output_format "Cairo context cannot render to SVG")
   | SVGContext ctx -> Backend_svg.write ctx
-  | LazyContext _ -> failwith "Lazy.writeSVG ctx"
+  | LazyContext _ -> failwith "Lazy.writeSVG ctx" *)
+
+let makeSVG ?ctx _ =
+  let ctx = match ctx with Some ctx -> ctx | None -> get_default () in
+  match ctx with
+  | CairoContext _ ->
+      raise (Unsupported_output_format "Cairo context cannot render to SVG")
+  | SVGContext ctx -> Backend_svg.make_svg ctx
+  | LazyContext _ -> failwith "Lazy.makeSVG ctx"

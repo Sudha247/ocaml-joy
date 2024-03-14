@@ -32,7 +32,7 @@ let palette =
   ]
 
 (* utility Functions *)
-let rand_nth coll = List.length coll |> random |> List.nth coll
+let rand_nth coll = List.length coll |> Joy.random |> List.nth coll
 let tmap f (a, b) = (f a, f b)
 
 (* Pareto distribution float random for radii *)

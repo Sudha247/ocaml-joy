@@ -1,4 +1,3 @@
-include Random
 include Shape
 include Transform
 include Color
@@ -8,9 +7,14 @@ module Backend_cairo = Backend_cairo
 module Backend_svg = Backend_svg
 module Backend_lazy = Backend_lazy
 
+let random = Random.random
+let frandom = Random.frandom
+let fractal_noise = Random.fractal_noise
+
 type context = Context.context
 
 let show = Context.show
+let clear = Context.clear
 let set_line_width = Context.set_line_width
 
 let init ?(size = (500, 500)) ?(line_width = 1) ?(axes = false) _ =
@@ -34,8 +38,8 @@ let init ?(size = (500, 500)) ?(line_width = 1) ?(axes = false) _ =
     in
     show ~ctx:ctx_container [ x_axis; y_axis ]
 
-let init_svg ?(size = (500, 500)) ?(axes = false) _ =
-  let ctx = Backend_svg.create ~size ~axes in
+let init_svg ?(size = (500, 500)) ?(axes = false) eltId =
+  let ctx = Backend_svg.create ~size ~axes ~eltId in
   let ctx_container = Context.SVGContext ctx in
   Context.set_default ctx_container;
   if axes then
