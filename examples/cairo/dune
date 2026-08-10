@@ -1,0 +1,4 @@
+(executable
+ (name flowfield)
+ (modules flowfield)
+ (libraries joy_cairo))

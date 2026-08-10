@@ -1,7 +1,7 @@
-type point = Shape.point = { x : float; y : float }
-type shape = Shape.shape
+type point = Joy_core.Shape.point = { x : float; y : float }
+type shape = Joy_core.Shape.shape
 type transformation = shape -> shape
-type color = Color.color
+type color = Joy_core.Color.color
 
 val point : int -> int -> point
 val circle : ?c:point -> int -> shape
@@ -31,9 +31,18 @@ val transparent : color
 val rgb : int -> int -> int -> color
 val color : ?a:float -> int -> int -> int -> color
 
-module Noise = Noise
+module Noise = Joy_core.Noise
 
-val init : ?size:int * int -> ?axes:bool -> string -> unit
+val init :
+  ?background_color:color ->
+  ?line_width:int ->
+  ?size:int * int ->
+  ?axes:bool ->
+  unit ->
+  unit
+
 val show : shape list -> unit
 val clear : unit -> unit
-val render : unit -> string
+val render : unit -> unit
+val set_line_width : int -> unit
+val write : string -> unit

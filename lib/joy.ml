@@ -1,31 +1,31 @@
-include Shape
-include Transform
-include Color
+open Js_of_ocaml
 
-module Context = Context
-module Backend_cairo = Backend_cairo
-module Backend_svg = Backend_svg
-module Backend_lazy = Backend_lazy
+let canvas_size : (int * int) ref = ref (500, 500)
+let dom_elt : Dom_html.divElement Js.t option ref = ref None
 
-let random = Random.random
-let frandom = Random.frandom
-let fractal_noise = Random.fractal_noise
+module Svg_backend = struct
+  type output = string
 
-type context = Context.context
+  let render shapes = Backend_svg.render ~size:!canvas_size shapes
+end
 
-let show = Context.show
-let clear = Context.clear
-let set_line_width = Context.set_line_width
+include Base_joy.Make (Svg_backend)
 
-let init ?(size = (500, 500)) ?(line_width = 1) ?(axes = false) _ =
-  let ctx =
-    Backend_cairo.create ~background_color:Color.white ~size ~line_width ~axes
+module Noise = Noise
+
+let init ?(size = (500, 500)) ?(axes = false) elt_id =
+  canvas_size := size;
+  let elt =
+    Js.Opt.get
+      (Js.Opt.bind
+         (Dom_html.document##getElementById (Js.string elt_id))
+         Dom_html.CoerceTo.div)
+      (fun _ -> failwith "Could not find element with id")
   in
-  let ctx_container = Context.CairoContext ctx in
-  Context.set_default ctx_container;
+  dom_elt := Some elt;
   if axes then
     let half_w, half_h =
-      ctx.size |> Util.tmap float_of_int |> Util.tmap (fun x -> x /. 2.0)
+      size |> Util.tmap float_of_int |> Util.tmap (fun x -> x /. 2.0)
     in
     let gray = Color.color 128 128 128 ~a:0.5 in
     let x_axis =
@@ -36,25 +36,18 @@ let init ?(size = (500, 500)) ?(line_width = 1) ?(axes = false) _ =
       line ~a:{ x = 0.; y = -.half_h } { x = 0.; y = half_h }
       |> with_stroke gray
     in
-    show ~ctx:ctx_container [ x_axis; y_axis ]
+    show [ x_axis; y_axis ]
 
-let init_svg ?(size = (500, 500)) ?(axes = false) eltId =
-  let ctx = Backend_svg.create ~size ~axes ~eltId in
-  let ctx_container = Context.SVGContext ctx in
-  Context.set_default ctx_container;
-  if axes then
-    let half_w, half_h =
-      ctx.size |> Util.tmap float_of_int |> Util.tmap (fun x -> x /. 2.0)
-    in
-    let gray = Color.color 128 128 128 ~a:0.5 in
-    let x_axis =
-      line ~a:{ x = -.half_w; y = 0. } { x = half_w; y = 0. }
-      |> with_stroke gray
-    in
-    let y_axis =
-      line ~a:{ x = 0.; y = -.half_h } { x = 0.; y = half_h }
-      |> with_stroke gray
-    in
-    show ~ctx:ctx_container [ x_axis; y_axis ]
+let show new_shapes =
+  show new_shapes;
+  match !dom_elt with
+  | Some elt -> elt##.innerHTML := Js.string (render ())
+  | None -> ()
 
-let write ?(filename = "joy.png") () = Context.writePNG filename
+let clear () =
+  clear ();
+  match !dom_elt with
+  | Some elt -> elt##.innerHTML := Js.string ""
+  | None -> ()
+
+let render () = render ()

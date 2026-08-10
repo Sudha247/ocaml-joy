@@ -1,5 +1,7 @@
 (library
  (name joy)
  (public_name joy)
- (preprocess (pps js_of_ocaml-ppx))
- (libraries js_of_ocaml))
+ (modules joy)
+ (libraries joy_core js_of_ocaml)
+ (flags (:standard -open Joy_core))
+ (preprocess (pps js_of_ocaml-ppx)))

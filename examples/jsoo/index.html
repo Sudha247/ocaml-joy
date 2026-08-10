@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ocaml-joy examples</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; background: #f5f5f5; }
+    h1 { color: #333; }
+    nav { margin-bottom: 2rem; }
+    nav a { margin-right: 1rem; color: #555; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    #canvas { display: flex; justify-content: center; }
+    #canvas svg { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1>ocaml-joy</h1>
+  <nav>
+    <a href="?example=circle">circle</a>
+    <a href="?example=ellipse">ellipse</a>
+    <a href="?example=triangle">triangle</a>
+    <a href="?example=rectangle">rectangle</a>
+    <a href="?example=polygon">polygon</a>
+    <a href="?example=line">line</a>
+    <a href="?example=square">square</a>
+    <a href="?example=star">star</a>
+    <a href="?example=smile">smile</a>
+    <a href="?example=color">color</a>
+    <a href="?example=complex">complex</a>
+    <a href="?example=repeat">repeat</a>
+    <a href="?example=rotate">rotate</a>
+    <a href="?example=axes">axes</a>
+    <a href="?example=concentric_circles">concentric_circles</a>
+    <a href="?example=circle_packing">circle_packing</a>
+    <a href="?example=higher_transforms">higher_transforms</a>
+    <a href="?example=translate_circle">translate_circle</a>
+  </nav>
+  <div id="canvas"></div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const example = params.get('example') || 'circle';
+    const script = document.createElement('script');
+    script.src = example + '.bc.js';
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>

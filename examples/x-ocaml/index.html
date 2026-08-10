@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joy — Creative Coding in OCaml</title>
+  <script async
+    src="https://cdn.jsdelivr.net/gh/art-w/x-ocaml.js@6/x-ocaml.js"
+    src-worker="https://cdn.jsdelivr.net/gh/art-w/x-ocaml.js@6/x-ocaml.worker.js"
+    src-load="./joy_core.js"
+  ></script>
+  <style>
+    body { font-family: sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.4rem; margin: 2.5rem 0 0.5rem; }
+    p { line-height: 1.5; margin: 0.5rem 0; }
+    code { background: #f0f0f0; padding: 0.15em 0.3em; border-radius: 3px; font-size: 0.9em; }
+    details.setup { margin: 1rem 0; }
+    details.setup summary { cursor: pointer; color: #888; font-size: 0.85em; }
+    x-ocaml:not(:defined) { display: block; white-space: pre; font-family: monospace; background: #f5f5f5; padding: 1rem; }
+  </style>
+</head>
+<body>
+
+<h1>Joy</h1>
+<p>A creative coding library for OCaml. Every code cell below is live — edit and re-run to experiment.</p>
+
+<details class="setup">
+<summary>Setup (run this cell first)</summary>
+<x-ocaml>
+open Joy_core
+open Shape
+open Transform
+open Color
+
+let show ?(size = (300, 300)) shapes =
+  let x_axis =
+    line ~a:(point (-300) 0) (point 300 0) |> with_stroke (rgb 200 200 200)
+  in
+  let y_axis =
+    line ~a:(point 0 (-300)) (point 0 300) |> with_stroke (rgb 200 200 200)
+  in
+  X_ocaml_lib.output_html
+    (Backend_svg.render ~size ([ x_axis; y_axis ] @ shapes))
+</x-ocaml>
+</details>
+
+<h2>Getting started</h2>
+
+<p>You create a circle with this notation, where 50 units is the radius that you want.</p>
+<x-ocaml>
+let c = circle 50
+</x-ocaml>
+
+<p>Ignore the debug output <code>val c : Joy_core.Shape.shape = ...</code> for now, it will become clearer later.</p>
+
+<p>Shapes don't render unless you ask them to be shown. Use <code>show [c]</code> to render the shapes.</p>
+<x-ocaml>
+show [ c ]
+</x-ocaml>
+
+<p>We use <code>let _ =</code> when we want to run a computation but don't need to keep the result. We run it and discard the value. The <code>_</code> is by convention.</p>
+<x-ocaml>
+let _ = show [ c ]
+</x-ocaml>
+
+<h2>Basic shapes</h2>
+
+<p>Joy supports basic shapes such as <code>circle</code>, <code>ellipse</code>, and <code>rectangle</code>.</p>
+<x-ocaml>
+let c = circle 50
+let e = ellipse 75 50
+let r = rectangle 100 75
+let _ = show [ c; e; r ]
+</x-ocaml>
+
+<p>We are calling <code>show</code> with a list argument. Earlier the list had only one element. This list has three elements (<code>c</code>, <code>e</code>, <code>r</code>), separated by <code>;</code>.</p>
+
+<p>We can use <code>let ... in</code> to create values that are local to a block. This is useful when we don't need to refer to them later.</p>
+<x-ocaml>
+let _ =
+  let c = circle 50 in
+  let e = ellipse 75 50 in
+  let r = rectangle 100 75 in
+  show [ c; e; r ]
+</x-ocaml>
+
+<p>You can specify the center of a shape using the named argument <code>~c</code>.
+<code>point x y</code> creates a point from integer coordinates.</p>
+<x-ocaml>
+let _ =
+  let center = point 50 (-50) in
+  let s = circle ~c:center 50 in
+  show [ s ]
+</x-ocaml>
+
+<p>When the variable name matches the argument name, you can shorten <code>~c:c</code> to just <code>~c</code>.</p>
+<x-ocaml>
+let _ =
+  let c = point 50 (-50) in
+  let s = circle ~c 50 in
+  show [ s ]
+</x-ocaml>
+
+<p>There is also <code>line</code>, which connects two points. <code>~a</code> is the start point and <code>b</code> is the end point.</p>
+<x-ocaml>
+let _ =
+  let a = point (-100) (-100) in
+  let b = point 100 100 in
+  let l = line ~a b in
+  show [ l ]
+</x-ocaml>
+
+<h2>Colors</h2>
+
+<p>You can color shapes with <code>with_stroke</code> and <code>with_fill</code>.</p>
+<x-ocaml>
+let _ =
+  let c1 = circle 100 |> with_stroke red in
+  let c2 = circle 50  |> with_fill red |> with_stroke transparent in
+  show [ c1; c2 ]
+</x-ocaml>
+
+<p>The predefined colors are:</p>
+<table>
+<tr><td><code>black</code></td><td><code>white</code></td><td><code>red</code></td><td><code>green</code></td><td><code>blue</code></td><td><code>yellow</code></td><td><code>transparent</code></td></tr>
+</table>
+
+<p>You can make custom colors with <code>rgb</code> or <code>color</code> (which also takes an alpha).</p>
+<x-ocaml>
+let _ =
+  let c1 = circle 125 |> with_stroke red in
+  let c2 = circle 100 |> with_stroke (rgb 0 200 0) in
+  let c3 = circle 50  |> with_stroke (rgb 51 136 187) in
+  show [ c1; c2; c3 ]
+</x-ocaml>
+
+<h2>Combining shapes</h2>
+
+<p>You can group multiple shapes into one with <code>complex</code>.</p>
+<x-ocaml>
+let _ =
+  let c = circle 50 in
+  let r = rectangle 100 75 in
+  let shape = complex [ c; r ] in
+  show [ shape ]
+</x-ocaml>
+
+<p>Combining shapes is useful to apply transformations on the group. We'll look into transformations in the next section.</p>
+
+<h2>Transformations</h2>
+
+<p>Joy supports <code>translate</code>, <code>rotate</code>, and <code>scale</code> transformations.</p>
+
+<p><code>translate</code> moves a shape by x and y.</p>
+<x-ocaml>
+let _ =
+  let c1 = circle 50 in
+  let c2 = c1 |> translate 50 0 in
+  show [ c1; c2 ]
+</x-ocaml>
+
+<p><code>|&gt;</code> is an OCaml operator that calls a function with the value on the left.
+<code>c1 |&gt; translate 50 0</code> is equivalent to <code>translate 50 0 c1</code>.</p>
+
+<p><code>rotate</code> rotates a shape anti-clockwise by the given angle in degrees.</p>
+<x-ocaml>
+let _ =
+  let r = rectangle 100 75 |> rotate 45 in
+  show [ r ]
+</x-ocaml>
+
+<p><code>scale</code> resizes a shape.</p>
+<x-ocaml>
+let _ =
+  let c = circle 100 |> scale 0.5 in
+  show [ c ]
+</x-ocaml>
+
+<p>You can combine shapes and apply transformations on them together.</p>
+<x-ocaml>
+let _ =
+  let donut = complex [ circle 50; circle 25 ] in
+  let donut2 = donut |> scale 0.5 |> translate 125 0 in
+  show [ donut; donut2 ]
+</x-ocaml>
+
+
+<h2>Higher-order transformations</h2>
+
+<p>Joy supports the higher-order transformation <code>repeat</code>.</p>
+
+<p><code>repeat</code> applies a transformation multiple times and combines all the resulting shapes.</p>
+<x-ocaml>
+let _ =
+  let b = point 0 100 in
+  let l = line b in
+  let shape = l |> repeat 18 (rotate 10) in
+  show [ shape ]
+</x-ocaml>
+
+<p>Try changing the number of repetitions or the rotation angle.</p>
+<x-ocaml>
+let _ =
+  let b = point 0 100 in
+  let l = line b in
+  let shape = l |> repeat 4 (rotate 30) in
+  show [ shape ]
+</x-ocaml>
+
+<p>You can apply that on a square.</p>
+<x-ocaml>
+let _ =
+  let r = rectangle 200 200 in
+  let shape = r |> repeat 9 (rotate 10) in
+  show [ shape ]
+</x-ocaml>
+
+<p>Or a rectangle.</p>
+<x-ocaml>
+let _ =
+  let r = rectangle 200 100 in
+  let shape = r |> repeat 18 (rotate 10) in
+  show [ shape ]
+</x-ocaml>
+
+<p>Or even a circle.</p>
+<x-ocaml>
+let _ =
+  let center = point 50 0 in
+  let c = circle ~c:center 100 in
+  let shape = c |> repeat 18 (rotate 20) in
+  show [ shape ]
+</x-ocaml>
+
+<p>You can repeat multiple transformations together using <code>compose</code>.</p>
+<x-ocaml>
+let _ =
+  let tx = compose (rotate 20) (scale 0.9) in
+  let r = rectangle 200 200 in
+  let shape = r |> repeat 72 tx in
+  show [ shape ]
+</x-ocaml>
+
+<x-ocaml>
+let _ =
+  let n = 72 in
+  let angle = 360 / n in
+  let tx = compose (rotate angle) (scale 0.92) in
+  let r = rectangle 200 200 in
+  let shape = r |> repeat n tx in
+  show [ shape ]
+</x-ocaml>
+
+<p>You can create a spiral of circles.</p>
+<x-ocaml>
+let _ =
+  let center = point 100 0 in
+  let c = circle ~c:center 50 in
+  let tx = compose (rotate 10) (scale 0.97) in
+  let shape = c |> repeat (36 * 4) tx in
+  show [ shape ]
+</x-ocaml>
+
+</body>
+</html>
