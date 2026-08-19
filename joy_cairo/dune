@@ -1,0 +1,5 @@
+(library
+ (name joy_cairo)
+ (public_name joy-cairo)
+ (libraries joy_core cairo2)
+ (flags (:standard -open Joy_core)))

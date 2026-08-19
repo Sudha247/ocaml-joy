@@ -2,3 +2,7 @@ _build
 .vscode
 .DS_Store
 *.png
+*.cmi
+*.cmx
+*.cma
+*.o

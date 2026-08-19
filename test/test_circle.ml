@@ -1,7 +1,8 @@
-open Joy
+open Joy_core
+open Shape
 
 let run () =
-  init ();
   let c1 = circle 50 in
   let c2 = circle 100 in
-  show [ c1; c2 ]
+  let _ = Backend_svg.render ~size:(500, 500) [ c1; c2 ] in
+  ()

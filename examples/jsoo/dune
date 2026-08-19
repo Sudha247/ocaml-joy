@@ -1,0 +1,195 @@
+(executable
+ (name axes)
+ (modules axes)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name circle)
+ (modules circle)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name ellipse)
+ (modules ellipse)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name triangle)
+ (modules triangle)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name concentric_circles)
+ (modules concentric_circles)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name translate_circle)
+ (modules translate_circle)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name translate_rectangle)
+ (modules translate_rectangle)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name translate_ellipse)
+ (modules translate_ellipse)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name circle_row_joy)
+ (modules circle_row_joy)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name rotate)
+ (modules rotate)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name rotate_ellipse)
+ (modules rotate_ellipse)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name line)
+ (modules line)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name parallel_lines)
+ (modules parallel_lines)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name higher_transforms)
+ (modules higher_transforms)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name complex)
+ (modules complex)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name polygon)
+ (modules polygon)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name circle_packing)
+ (modules circle_packing)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name rectangle)
+ (modules rectangle)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name rectangle_canvas)
+ (modules rectangle_canvas)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name square)
+ (modules square)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name star)
+ (modules star)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name repeat)
+ (modules repeat)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name donut_with_scale)
+ (modules donut_with_scale)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name quadtree)
+ (modules quadtree)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name color)
+ (modules color)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name fill_rect)
+ (modules fill_rect)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name smile)
+ (modules smile)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
+
+(executable
+ (name simple_rotate_ellipse)
+ (modules simple_rotate_ellipse)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx))
+ (libraries joy))
