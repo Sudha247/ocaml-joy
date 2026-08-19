@@ -18,8 +18,8 @@ let render_circle size ({ c; radius; stroke; fill } : Shape.circle) =
 let render_ellipse size ({ c; rx; ry; rotation; stroke; fill } : Shape.ellipse) =
   let cx, cy = svg_coords_of_point size c in
   Printf.sprintf
-    "<ellipse cx=\"%f\" cy=\"%f\" rx=\"%f\" ry=\"%f\" transform=\"rotate(%d)\" %s %s />"
-    cx cy rx ry rotation
+    "<ellipse cx=\"%f\" cy=\"%f\" rx=\"%f\" ry=\"%f\" transform=\"rotate(%d %f %f)\" %s %s />"
+    cx cy rx ry rotation cx cy
     (svg_color_attribute "stroke" stroke)
     (svg_color_attribute "fill" fill)
 
